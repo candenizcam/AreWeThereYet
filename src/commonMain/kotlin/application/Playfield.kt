@@ -20,6 +20,7 @@ class Playfield: Puntainer {
         hitboxRect = hitboxRect.moved(0.0,hitboxSpeed*dt.seconds)
         if(hitboxRect.bottom<0){
             hitboxRect = hitboxRestRect
+            jumpCount=0
         }
         hitboxSpeed += gravity
         level.update(dt)
@@ -40,16 +41,24 @@ class Playfield: Puntainer {
      *  Jumpingu Jumpingu everybody
      */
     fun jump(){
-        println(ducking)
-        if(ducking==0.0){
-            println("jump")
-            hitboxSpeed = 1.5
+        if(jumpCount<2){
+
+            if(ducking==0.0){
+                hitboxSpeed = 1.5
+                jumpCount+=1
+            }
         }
 
     }
 
+    /** Change here for ducking duration
+     *
+     */
     fun duck(){
-        ducking = 0.5
+        if(jumpCount==0){
+            ducking = 0.5
+        }
+
     }
 
     var hitboxRestRect = Rectangle(0.3,0.35,0.0,0.3)
@@ -57,4 +66,5 @@ class Playfield: Puntainer {
     var gravity = -0.015
     var hitboxSpeed = 0.0
     var ducking = 0.0
+    var jumpCount = 0
 }
