@@ -15,9 +15,11 @@ import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korma.geom.Angle
 import modules.basic.Colour
+import pungine.PunImage
 import pungine.PunScene
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
+import pungine.geometry2D.Vector
 import pungine.geometry2D.oneRectangle
 import pungine.singleColour
 
@@ -33,28 +35,46 @@ class GameScene: PunScene() {
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
 
-        val level = LevelGenerator()
+
 
         puntainer("floor", Rectangle(0.0,1.0,0.0,FloorData.getHeight()),relative = true) {
-            it.singleColour(Colour.GREEN.korgeColor)
+
+            it.singleColour(Colour.GREEN.korgeColor).also {
+                it.alpha = 0.1
+            }
+        }
+
+        playfield.fitToFrame(Rectangle(0.0,w,FloorData.getHeight()*h,h))
+        this.addChild(playfield)
+
+        adjustHand()
+        this.addChild(hand)
+
+
+        // obstacles
+        for(i in 0..4){
+            PunImage("normal",resourcesVfs["obstacle.png"].readBitmap()).also {
+                obstacles.add(it)
+                this.addChild(it)
+                it.visible=false
+            }
+
         }
 
 
 
 
-        hitbox = puntainer("hitbox", Rectangle(200.0,250.0,FloorData.getHeight()*h,FloorData.getHeight()*h+50.0)) {
-            it.singleColour(Colour.BLUE.korgeColor)
-        }
-
-
-
+        /*
         obstacles.add(puntainer("obs", Rectangle(w,w+50.0,FloorData.getHeight()*GlobalAccess.virtualSize.height,FloorData.getHeight()*GlobalAccess.virtualSize.height+50.0)) {
             it.singleColour(Colour.RED.korgeColor)
 
 
         })
 
+         */
+
         var s = 0.0
+
 
         this.addUpdater {dt->
 
@@ -62,13 +82,39 @@ class GameScene: PunScene() {
                 it.x = it.x - dt.milliseconds*0.2
             }
 
-            level.update(dt)
+            obstacles.forEach {
+                it.visible = false
+            }
 
-            if(views.input.keys.justPressed(Key.SPACE)){
-                hitboxDy = 300.0
+            playfield.level.obstacles.forEachIndexed { index,obs->
+                val r = playfield.virtualRectangle.fromRated(Rectangle(Vector(obs.centerX,obs.centerY),obs.width,obs.height))
+
+                obstacles[index].x = r.left
+                obstacles[index].yConv = r.top
+                obstacles[index].scaledHeight = r.height
+                obstacles[index].scaledWidth = r.width
+                obstacles[index].visible=true
             }
 
 
+
+
+            if(views.input.keys.justPressed(Key.SPACE)){
+                hitboxDy = 300.0
+                playfield.jump()
+            }
+
+            hand.update(dt)
+            playfield.update(dt)
+            val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
+
+            hand.x = r.left
+            hand.yConv = r.top
+            hand.scaledHeight = r.height
+            hand.scaledWidth = r.width
+
+
+            /*
             hitbox.yConv += hitboxDy*dt.seconds
             //hitbox.yConv -= 50.0*dt.seconds
 
@@ -85,6 +131,8 @@ class GameScene: PunScene() {
             }
             hitboxDy = hitboxDy - gravity*dt.seconds
 
+             */
+
 
 
         }
@@ -94,12 +142,29 @@ class GameScene: PunScene() {
         super.sceneAfterInit()
     }
 
-    var hitbox: Puntainer = Puntainer()
+    val hand = Hand("hand",oneRectangle())
+    var playfield = Playfield("playfield", oneRectangle())
+
 
     var obstacles = mutableListOf<Puntainer>()
 
     val gravity = 200.0
     var hitboxDy =0.0
+
+    suspend fun adjustHand(){
+        hand.twoFingerRun= List(4){
+            val i = listOf("pungo_transparent.png","pungo_transparent_2.png","pungo_transparent_3.png","pungo_transparent_4.png")
+            Image(resourcesVfs[i[it]].readBitmap())
+        }
+
+        hand.twoFingerJump =  List(2){
+            val i = listOf("pungo_transparent_2.png","pungo_transparent_4.png")
+            Image(resourcesVfs[i[it]].readBitmap())
+        }
+
+    }
+
+
 
 
     object FloorData{
