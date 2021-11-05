@@ -171,7 +171,7 @@ class Colour private constructor(r: Float, g: Float, b: Float, a: Float) {
 
     private fun toHexDigit(n: Int): String {
         return if(n>9){
-            ('A'.toInt()-10+n).toChar()
+            ('A'.code -10+n).toChar()
         }else{
             n
         }.toString()

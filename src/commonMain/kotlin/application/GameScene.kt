@@ -4,6 +4,7 @@ import com.soywiz.klock.TimeSpan
 import com.soywiz.korev.Key
 import com.soywiz.korge.input.keys
 import com.soywiz.korge.input.onClick
+import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
 import com.soywiz.korge.view.tween.moveBy
 import com.soywiz.korge.view.tween.moveTo
@@ -27,9 +28,12 @@ import pungine.singleColour
 class GameScene: PunScene() {
     override fun createSceneView(): Container = Puntainer()
 
-    override suspend fun Container.sceneInit(): Unit{
+    @OptIn(KorgeInternal::class)
+    override suspend fun Container.sceneInit(){
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
+
+        val level = LevelGenerator()
 
         puntainer("floor", Rectangle(0.0,1.0,0.0,FloorData.getHeight()),relative = true) {
 
@@ -71,6 +75,8 @@ class GameScene: PunScene() {
             obstacles.forEach {
                 it.x = it.x - dt.milliseconds*0.2
             }
+
+            level.update(dt)
 
             if(views.input.keys.justPressed(Key.SPACE)){
                 hitboxDy = 300.0
