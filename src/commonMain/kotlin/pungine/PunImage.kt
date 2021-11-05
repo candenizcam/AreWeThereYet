@@ -1,5 +1,6 @@
 package pungine
 
+import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.view.Image
 import com.soywiz.korge.view.ViewFileRef
@@ -74,6 +75,7 @@ class PunImage: Puntainer{
 
     /** Upon modifying image, this function is called to change the displayed image
      */
+    @OptIn(KorgeInternal::class)
     fun applyModifications(){
         (this.children[0] as Image).bitmap = this.bitmapDisplayed.clone().slice()
     }
