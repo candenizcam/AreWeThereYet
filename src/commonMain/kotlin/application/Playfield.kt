@@ -7,6 +7,7 @@ import com.soywiz.korge.view.solidRect
 import com.soywiz.korim.bitmap.Bitmap
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
+import pungine.geometry2D.Vector
 
 class Playfield: Puntainer {
     constructor(id: String?=null, relativeRectangle: Rectangle) : super(id,relativeRectangle){
@@ -23,6 +24,14 @@ class Playfield: Puntainer {
         hitboxSpeed += gravity
         level.update(dt)
 
+        ducking = (ducking-dt.seconds).coerceAtLeast(0.0)
+
+    }
+
+    fun collisionCheck(): Boolean {
+
+        return level.obstacles.filter { hitboxRect.collides(Rectangle(Vector(it.centerX,it.centerY),it.width,it.height)) }.isNotEmpty()
+
     }
 
     val level = LevelGenerator()
@@ -31,11 +40,21 @@ class Playfield: Puntainer {
      *  Jumpingu Jumpingu everybody
      */
     fun jump(){
-        hitboxSpeed = 1.5
+        println(ducking)
+        if(ducking==0.0){
+            println("jump")
+            hitboxSpeed = 1.5
+        }
+
     }
 
-    var hitboxRestRect = Rectangle(0.3,0.35,0.0,0.1)
+    fun duck(){
+        ducking = 0.5
+    }
+
+    var hitboxRestRect = Rectangle(0.3,0.35,0.0,0.3)
     var hitboxRect = Rectangle(0.3,0.35,0.0,0.1)
     var gravity = -0.015
     var hitboxSpeed = 0.0
+    var ducking = 0.0
 }

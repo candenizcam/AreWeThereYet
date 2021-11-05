@@ -1,6 +1,7 @@
 package application
 
 import com.soywiz.klock.TimeSpan
+import com.soywiz.kmem.toInt
 import com.soywiz.korev.Key
 import com.soywiz.korge.input.keys
 import com.soywiz.korge.input.onClick
@@ -37,7 +38,7 @@ class GameScene: PunScene() {
 
 
 
-        puntainer("floor", Rectangle(0.0,1.0,0.0,FloorData.getHeight()),relative = true) {
+        floor = puntainer("floor", Rectangle(0.0,1.0,0.0,FloorData.getHeight()),relative = true) {
 
             it.singleColour(Colour.GREEN.korgeColor).also {
                 it.alpha = 0.1
@@ -99,9 +100,12 @@ class GameScene: PunScene() {
 
 
 
-            if(views.input.keys.justPressed(Key.SPACE)){
-                hitboxDy = 300.0
+            if(views.input.keys.justPressed(Key.UP)){
                 playfield.jump()
+            }
+
+            if(views.input.keys.justPressed(Key.DOWN)){
+                playfield.duck()
             }
 
             hand.update(dt)
@@ -109,9 +113,15 @@ class GameScene: PunScene() {
             val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
 
             hand.x = r.left
-            hand.yConv = r.top
-            hand.scaledHeight = r.height
+            hand.yConv = r.top - r.height*(playfield.ducking>0).toInt()/2
+            hand.scaledHeight = r.height/(1.0+(playfield.ducking>0).toInt())
             hand.scaledWidth = r.width
+
+            if(playfield.collisionCheck()){
+                floor.visible = false
+            }else{
+                floor.visible = true
+            }
 
 
             /*
@@ -144,6 +154,8 @@ class GameScene: PunScene() {
 
     val hand = Hand("hand",oneRectangle())
     var playfield = Playfield("playfield", oneRectangle())
+
+    var floor = Puntainer()
 
 
     var obstacles = mutableListOf<Puntainer>()

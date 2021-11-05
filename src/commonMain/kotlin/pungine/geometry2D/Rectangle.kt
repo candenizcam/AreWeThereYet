@@ -128,6 +128,13 @@ class Rectangle {
     }
 
 
+    fun collides(other: Rectangle): Boolean {
+        val vertical = (this.left>other.right)||(this.right<other.left)
+        val horizontal = (this.top<other.bottom)||(this.bottom>other.top)
+        return (vertical||horizontal).not()
+    }
+
+
 
 
 
