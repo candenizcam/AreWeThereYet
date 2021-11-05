@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "C:\\supreme_command\\kotlin_projects\\pungo\\AreWeThereYet\\build\\platforms\\android\\build\\intermediates\\merged_res\\release\\drawable_app_icon.png.flat",
+        "source": "C:\\supreme_command\\kotlin_projects\\pungo\\AreWeThereYet\\build\\platforms\\android\\src\\main\\res\\drawable\\app_icon.png"
+    },
+    {
+        "merged": "C:\\supreme_command\\kotlin_projects\\pungo\\AreWeThereYet\\build\\platforms\\android\\build\\intermediates\\merged_res\\release\\drawable_app_banner.png.flat",
+        "source": "C:\\supreme_command\\kotlin_projects\\pungo\\AreWeThereYet\\build\\platforms\\android\\src\\main\\res\\drawable\\app_banner.png"
+    },
+    {
+        "merged": "C:\\supreme_command\\kotlin_projects\\pungo\\AreWeThereYet\\build\\platforms\\android\\build\\intermediates\\merged_res\\release\\mipmap-mdpi_icon.png.flat",
+        "source": "C:\\supreme_command\\kotlin_projects\\pungo\\AreWeThereYet\\build\\platforms\\android\\src\\main\\res\\mipmap-mdpi\\icon.png"
+    }
+]
