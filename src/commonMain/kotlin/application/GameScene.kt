@@ -1,5 +1,9 @@
 package application
 
+import com.soywiz.klock.TimeSpan
+import com.soywiz.kmem.toInt
+import com.soywiz.korau.sound.readMusic
+import com.soywiz.korau.sound.readSound
 import com.soywiz.korev.Key
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
@@ -28,7 +32,7 @@ class GameScene: PunScene() {
         //resourcesVfs["twister.mp3"].readSound().play()
 
 
-        puntainer("floor", Rectangle(0.0,1.0,0.0,FloorData.getHeight()),relative = true) {
+        floor = puntainer("floor", Rectangle(0.0,1.0,0.0,FloorData.getHeight()),relative = true) {
 
             it.singleColour(Colour.GREEN.korgeColor).also {
                 it.alpha = 0.1
@@ -90,9 +94,12 @@ class GameScene: PunScene() {
 
 
 
-            if(views.input.keys.justPressed(Key.SPACE)){
-                hitboxDy = 300.0
+            if(views.input.keys.justPressed(Key.UP)){
                 playfield.jump()
+            }
+
+            if(views.input.keys.justPressed(Key.DOWN)){
+                playfield.duck()
             }
 
             hand.update(dt)
@@ -100,29 +107,15 @@ class GameScene: PunScene() {
             val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
 
             hand.x = r.left
-            hand.yConv = r.top
-            hand.scaledHeight = r.height
+            hand.yConv = r.top - r.height*(playfield.ducking>0).toInt()/2
+            hand.scaledHeight = r.height/(1.0+(playfield.ducking>0).toInt())
             hand.scaledWidth = r.width
 
-
-            /*
-            hitbox.yConv += hitboxDy*dt.seconds
-            //hitbox.yConv -= 50.0*dt.seconds
-
-            if(hitbox.yConv-hitbox.virtualRectangle.height<(h*FloorData.getHeight())){
-                hitbox.children.fastForEach {
-                    it.alpha = 0.5
-                }
-                hitbox.yConv = h*(FloorData.getHeight())+hitbox.virtualRectangle.height
-                //hitbox.yConv = 0.0
+            if(playfield.collisionCheck()){
+                floor.visible = false
             }else{
-                hitbox.children.fastForEach {
-                    it.alpha = 1.0
-                }
+                floor.visible = true
             }
-            hitboxDy = hitboxDy - gravity*dt.seconds
-
-             */
 
 
 
@@ -135,7 +128,7 @@ class GameScene: PunScene() {
 
     val hand = Hand("hand",oneRectangle())
     var playfield = Playfield("playfield", oneRectangle())
-
+    var floor = Puntainer()
 
     var obstacles = mutableListOf<Puntainer>()
 
