@@ -1,6 +1,8 @@
 package application
 
 import com.soywiz.klock.TimeSpan
+import com.soywiz.korau.sound.readMusic
+import com.soywiz.korau.sound.readSound
 import com.soywiz.korev.Key
 import com.soywiz.korge.input.keys
 import com.soywiz.korge.input.onClick
@@ -35,6 +37,7 @@ class GameScene: PunScene() {
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
 
+        //resourcesVfs["twister.mp3"].readSound().play()
 
 
         puntainer("floor", Rectangle(0.0,1.0,0.0,FloorData.getHeight()),relative = true) {
