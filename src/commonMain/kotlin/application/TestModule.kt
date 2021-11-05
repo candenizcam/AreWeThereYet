@@ -5,12 +5,12 @@ import com.soywiz.korinject.AsyncInjector
 import pungine.InternalGlobalAccess
 
 object TestModule: Module() {
-    override val mainScene = TestScene::class
+    override val mainScene = GameScene::class
     override val size = InternalGlobalAccess.virtualSize // Virtual Size
     override val windowSize = InternalGlobalAccess.windowSize// Window Size
 
     override suspend fun AsyncInjector.configure() {
-
-        mapPrototype { TestScene() }
+        mapPrototype { GameScene() }
+        mapPrototype { EntryScene() }
     }
 }

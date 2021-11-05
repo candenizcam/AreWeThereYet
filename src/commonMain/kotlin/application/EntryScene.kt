@@ -20,7 +20,7 @@ import pungine.singleColour
  *
  */
 
-class TestScene: PunScene() {
+class EntryScene: PunScene() {
     override fun createSceneView(): Container = Puntainer()
 
     override suspend fun Container.sceneInit(): Unit{
@@ -44,6 +44,10 @@ class TestScene: PunScene() {
 
         val img = punImage("id",resourcesVfs["pungo_transparent.png"].readBitmap(), Rectangle(390.0,890.0,110.0,610.0)).also {
             it.visible = false
+            it.onClick {
+                launchImmediately{sceneContainer.changeTo<GameScene>()}
+            }
+
         }
 
 
