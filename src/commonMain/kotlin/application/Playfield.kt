@@ -21,8 +21,11 @@ class Playfield: Puntainer {
             hitboxRect = hitboxRestRect
         }
         hitboxSpeed += gravity
+        level.update(dt)
 
     }
+
+    val level = LevelGenerator()
 
     /**
      *  Jumpingu Jumpingu everybody

@@ -1,5 +1,6 @@
 package application
 
+import com.soywiz.kds.getExtra
 import com.soywiz.klock.TimeSpan
 import com.soywiz.korge.view.Image
 import com.soywiz.korge.view.position
@@ -29,6 +30,7 @@ class Hand: Puntainer {
         }
         a.forEachIndexed { index, image ->
             image.visible = index==animIndex.toInt()
+
 
         }
     }
