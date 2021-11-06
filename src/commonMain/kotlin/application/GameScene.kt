@@ -1,5 +1,8 @@
 package application
 
+import com.soywiz.korau.sound.PlaybackParameters
+import com.soywiz.korau.sound.PlaybackTimes
+import com.soywiz.korau.sound.readMusic
 import com.soywiz.korev.Key
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
@@ -25,9 +28,10 @@ class GameScene: PunScene() {
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
 
-        var l1 = resourcesVfs["musicbox.mp3"].readMusic().play(PlaybackParameters(PlaybackTimes.INFINITE))
-        var l2 = resourcesVfs["recorder.mp3"].readMusic().play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
-        var l3 = resourcesVfs["ominous.mp3"].readMusic().play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
+        var fadein = false
+        val l1 = resourcesVfs["musicbox.mp3"].readMusic().play(PlaybackParameters(PlaybackTimes.INFINITE))
+        val l2 = resourcesVfs["altlayer.mp3"].readMusic().play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
+        val l3 = resourcesVfs["ominous.mp3"].readMusic().play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
 
 
         floor = puntainer("floor", Rectangle(0.0,1.0,0.0,FloorData.getHeight()),relative = true) {
@@ -218,8 +222,14 @@ class GameScene: PunScene() {
             floor.visible = !playfield.collisionCheck()
 
             if(playfield.collisionCheck()){
-                l2.volume = 1.0
-                }
+                fadein = true
+            }
+
+            if(fadein) {
+                if(l2.volume<0.6) l2.volume += 0.1
+                else fadein = false
+            }
+
         }
         super.sceneAfterInit()
     }
