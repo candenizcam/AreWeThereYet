@@ -71,55 +71,57 @@ class GameScene : PunScene() {
 
 
         // obstacles
-        for (i in 0..1) {
-            PunImage("dont-jump-1", resourcesVfs["obs/rare/dont-jump-1.png"].readBitmap()).also {
-                obstacles.add(it)
-                this.addChild(it)
-                it.visible = false
-            }
+        for (j in 0..1) {
+            var folder = "rare"
+            for (i in 1..3) {
+                if(i == 2){
+                    folder = "rarer"
+                }
+                if(i == 3){
+                    folder = "rarest"
+                }
+                PunImage("dont-jump-$i", resourcesVfs["obs/$folder/dont-jump-$i.png"].readBitmap()).also {
+                    obstacles.add(it)
+                    this.addChild(it)
+                    it.visible = false
+                }
 
-            PunImage("dont-jump-2", resourcesVfs["obs/rare/dont-jump-1.png"].readBitmap()).also {
-                obstacles.add(it)
-                this.addChild(it)
-                it.visible = false
-            }
+                PunImage("duck-$i", resourcesVfs["obs/$folder/duck-$i.png"].readBitmap()).also {
+                    obstacles.add(it)
+                    this.addChild(it)
+                    it.visible = false
+                }
 
-            PunImage("duck-1", resourcesVfs["obs/rare/duck-1.png"].readBitmap()).also {
-                obstacles.add(it)
-                this.addChild(it)
-                it.visible = false
-            }
+                PunImage("high-jump-$i", resourcesVfs["obs/$folder/high-jump-$i.png"].readBitmap()).also {
+                    obstacles.add(it)
+                    this.addChild(it)
+                    it.visible = false
+                }
 
-            PunImage("high-jump-1", resourcesVfs["obs/rare/high-jump-1.png"].readBitmap()).also {
-                obstacles.add(it)
-                this.addChild(it)
-                it.visible = false
-            }
+                PunImage("jump-duck-$i", resourcesVfs["obs/$folder/jump-duck-$i.png"].readBitmap()).also {
+                    obstacles.add(it)
+                    this.addChild(it)
+                    it.visible = false
+                }
 
-            PunImage("jump-duck-1", resourcesVfs["obs/rare/jump-duck-1.png"].readBitmap()).also {
-                obstacles.add(it)
-                this.addChild(it)
-                it.visible = false
-            }
+                PunImage("long-jump-$i", resourcesVfs["obs/$folder/long-jump-$i.png"].readBitmap()).also {
+                    obstacles.add(it)
+                    this.addChild(it)
+                    it.visible = false
+                }
 
-            PunImage("long-jump-1", resourcesVfs["obs/rare/long-jump-1.png"].readBitmap()).also {
-                obstacles.add(it)
-                this.addChild(it)
-                it.visible = false
-            }
+                PunImage("low-jump-$i", resourcesVfs["obs/$folder/low-jump-$i.png"].readBitmap()).also {
+                    obstacles.add(it)
+                    this.addChild(it)
+                    it.visible = false
+                }
 
-            PunImage("low-jump-1", resourcesVfs["obs/rare/low-jump-1.png"].readBitmap()).also {
-                obstacles.add(it)
-                this.addChild(it)
-                it.visible = false
+                PunImage("bird-$i", resourcesVfs["obs/$folder/bird-$i.png"].readBitmap()).also {
+                    obstacles.add(it)
+                    this.addChild(it)
+                    it.visible = false
+                }
             }
-
-            PunImage("bird-1", resourcesVfs["obs/rare/bird-1.png"].readBitmap()).also {
-                obstacles.add(it)
-                this.addChild(it)
-                it.visible = false
-            }
-
         }
 
         adjustHand()
@@ -157,6 +159,15 @@ class GameScene : PunScene() {
 
          */
 
+        fun sameRarity(name: String?, rarity: ObstacleRarity) : Boolean {
+            when(name?.get(-1)){
+                '1' -> return rarity == ObstacleRarity.RARE
+                '2' -> return rarity == ObstacleRarity.RARER
+                '3' -> return rarity == ObstacleRarity.RAREST
+            }
+            return false
+        }
+
 
         this.addUpdater { dt ->
 
@@ -189,30 +200,34 @@ class GameScene : PunScene() {
             obshit.forEach {
                 it.visible = false
             }
+
             ObstacleTypes.values().forEach { thisType ->
                 playfield.level.obstacles.filter { it.type == thisType }.also { list ->
-                    val o = obstacles.filter { it.id == thisType.relevantID() }
-                    list.forEachIndexed { index, obs ->
-                        val hit = playfield.virtualRectangle.fromRated(
-                            Rectangle(
-                                Vector(obs.centerX, obs.centerY),
-                                obs.width,
-                                obs.height
+                    ObstacleRarity.values().forEach { rarity ->
+                        val o2 = obstacles.filter { it.id == thisType.relevantID(rarity.ordinal+1) }
+
+                        list.forEachIndexed { index, obs ->
+                            val hit = playfield.virtualRectangle.fromRated(
+                                Rectangle(
+                                    Vector(obs.centerX, obs.centerY),
+                                    obs.width,
+                                    obs.height
+                                )
                             )
-                        )
-                        val r = hit.decodeRated(thisType.ratedRect())
-                        o[index].x = r.left
-                        o[index].yConv = r.top
-                        o[index].scaledHeight = r.height
-                        o[index].scaledWidth = r.width
-                        o[index].visible = true
-                        obshit[obshitindex].scaledWidth = hit.width
-                        obshit[obshitindex].scaledHeight = hit.height
-                        obshit[obshitindex].x = hit.left
-                        obshit[obshitindex].y = GlobalAccess.virtualSize.height - hit.top
-                        obshit[obshitindex].visible = true
-                        obshitindex += 1
-                    }
+                            val r = hit.decodeRated(thisType.ratedRect())
+                            o2[index].x = r.left
+                            o2[index].yConv = r.top
+                            o2[index].scaledHeight = r.height
+                            o2[index].scaledWidth = r.width
+                            o2[index].visible = true
+                            obshit[obshitindex].scaledWidth = hit.width
+                            obshit[obshitindex].scaledHeight = hit.height
+                            obshit[obshitindex].x = hit.left
+                            obshit[obshitindex].y = GlobalAccess.virtualSize.height - hit.top
+                            obshit[obshitindex].visible = true
+                            obshitindex += 1
+                        }
+                   }
                 }
             }
 
