@@ -18,6 +18,7 @@ class Hand: Puntainer {
 
         this.addChild(twoFingerRun)
         this.addChild(twoFingerJump)
+        this.addChild(twoFingerDuck)
 
 
 
@@ -34,7 +35,7 @@ class Hand: Puntainer {
         if(blockMode){
             greenBlock.setSize(hitboxRectOnScreen.width,hitboxRectOnScreen.height)
         }else{
-            animIndex += dt.seconds*4
+            animIndex += dt.seconds*12
             val a = activeAnimation()
             if (animIndex>=a.size){
                 animIndex %= a.size
@@ -46,11 +47,6 @@ class Hand: Puntainer {
                 image.scaledHeight = hitboxRect.height
                 image.x = hitboxRect.left
                 image.y = GlobalAccess.virtualSize.height - (hitboxRect.top)
-                greenBlock.scaledWidth = hitboxRectOnScreen.width
-                greenBlock.scaledHeight = hitboxRectOnScreen.height
-                greenBlock.x = hitboxRectOnScreen.left
-                greenBlock.y = GlobalAccess.virtualSize.height-hitboxRectOnScreen.top
-                greenBlock.visible = true
             }
             if(activeAnimationType==ActiveAnimationType.TWOFINGER_DUCK){
                 val vss = a.children.map { it.visible }
@@ -152,8 +148,8 @@ class Hand: Puntainer {
         },
         TWOFINGER_DUCK {
             override fun relativeRect(): Rectangle {
-                return Rectangle(281.0/500.0,(281.0+124.0)/500.0,13.0/500.0,213.0/500.0)
-                //return Rectangle(287.0/500.0,(287.0+124.0)/500.0,22.0/500.0,142.0/500.0)
+                //return Rectangle(281.0/500.0,(281.0+124.0)/500.0,13.0/500.0,213.0/500.0)
+                return Rectangle(287.0/500.0,(287.0+124.0)/500.0,22.0/500.0,142.0/500.0)
             }
         };
 

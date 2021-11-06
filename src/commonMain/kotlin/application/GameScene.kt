@@ -1,17 +1,10 @@
 package application
 
-import com.soywiz.klock.TimeSpan
-import com.soywiz.kmem.toInt
-import com.soywiz.korau.format.AudioDecodingProps
-import com.soywiz.korau.sound.*
 import com.soywiz.korev.Key
-import com.soywiz.korge.animate.play
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import modules.basic.Colour
 import pungine.PunImage
 import pungine.PunScene
@@ -19,7 +12,6 @@ import pungine.Puntainer
 import pungine.geometry2D.Rectangle
 import pungine.geometry2D.Vector
 import pungine.geometry2D.oneRectangle
-import kotlin.coroutines.CoroutineContext
 
 /** This scene is the template for a PunGineIV game
  *
@@ -154,8 +146,8 @@ class GameScene: PunScene() {
 
 
 
-            outside1.x -= dt.milliseconds*0.5
-            outside2.x -= dt.milliseconds*0.5
+            outside1.x -= dt.seconds*playfield.level.speed*1920
+            outside2.x -= dt.seconds*playfield.level.speed*1920
             if(outside1.x + outside1.width< -1000.0){
                 outside1.x += outside1.width*2
             }
@@ -264,13 +256,15 @@ class GameScene: PunScene() {
             Image(resourcesVfs["hands/walk-${it+1}.png"].readBitmap())
         }
 
+        hand.twoFingerDuckList =  List(8){
+            Image(resourcesVfs["hands/duck-${it+1}.png"].readBitmap())
+        }
+
         hand.twoFingerJumpList =  List(9){
             Image(resourcesVfs["hands/jump-${it+1}.png"].readBitmap())
         }
 
-        hand.twoFingerDuckList =  List(8){
-            Image(resourcesVfs["hands/duck-${it+1}.png"].readBitmap())
-        }
+
 
     }
 

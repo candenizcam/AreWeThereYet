@@ -1,15 +1,9 @@
 package application
 
 import com.soywiz.klock.TimeSpan
-import com.soywiz.korev.Key
-import com.soywiz.korge.view.Image
 import com.soywiz.korge.view.position
-import com.soywiz.korge.view.solidRect
-import com.soywiz.korge.view.views
-import com.soywiz.korim.bitmap.Bitmap
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
-import pungine.geometry2D.Vector
 
 class Playfield: Puntainer {
     constructor(id: String?=null, relativeRectangle: Rectangle) : super(id,relativeRectangle){
@@ -19,9 +13,9 @@ class Playfield: Puntainer {
     }
 
     fun update(dt: TimeSpan){
-        hitboxRect = hitboxRect.moved(0.0,hitboxSpeed*dt.seconds)
-        if(hitboxRect.bottom<0){
-            hitboxRect = hitboxRestRect
+        _hitboxRect = _hitboxRect.moved(0.0,hitboxSpeed*dt.seconds)
+        if(_hitboxRect.bottom<0){
+            _hitboxRect = hitboxRestRect
             jumpCount=0
             jumping=false
         }
@@ -39,8 +33,7 @@ class Playfield: Puntainer {
 
     fun collisionCheck(): Boolean {
 
-        val relevantRect = if(ducking>0){hitboxRect.split(2,1)[2,1]} else{hitboxRect}
-        return level.obstacles.any { relevantRect.collides(it.rectangle) }
+        return level.obstacles.any { hitboxRect.collides(it.rectangle) }
 
     }
 
@@ -85,7 +78,11 @@ class Playfield: Puntainer {
     }
 //
     var hitboxRestRect = Rectangle(281.0/1920,281.0/1920 + 124.0/1920,0.0,200.0/840)
-    var hitboxRect = Rectangle(281.0/1920,281.0/1920 + 124.0/1920,0.0,200.0/840)
+    var _hitboxRect = Rectangle(281.0/1920,281.0/1920 + 124.0/1920,0.0,200.0/840)
+    val hitboxRect: Rectangle
+    get() {
+        return if(ducking>0){_hitboxRect.split(2,1)[2,1]} else{_hitboxRect}
+    }
     var gravity = -1.5
     var hitboxSpeed = 0.0
     var ducking = 0.0
