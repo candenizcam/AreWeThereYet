@@ -5,18 +5,10 @@ import com.soywiz.kmem.toInt
 import com.soywiz.korau.sound.readMusic
 import com.soywiz.korau.sound.readSound
 import com.soywiz.korev.Key
-import com.soywiz.korge.input.keys
-import com.soywiz.korge.input.onClick
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
-import com.soywiz.korge.view.tween.moveBy
-import com.soywiz.korge.view.tween.moveTo
-import com.soywiz.korim.color.Colors
-import com.soywiz.korim.color.RGBA
 import com.soywiz.korim.format.readBitmap
-import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
-import com.soywiz.korma.geom.Angle
 import modules.basic.Colour
 import pungine.PunImage
 import pungine.PunScene
@@ -24,7 +16,6 @@ import pungine.Puntainer
 import pungine.geometry2D.Rectangle
 import pungine.geometry2D.Vector
 import pungine.geometry2D.oneRectangle
-import pungine.singleColour
 
 /** This scene is the template for a PunGineIV game
  *

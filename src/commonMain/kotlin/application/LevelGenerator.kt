@@ -1,13 +1,19 @@
 package application
 
 import com.soywiz.klock.TimeSpan
+import com.soywiz.korma.math.roundDecimalPlaces
+import kotlin.random.Random
 
 class LevelGenerator {
 
     var obstacles = mutableListOf<Obstacle>()
     var dtAcc = 0.0
     var toNext = 2.0
+    var nextFloor = 3.0
+    var nextCeil = 5.0
     var speed = 0.3
+    var acceleration = 1.001
+    var difficulty = 1.2
 
     fun generate(){
         when((0..1).random()) {
@@ -18,6 +24,7 @@ class LevelGenerator {
 
     fun update(dt: TimeSpan){
         obstacles.forEach {
+            speed = speed*(acceleration)
             it.centerX = it.centerX - dt.seconds*speed
         }
 
@@ -28,8 +35,15 @@ class LevelGenerator {
         if (dtAcc >= toNext){
             dtAcc = 0.0
             generate()
-            toNext = (1..4).random().toDouble()
 
+            val seed = Random.nextDouble()
+            seed.roundDecimalPlaces(2)
+
+            toNext = (nextCeil - nextFloor) * seed + nextFloor
+
+            nextCeil /= difficulty
+            nextFloor /= difficulty
+            //difficulty *= 0.95
         }
     }
 }
