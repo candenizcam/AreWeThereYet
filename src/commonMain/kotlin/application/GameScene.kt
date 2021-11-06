@@ -56,7 +56,7 @@ class GameScene: PunScene() {
 
 
         // obstacles
-        for(i in 0..4){
+        for(i in 0..1){
             PunImage("dont-jump-1",resourcesVfs["obs/rare/dont-jump-1.png"].readBitmap()).also {
                 obstacles.add(it)
                 this.addChild(it)
@@ -125,7 +125,7 @@ class GameScene: PunScene() {
          */
 
         var s = 0.0
-
+var xyz = "rare"
 
         this.addUpdater {dt->
 
@@ -215,11 +215,12 @@ class GameScene: PunScene() {
             val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
 
             if(playfield.ducking>0.0){
-                hand.activeAnimationType = Hand.ActiveAnimationType.TWOFINGER_DUCK
+                hand.onDuck()
             }else if(playfield.jumping){
-                hand.activeAnimationType = Hand.ActiveAnimationType.TWOFINGER_JUMP
+                hand.onAir()
             }else{
-                hand.activeAnimationType = Hand.ActiveAnimationType.TWOFINGER_RUN
+                hand.onGround()
+
             }
 
             hand.update(dt, r)
@@ -252,20 +253,14 @@ class GameScene: PunScene() {
     var outside2: Puntainer = Puntainer()
 
     suspend fun adjustHand(){
-        hand.twoFingerRunList= List(8){
-            Image(resourcesVfs["hands/walk-${it+1}.png"].readBitmap())
+        Hand.ActiveAnimationType.values().forEach {animType->
+            animType.sourceList().forEach {
+                Image(resourcesVfs[it].readBitmap()).also {
+                    it.visible = false
+                    animType.puntainer.addChild(it)
+                }
+            }
         }
-
-        hand.twoFingerDuckList =  List(8){
-            Image(resourcesVfs["hands/duck-${it+1}.png"].readBitmap())
-        }
-
-        hand.twoFingerJumpList =  List(9){
-            Image(resourcesVfs["hands/jump-${it+1}.png"].readBitmap())
-        }
-
-
-
     }
 
 

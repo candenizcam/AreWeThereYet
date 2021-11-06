@@ -16,9 +16,12 @@ class Hand: Puntainer {
             this.addChild(it)
         }
 
-        this.addChild(twoFingerRun)
-        this.addChild(twoFingerJump)
-        this.addChild(twoFingerDuck)
+        //this.addChild(twoFingerRun)
+        //this.addChild(twoFingerJump)
+        //this.addChild(twoFingerDuck)
+        ActiveAnimationType.values().forEach {
+            this.addChild(it.puntainer)
+        }
 
 
 
@@ -31,14 +34,29 @@ class Hand: Puntainer {
 
     }
 
+
+
     fun update(dt: TimeSpan, hitboxRectOnScreen: Rectangle){
         if(blockMode){
             greenBlock.setSize(hitboxRectOnScreen.width,hitboxRectOnScreen.height)
         }else{
+
             animIndex += dt.seconds*12
-            val a = activeAnimation()
+
+
+            var a = activeAnimation()
             if (animIndex>=a.size){
-                animIndex %= a.size
+                if(activeAnimationType==ActiveAnimationType.TWOFINGER_JUMP){
+                    activeAnimationType = ActiveAnimationType.TWOFINGER_FLY
+                    a = activeAnimation()
+                }else if(activeAnimationType==ActiveAnimationType.TWOFINGER_FALL){
+                    activeAnimationType = ActiveAnimationType.TWOFINGER_RUN
+                    a = activeAnimation()
+                }
+                else{
+                    animIndex %= a.size
+                }
+
             }
             val hitboxRect = hitboxRectOnScreen.decodeRated(activeAnimationType.relativeRect())
             a.children.forEachIndexed { index, image ->
@@ -64,47 +82,25 @@ class Hand: Puntainer {
     var blockMode = false
     val greenBlock: View
 
-
-
-
-
-    var twoFingerRunList = listOf<Image>()
-        set(value) {
-            field = value
-            twoFingerRun.children.clear()
-            value.forEach {
-                twoFingerRun.addChild(it)
-
-                //this.addChild(it)
-                it.visible = false
-            }
+    fun onAir(){
+        if(activeAnimationType.animationType()!="jump"){
+            activeAnimationType = ActiveAnimationType.TWOFINGER_JUMP
         }
+    }
 
-    val twoFingerRun = Puntainer()
-    val twoFingerJump = Puntainer()
-    val twoFingerDuck = Puntainer()
-
-    var twoFingerJumpList= listOf<Image>()
-        set(value) {
-            field = value
-            twoFingerJump.children.clear()
-            value.forEach {
-                twoFingerJump.addChild(it)
-                it.visible = false
-            }
+    fun onGround(){
+        if(activeAnimationType.animationType()=="jump"){
+            activeAnimationType = ActiveAnimationType.TWOFINGER_FALL
+        }else{
+            activeAnimationType = ActiveAnimationType.TWOFINGER_RUN
         }
+    }
 
-    var twoFingerDuckList = listOf<Image>()
-        set(value) {
-            field = value
-            twoFingerDuck.children.clear()
-            value.forEach {
-                twoFingerDuck.addChild(it)
+    fun onDuck(){
+        activeAnimationType = ActiveAnimationType.TWOFINGER_DUCK
+    }
 
-                //this.addChild(it)
-                it.visible = false
-            }
-        }
+
 
     var animIndex = 0.0
     var activeAnimationType = ActiveAnimationType.TWOFINGER_RUN
@@ -114,25 +110,18 @@ class Hand: Puntainer {
             activeAnimation().children.forEach { it.visible=false }
             animIndex=0.0
             field=value
+            jumpLocker=false
         }
 
     }
+
+    var jumpLocker=false
 
 
 
 
     fun activeAnimation(): Puntainer {
-        return when(activeAnimationType){
-            ActiveAnimationType.TWOFINGER_RUN->{
-                twoFingerRun
-            }
-            ActiveAnimationType.TWOFINGER_JUMP->{
-                twoFingerJump
-            }
-            ActiveAnimationType.TWOFINGER_DUCK->{
-                twoFingerDuck
-            }
-        }
+        return activeAnimationType.puntainer
     }
 
     enum class ActiveAnimationType{
@@ -140,19 +129,73 @@ class Hand: Puntainer {
             override fun relativeRect(): Rectangle {
                 return Rectangle(281.0/500.0,(281.0+124.0)/500.0,13.0/500.0,213.0/500.0)
             }
+
+            override fun sourceList(): List<String> {
+                return List(8) {"hands/walk-${it+1}.png"}
+            }
+
+            override fun animationType(): String {
+                return "walk"
+            }
         },
         TWOFINGER_JUMP {
             override fun relativeRect(): Rectangle {
                 return Rectangle(280.0/500.0,(280.0+124.0)/500.0,23.0/500.0,223.0/500.0)
             }
+
+            override fun sourceList(): List<String> {
+                return List(4) {"hands/jump-${it+1}.png"}
+            }
+
+            override fun animationType(): String {
+                return "jump"
+            }
+        },
+        TWOFINGER_FLY {
+            override fun relativeRect(): Rectangle {
+                return Rectangle(280.0/500.0,(280.0+124.0)/500.0,23.0/500.0,223.0/500.0)
+            }
+
+            override fun sourceList(): List<String> {
+                return List(1) {"hands/jump-${it+5}.png"}
+            }
+
+            override fun animationType(): String {
+                return "jump"
+            }
+        },
+        TWOFINGER_FALL {
+            override fun relativeRect(): Rectangle {
+                return Rectangle(280.0/500.0,(280.0+124.0)/500.0,23.0/500.0,223.0/500.0)
+            }
+
+            override fun sourceList(): List<String> {
+                return List(4) {"hands/jump-${it+6}.png"}
+            }
+
+            override fun animationType(): String {
+                return "jump"
+            }
         },
         TWOFINGER_DUCK {
             override fun relativeRect(): Rectangle {
-                //return Rectangle(281.0/500.0,(281.0+124.0)/500.0,13.0/500.0,213.0/500.0)
                 return Rectangle(287.0/500.0,(287.0+124.0)/500.0,22.0/500.0,142.0/500.0)
+            }
+
+            override fun sourceList(): List<String> {
+                return List(8) {"hands/duck-${it+1}.png"}
+            }
+
+            override fun animationType(): String {
+                return "duck"
             }
         };
 
         abstract fun relativeRect() :  Rectangle
+        abstract fun sourceList(): List<String>
+        abstract fun animationType(): String
+
+        var puntainer: Puntainer = Puntainer()
+
     }
 }
