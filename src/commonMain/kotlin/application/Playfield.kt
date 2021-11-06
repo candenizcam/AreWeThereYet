@@ -66,7 +66,7 @@ class Playfield: Puntainer {
 
     var hitboxRestRect = Rectangle(0.3,0.35,0.0,0.3)
     var hitboxRect = Rectangle(0.3,0.35,0.0,0.1)
-    var gravity = -0.015
+    var gravity = -0.05
     var hitboxSpeed = 0.0
     var ducking = 0.0
     var jumpCount = 0
