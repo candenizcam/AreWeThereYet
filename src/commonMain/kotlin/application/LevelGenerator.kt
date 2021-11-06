@@ -13,20 +13,34 @@ class LevelGenerator {
     private var nextCeil = 1.0
     var speed = 00.3
     var acceleration = 1.0001
-    var lastGenerated = 0
-    var nowGenerated = 0
+    var lastGenerated = ObstacleTypes.LOWJUMP
 //
-    fun generate(){
-        nowGenerated=(0..5).random()
-        when(nowGenerated) {
-            0 -> obstacles.add(Obstacle(ObstacleTypes.LOWJUMP, 1.05, 100.0/840, 200.0/840, 124.0/1920))
-            1 -> obstacles.add(Obstacle(ObstacleTypes.HIGHJUMP, 1.05, 170.0/840, 340.0/840, 248.0/1920))
-            2 -> obstacles.add(Obstacle(ObstacleTypes.DUCT, 1.05, 1.0-350.0/840, 700.0/840, 124.0/1920))
-            3 -> obstacles.add(Obstacle(ObstacleTypes.LONGJUMP, 1.05, 100.0/840, 200.0/840, 248.0/1920))
-            4 -> obstacles.add(Obstacle(ObstacleTypes.DONTJUMP, 1.05, 1.0-170.0/840, 340.0/840, 124.0/1920))
-            5 -> obstacles.add(Obstacle(ObstacleTypes.JUMPDUCT, 1.05, 240.0/840, 200.0/840, 124.0/1920))
+
+    fun getType() : ObstacleTypes{
+        return when((0..5).random()) {
+            0 -> ObstacleTypes.LOWJUMP
+            1 -> ObstacleTypes.HIGHJUMP
+            2 -> ObstacleTypes.DUCT
+            3 -> ObstacleTypes.LONGJUMP
+            4 -> ObstacleTypes.DONTJUMP
+            else -> ObstacleTypes.JUMPDUCT
         }
-        lastGenerated=nowGenerated
+    }
+    fun generate(){
+        var type = getType()
+        while(obstacles.find {obs -> obs.type == type} != null) {
+            type = getType()
+        }
+        when(type) {
+            ObstacleTypes.LOWJUMP -> obstacles.add(Obstacle(ObstacleTypes.LOWJUMP, 1.05, 100.0/840, 200.0/840, 124.0/1920))
+            ObstacleTypes.HIGHJUMP -> obstacles.add(Obstacle(ObstacleTypes.HIGHJUMP, 1.05, 170.0/840, 340.0/840, 248.0/1920))
+            ObstacleTypes.DUCT -> obstacles.add(Obstacle(ObstacleTypes.DUCT, 1.05, 1.0-350.0/840, 700.0/840, 124.0/1920))
+            ObstacleTypes.LONGJUMP -> obstacles.add(Obstacle(ObstacleTypes.LONGJUMP, 1.05, 100.0/840, 200.0/840, 248.0/1920))
+            ObstacleTypes.DONTJUMP -> obstacles.add(Obstacle(ObstacleTypes.DONTJUMP, 1.05, 1.0-170.0/840, 340.0/840, 124.0/1920))
+            ObstacleTypes.JUMPDUCT -> obstacles.add(Obstacle(ObstacleTypes.JUMPDUCT, 1.05, 240.0/840, 200.0/840, 124.0/1920))
+        }
+
+        lastGenerated=type
     }
 
     fun update(dt: TimeSpan){
