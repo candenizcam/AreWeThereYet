@@ -13,12 +13,20 @@ class LevelGenerator {
     private var nextCeil = 1.0
     var speed = 00.3
     var acceleration = 1.0001
-
-    private fun generate(){
-        when((0..1).random()) {
-            0 -> obstacles.add(Obstacle(ObstacleTypes.NORMAL, 1.05, 0.05, 0.1, 0.1))
-            1 -> obstacles.add(Obstacle(ObstacleTypes.HIGH, 1.05, 0.25, 0.1, 0.1))
+    var lastGenerated = 0
+    var nowGenerated = 0
+//
+    fun generate(){
+        nowGenerated=(0..5).random()
+        when(nowGenerated) {
+            0 -> obstacles.add(Obstacle(ObstacleTypes.LOWJUMP, 1.05, 100.0/840, 200.0/840, 124.0/1920))
+            1 -> obstacles.add(Obstacle(ObstacleTypes.HIGHJUMP, 1.05, 170.0/840, 340.0/840, 248.0/1920))
+            2 -> obstacles.add(Obstacle(ObstacleTypes.DUCT, 1.05, 1.0-350.0/840, 700.0/840, 124.0/1920))
+            3 -> obstacles.add(Obstacle(ObstacleTypes.LONGJUMP, 1.05, 100.0/840, 200.0/840, 248.0/1920))
+            4 -> obstacles.add(Obstacle(ObstacleTypes.DONTJUMP, 1.05, 1.0-170.0/840, 340.0/840, 124.0/1920))
+            5 -> obstacles.add(Obstacle(ObstacleTypes.JUMPDUCT, 1.05, 240.0/840, 200.0/840, 124.0/1920))
         }
+        lastGenerated=nowGenerated
     }
 
     fun update(dt: TimeSpan){
