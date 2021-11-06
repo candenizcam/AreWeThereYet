@@ -11,6 +11,10 @@ data class Obstacle(var type: ObstacleTypes, var centerX: Double, var centerY: D
     }
 }
 enum class ObstacleTypes{
-    NORMAL,
-    HIGH
+    LOWJUMP,
+    HIGHJUMP,
+    DUCT,
+    LONGJUMP,
+    DONTJUMP,
+    JUMPDUCT
 }
