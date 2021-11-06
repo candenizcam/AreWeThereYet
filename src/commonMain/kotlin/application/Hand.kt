@@ -52,6 +52,10 @@ class Hand: Puntainer {
                 greenBlock.y = GlobalAccess.virtualSize.height-hitboxRectOnScreen.top
                 greenBlock.visible = true
             }
+            if(activeAnimationType==ActiveAnimationType.TWOFINGER_DUCK){
+                val vss = a.children.map { it.visible }
+                println(vss)
+            }
             greenBlock.scaledWidth = hitboxRectOnScreen.width
             greenBlock.scaledHeight = hitboxRectOnScreen.height
             greenBlock.x = hitboxRectOnScreen.left
@@ -82,12 +86,26 @@ class Hand: Puntainer {
 
     val twoFingerRun = Puntainer()
     val twoFingerJump = Puntainer()
+    val twoFingerDuck = Puntainer()
 
     var twoFingerJumpList= listOf<Image>()
         set(value) {
             field = value
+            twoFingerJump.children.clear()
             value.forEach {
                 twoFingerJump.addChild(it)
+                it.visible = false
+            }
+        }
+
+    var twoFingerDuckList = listOf<Image>()
+        set(value) {
+            field = value
+            twoFingerDuck.children.clear()
+            value.forEach {
+                twoFingerDuck.addChild(it)
+
+                //this.addChild(it)
                 it.visible = false
             }
         }
@@ -95,8 +113,13 @@ class Hand: Puntainer {
     var animIndex = 0.0
     var activeAnimationType = ActiveAnimationType.TWOFINGER_RUN
     set(value) {
-        activeAnimation().children.forEach { it.visible=false }
-        field=value
+        if(value!=field){
+            println(value.toString())
+            activeAnimation().children.forEach { it.visible=false }
+            animIndex=0.0
+            field=value
+        }
+
     }
 
 
@@ -110,6 +133,9 @@ class Hand: Puntainer {
             ActiveAnimationType.TWOFINGER_JUMP->{
                 twoFingerJump
             }
+            ActiveAnimationType.TWOFINGER_DUCK->{
+                twoFingerDuck
+            }
         }
     }
 
@@ -121,7 +147,13 @@ class Hand: Puntainer {
         },
         TWOFINGER_JUMP {
             override fun relativeRect(): Rectangle {
+                return Rectangle(280.0/500.0,(280.0+124.0)/500.0,23.0/500.0,223.0/500.0)
+            }
+        },
+        TWOFINGER_DUCK {
+            override fun relativeRect(): Rectangle {
                 return Rectangle(281.0/500.0,(281.0+124.0)/500.0,13.0/500.0,213.0/500.0)
+                //return Rectangle(287.0/500.0,(287.0+124.0)/500.0,22.0/500.0,142.0/500.0)
             }
         };
 

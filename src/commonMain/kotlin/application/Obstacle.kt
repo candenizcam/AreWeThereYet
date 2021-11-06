@@ -17,7 +17,7 @@ enum class ObstacleTypes{
         }
 
         override fun ratedRect(): Rectangle {
-            return Rectangle(476.0/1980.0,600.0,200.0,0.0)
+            return Rectangle(476.0/1980.0,600.0/1980.0,0.0/1080.0+240.0/1080.0,200.0/1080.0+240.0/1080.0)
         }
     },
     HIGHJUMP {

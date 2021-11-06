@@ -59,8 +59,8 @@ class GameScene: PunScene() {
 
         //puntainer() {  }
 
-        outside1=punImage("outside",resourcesVfs["environment/bg-loop.png"].readBitmap(), Rectangle(0.0,7640.0,0.0,1080.0))
-        outside2=punImage("outside",resourcesVfs["environment/bg-loop.png"].readBitmap(), Rectangle(7640.0,2*7640.0,0.0,1080.0))
+        outside1=punImage("outside",resourcesVfs["environment/Bg2.png"].readBitmap(), Rectangle(0.0,3820.0,0.0,1080.0))
+        outside2=punImage("outside",resourcesVfs["environment/Bg2.png"].readBitmap().flipX(), Rectangle(3820.0,2*3820.0,0.0,1080.0))
 
         punImage("window",resourcesVfs["environment/window.png"].readBitmap(), oneRectangle(),true)
 
@@ -154,8 +154,8 @@ class GameScene: PunScene() {
 
 
 
-            outside1.x -= dt.milliseconds*0.02
-            outside2.x -= dt.milliseconds*0.02
+            outside1.x -= dt.milliseconds*0.5
+            outside2.x -= dt.milliseconds*0.5
             if(outside1.x + outside1.width< -1000.0){
                 outside1.x += outside1.width*2
             }
@@ -224,6 +224,14 @@ class GameScene: PunScene() {
 
             val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
 
+            if(playfield.ducking>0.0){
+                hand.activeAnimationType = Hand.ActiveAnimationType.TWOFINGER_DUCK
+            }else if(playfield.jumping){
+                hand.activeAnimationType = Hand.ActiveAnimationType.TWOFINGER_JUMP
+            }else{
+                hand.activeAnimationType = Hand.ActiveAnimationType.TWOFINGER_RUN
+            }
+
             hand.update(dt, r)
             playfield.update(dt)
 
@@ -253,14 +261,15 @@ class GameScene: PunScene() {
 
     suspend fun adjustHand(){
         hand.twoFingerRunList= List(8){
-            val i = listOf("pungo_transparent.png","pungo_transparent_2.png","pungo_transparent_3.png","pungo_transparent_4.png")
-
             Image(resourcesVfs["hands/walk-${it+1}.png"].readBitmap())
         }
 
-        hand.twoFingerJumpList =  List(2){
-            val i = listOf("pungo_transparent_2.png","pungo_transparent_4.png")
-            Image(resourcesVfs[i[it]].readBitmap())
+        hand.twoFingerJumpList =  List(9){
+            Image(resourcesVfs["hands/jump-${it+1}.png"].readBitmap())
+        }
+
+        hand.twoFingerDuckList =  List(8){
+            Image(resourcesVfs["hands/duck-${it+1}.png"].readBitmap())
         }
 
     }
