@@ -26,12 +26,16 @@ class LevelGenerator {
             (0..7).random()
         }
         rarityNumberGenerator=(0..5).random()
-        rarity = if(rarityNumberGenerator==5){
-            ObstacleRarity.RAREST
-        } else if(rarityNumberGenerator==4 || rarityNumberGenerator==3){
-            ObstacleRarity.RARER
-        } else{
-            ObstacleRarity.RARE
+        rarity = when (rarityNumberGenerator) {
+            5 -> {
+                ObstacleRarity.RAREST
+            }
+            4, 3 -> {
+                ObstacleRarity.RARER
+            }
+            else -> {
+                ObstacleRarity.RARE
+            }
         }
         when(nowGenerated) {
             0 -> obstacles.add(Obstacle(ObstacleTypes.DUCK,rarity, 1.05, 1.0-350.0/840, 700.0/840, 124.0/1920))

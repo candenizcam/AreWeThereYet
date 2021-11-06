@@ -1,5 +1,8 @@
 package application
 
+import com.soywiz.korau.sound.PlaybackParameters
+import com.soywiz.korau.sound.PlaybackTimes
+import com.soywiz.korau.sound.readMusic
 import com.soywiz.korev.Key
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
@@ -24,23 +27,12 @@ class GameScene: PunScene() {
     override suspend fun Container.sceneInit(){
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
-/*
 
-        var l1 = resourcesVfs["layer1.mp3"].readMusic().decode().toStream()
-        var l2 = resourcesVfs["layer2.mp3"].readMusic().decode().toStream()
-        var tw = resourcesVfs["twister.mp3"].readMusic()
+        var fadein = false
+        val l1 = resourcesVfs["musicbox.mp3"].readMusic().play(PlaybackParameters(PlaybackTimes.INFINITE))
+        val l2 = resourcesVfs["altlayer.mp3"].readMusic().play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
+        val l3 = resourcesVfs["ominous.mp3"].readMusic().play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
 
-
-
-        val testAudio = nativeSoundProvider.createSound(resourcesVfs["layer1.mp3"], streaming = true, props = AudioDecodingProps.DEFAULT)
-
-        testAudio.decode()
-
-        launch {
-            l1.playAndWait()
-        }
-
-         */
 
         floor = puntainer("floor", Rectangle(0.0,1.0,0.0,FloorData.getHeight()),relative = true) {
 
@@ -233,15 +225,17 @@ class GameScene: PunScene() {
             hand.update(dt, r)
             playfield.update(dt)
 
-            if(playfield.collisionCheck()){
-                floor.visible = false
-            }else{
-                floor.visible = true
-            }
+            floor.visible = !playfield.collisionCheck()
 
             if(playfield.collisionCheck()){
-                //l2.currentTime = l1.currentTime
-                }
+                fadein = true
+            }
+
+            if(fadein) {
+                if(l2.volume<0.6) l2.volume += 0.1
+                else fadein = false
+            }
+
         }
         super.sceneAfterInit()
     }
