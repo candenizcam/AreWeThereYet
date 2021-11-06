@@ -12,6 +12,7 @@ class LevelGenerator {
     var nextFloor = 0.3
     private var nextCeil = 1.0
     var speed = 00.3
+    val maxSpeed = 1.0
     var acceleration = 1.0001
     var lastGenerated = 0
     var nowGenerated = 0
@@ -30,7 +31,7 @@ class LevelGenerator {
     }
 
     fun update(dt: TimeSpan){
-        if(speed < 1.3){
+        if(speed < maxSpeed){
             speed *= (acceleration)
         }
 
