@@ -46,6 +46,11 @@ class Hand: Puntainer {
                 image.scaledHeight = hitboxRect.height
                 image.x = hitboxRect.left
                 image.y = GlobalAccess.virtualSize.height - (hitboxRect.top)
+                greenBlock.scaledWidth = hitboxRectOnScreen.width
+                greenBlock.scaledHeight = hitboxRectOnScreen.height
+                greenBlock.x = hitboxRectOnScreen.left
+                greenBlock.y = GlobalAccess.virtualSize.height-hitboxRectOnScreen.top
+                greenBlock.visible = true
             }
         }
 
