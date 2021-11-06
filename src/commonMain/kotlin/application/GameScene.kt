@@ -36,6 +36,13 @@ class GameScene: PunScene() {
             }
         }
 
+        //puntainer() {  }
+
+        outside1=punImage("outside",resourcesVfs["environment/bg-loop.png"].readBitmap(), Rectangle(0.0,7640.0,0.0,1080.0))
+        outside2=punImage("outside",resourcesVfs["environment/bg-loop.png"].readBitmap(), Rectangle(7640.0,2*7640.0,0.0,1080.0))
+
+        punImage("window",resourcesVfs["environment/window.png"].readBitmap(), oneRectangle(),true)
+
         playfield.fitToFrame(Rectangle(0.0,w,FloorData.getHeight()*h,h))
         this.addChild(playfield)
 
@@ -70,12 +77,28 @@ class GameScene: PunScene() {
 
         this.addUpdater {dt->
 
+
+
+            /*
             obstacles.forEach {
                 it.x = it.x - dt.milliseconds*0.2
             }
 
+             */
+
             obstacles.forEach {
                 it.visible = false
+            }
+
+
+
+            outside1.x -= dt.milliseconds*20
+            outside2.x -= dt.milliseconds*20
+            if(outside1.x + outside1.width< -1000.0){
+                outside1.x += outside1.width*2
+            }
+            if(outside2.x + outside2.width< -1000.0){
+                outside2.x += outside2.width*2
             }
 
             playfield.level.obstacles.forEachIndexed { index,obs->
@@ -131,6 +154,8 @@ class GameScene: PunScene() {
 
     val gravity = 200.0
     var hitboxDy =0.0
+    var outside1: Puntainer = Puntainer()
+    var outside2: Puntainer = Puntainer()
 
     suspend fun adjustHand(){
         hand.twoFingerRunList= List(8){
