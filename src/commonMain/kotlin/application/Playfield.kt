@@ -31,7 +31,8 @@ class Playfield: Puntainer {
 
     fun collisionCheck(): Boolean {
 
-        return level.obstacles.filter { hitboxRect.collides(Rectangle(Vector(it.centerX,it.centerY),it.width,it.height)) }.isNotEmpty()
+        val relevantRect = if(ducking>0){hitboxRect.split(2,1)[2,1]} else{hitboxRect}
+        return level.obstacles.any { relevantRect.collides(it.rectangle) }
 
     }
 
@@ -43,10 +44,10 @@ class Playfield: Puntainer {
     fun jump(){
         if(jumpCount<2){
 
-            if(ducking==0.0){
-                hitboxSpeed = 1.5
-                jumpCount+=1
-            }
+            ducking = 0.0
+            hitboxSpeed = 1.5
+            jumpCount+=1
+
         }
 
     }
@@ -55,8 +56,10 @@ class Playfield: Puntainer {
      *
      */
     fun duck(){
-        if(jumpCount==0){
-            ducking = 0.8
+        ducking = 0.8
+        if(jumpCount!=0){
+            hitboxSpeed = -2.0
+            jumpCount = 2
         }
 
     }
