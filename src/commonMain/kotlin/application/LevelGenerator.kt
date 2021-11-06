@@ -21,18 +21,23 @@ class LevelGenerator {
 
     fun generate(){
         nowGenerated = if(lastGenerated==1) {
-            (1..5).random()
+            (1..7).random()
         } else{
-            (0..5).random()
+            (0..7).random()
         }
         rarityNumberGenerator=(0..5).random()
-        rarity = if(rarityNumberGenerator==5){
-            ObstacleRarity.RAREST
-        } else if(rarityNumberGenerator==4 || rarityNumberGenerator==3){
-            ObstacleRarity.RARER
-        } else{
-            ObstacleRarity.RARE
+        rarity = when (rarityNumberGenerator) {
+            5 -> {
+                ObstacleRarity.RAREST
+            }
+            4, 3 -> {
+                ObstacleRarity.RARER
+            }
+            else -> {
+                ObstacleRarity.RARE
+            }
         }
+
         when(nowGenerated) {
             0 -> obstacles.add(Obstacle(ObstacleTypes.DUCK,rarity, 1.05, 1.0-350.0/840, 700.0/840, 124.0/1920))
             1 -> obstacles.add(Obstacle(ObstacleTypes.HIGHJUMP,rarity, 1.05, 170.0/840, 340.0/840, 248.0/1920))
@@ -40,6 +45,8 @@ class LevelGenerator {
             3 -> obstacles.add(Obstacle(ObstacleTypes.LONGJUMP,rarity, 1.05, 100.0/840, 200.0/840, 248.0/1920))
             4 -> obstacles.add(Obstacle(ObstacleTypes.DONTJUMP,rarity, 1.05, 1.0-170.0/840, 340.0/840, 124.0/1920))
             5 -> obstacles.add(Obstacle(ObstacleTypes.JUMPDUCK,rarity, 1.05, 240.0/840, 200.0/840, 124.0/1920))
+            6 ->obstacles.add(Obstacle(ObstacleTypes.HIGHBIRD,rarity, 1.05, 1-240.0/840, 100.0/840, 124.0/1920))
+            7 ->obstacles.add(Obstacle(ObstacleTypes.LOWBIRD,rarity, 1.05, 1-490.0/840, 100.0/840, 124.0/1920))
         }
         lastGenerated=nowGenerated
     }
