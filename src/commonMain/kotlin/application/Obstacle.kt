@@ -21,7 +21,7 @@ data class Obstacle(
 enum class ObstacleTypes {
     LOWJUMP {
         override fun relevantID(rarity: Int): String {
-            return "low-jump-1"
+            return "low-jump-$rarity"
         }
 
         override fun ratedRect(): Rectangle {
@@ -35,7 +35,7 @@ enum class ObstacleTypes {
     },
     HIGHJUMP {
         override fun relevantID(rarity: Int): String {
-            return "high-jump-1"
+            return "high-jump-$rarity"
         }
 
         override fun ratedRect(): Rectangle {
@@ -49,7 +49,7 @@ enum class ObstacleTypes {
     },
     DUCK {
         override fun relevantID(rarity: Int): String {
-            return "duck-1"
+            return "duck-$rarity"
         }
 
         override fun ratedRect(): Rectangle {
@@ -63,7 +63,7 @@ enum class ObstacleTypes {
     },
     LONGJUMP {
         override fun relevantID(rarity: Int): String {
-            return "long-jump-1"
+            return "long-jump-$rarity"
         }
 
         override fun ratedRect(): Rectangle {
@@ -77,7 +77,7 @@ enum class ObstacleTypes {
     },
     DONTJUMP {
         override fun relevantID(rarity: Int): String {
-            return "dont-jump-1"
+            return "dont-jump-$rarity"
         }
 
         override fun ratedRect(): Rectangle {
@@ -91,7 +91,7 @@ enum class ObstacleTypes {
     },
     LOWBIRD {
         override fun relevantID(rarity: Int): String {
-            return "bird-1"
+            return "bird-$rarity"
         }
 
         override fun ratedRect(): Rectangle {
@@ -105,7 +105,7 @@ enum class ObstacleTypes {
     },
     HIGHBIRD {
         override fun relevantID(rarity: Int): String {
-            return "bird-1"
+            return "bird-$rarity"
         }
 
         override fun ratedRect(): Rectangle {
@@ -119,7 +119,7 @@ enum class ObstacleTypes {
     },
     JUMPDUCK {
         override fun relevantID(rarity: Int): String {
-            return "jump-duck-1"
+            return "jump-duck-$rarity"
         }
 
         override fun ratedRect(): Rectangle {
@@ -132,7 +132,7 @@ enum class ObstacleTypes {
         }
     };
 
-    abstract fun relevantID(rarity: Int = 0): String
+    abstract fun relevantID(rarity: Int = 1): String
     abstract fun ratedRect(): Rectangle
 }
 
