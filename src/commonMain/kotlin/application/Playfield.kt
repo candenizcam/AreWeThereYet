@@ -25,7 +25,12 @@ class Playfield: Puntainer {
             jumpCount=0
             jumping=false
         }
-        hitboxSpeed += gravity
+        gravity = if(hitboxSpeed<=0){
+            -4.0
+        } else{
+            -1.5
+        }
+        hitboxSpeed += gravity*dt.seconds
         level.update(dt)
 
         ducking = (ducking-dt.seconds).coerceAtLeast(0.0)
@@ -49,13 +54,13 @@ class Playfield: Puntainer {
         if(jumpCount==0){
 
             ducking = 0.0
-            hitboxSpeed = 1.8
+            hitboxSpeed = 1.2
             jumpCount+=1
 
         } else if(jumpCount==1){
 
             ducking = 0.0
-            hitboxSpeed = 1.2
+            hitboxSpeed = 0.6
             jumpCount+=1
 
         }
@@ -81,7 +86,7 @@ class Playfield: Puntainer {
 
     var hitboxRestRect = Rectangle(281.0/1920,281.0/1920 + 124.0/1920,0.0,200.0/840)
     var hitboxRect = Rectangle(281.0/1920,281.0/1920 + 124.0/1920,0.0,200.0/840)
-    var gravity = -0.05
+    var gravity = -1.5
     var hitboxSpeed = 0.0
     var ducking = 0.0
     var jumpCount = 0
