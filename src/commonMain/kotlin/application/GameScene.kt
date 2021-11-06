@@ -52,7 +52,37 @@ class GameScene: PunScene() {
 
         // obstacles
         for(i in 0..4){
-            PunImage("normal",resourcesVfs["obstacle.png"].readBitmap()).also {
+            PunImage("dont-jump-1",resourcesVfs["obs/dont-jump-1.png"].readBitmap()).also {
+                obstacles.add(it)
+                this.addChild(it)
+                it.visible=false
+            }
+
+            PunImage("duck-1",resourcesVfs["obs/duck-1.png"].readBitmap()).also {
+                obstacles.add(it)
+                this.addChild(it)
+                it.visible=false
+            }
+
+            PunImage("high-jump-1",resourcesVfs["obs/high-jump-1.png"].readBitmap()).also {
+                obstacles.add(it)
+                this.addChild(it)
+                it.visible=false
+            }
+
+            PunImage("jump-duck-1",resourcesVfs["obs/jump-duck-1.png"].readBitmap()).also {
+                obstacles.add(it)
+                this.addChild(it)
+                it.visible=false
+            }
+
+            PunImage("long-jump-1",resourcesVfs["obs/long-jump-1.png"].readBitmap()).also {
+                obstacles.add(it)
+                this.addChild(it)
+                it.visible=false
+            }
+
+            PunImage("low-jump-1",resourcesVfs["obs/low-jump-1.png"].readBitmap()).also {
                 obstacles.add(it)
                 this.addChild(it)
                 it.visible=false
@@ -152,8 +182,8 @@ class GameScene: PunScene() {
 
     var obstacles = mutableListOf<Puntainer>()
 
-    val gravity = 200.0
-    var hitboxDy =0.0
+    //val gravity = 200.0
+    //var hitboxDy =0.0
     var outside1: Puntainer = Puntainer()
     var outside2: Puntainer = Puntainer()
 
