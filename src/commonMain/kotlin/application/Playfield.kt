@@ -1,9 +1,11 @@
 package application
 
 import com.soywiz.klock.TimeSpan
+import com.soywiz.korev.Key
 import com.soywiz.korge.view.Image
 import com.soywiz.korge.view.position
 import com.soywiz.korge.view.solidRect
+import com.soywiz.korge.view.views
 import com.soywiz.korim.bitmap.Bitmap
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
@@ -61,7 +63,12 @@ class Playfield: Puntainer {
             hitboxSpeed = -2.0
             jumpCount = 2
         }
+    }
 
+    fun stopDuck(){
+        if (ducking!=0.0){
+            ducking=0.0
+        }
     }
 
     var hitboxRestRect = Rectangle(0.3,0.35,0.0,0.3)
