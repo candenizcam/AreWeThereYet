@@ -17,16 +17,22 @@ class LevelGenerator {
     var lastGenerated = 0
     var nowGenerated = 0
     var rarity = ObstacleRarity.RARE
-    var rarityNumberGenerator = 0
 
-    fun generate() {
+    fun generateType(): Int{
         nowGenerated = if (lastGenerated == 1) {
             (1..7).random()
         } else {
             (0..7).random()
         }
-        rarityNumberGenerator = (0..5).random()
-        rarity = when (rarityNumberGenerator) {
+        if(obstacles.any { it.type.ordinal == nowGenerated }) {
+            return generateType()
+        }
+        return nowGenerated
+    }
+
+    fun generate() {
+        nowGenerated = generateType()
+        rarity = when ((0..5).random()) {
             5 -> {
                 ObstacleRarity.RAREST
             }

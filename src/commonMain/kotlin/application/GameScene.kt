@@ -249,23 +249,6 @@ class GameScene : PunScene() {
                 }
             }
 
-            /*
-
-            playfield.level.obstacles.forEachIndexed { index,obs->
-                val r = playfield.virtualRectangle.fromRated(Rectangle(Vector(obs.centerX,obs.centerY),obs.width,obs.height))
-
-                obstacles[index].x = r.left
-                obstacles[index].yConv = r.top
-                obstacles[index].scaledHeight = r.height
-                obstacles[index].scaledWidth = r.width
-                obstacles[index].visible=true
-            }
-
-             */
-
-
-
-
             if (views.input.keys.justPressed(Key.UP)) {
                 playfield.jump()
             }
