@@ -78,6 +78,12 @@ class GameScene : PunScene() {
                 it.visible = false
             }
 
+            PunImage("dont-jump-2", resourcesVfs["obs/rare/dont-jump-1.png"].readBitmap()).also {
+                obstacles.add(it)
+                this.addChild(it)
+                it.visible = false
+            }
+
             PunImage("duck-1", resourcesVfs["obs/rare/duck-1.png"].readBitmap()).also {
                 obstacles.add(it)
                 this.addChild(it)

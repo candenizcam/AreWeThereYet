@@ -63,7 +63,7 @@ enum class ObstacleTypes {
     },
     LONGJUMP {
         override fun relevantID(rarity: Int): String {
-            return "long-jump-1"
+            return "long-jump-$rarity"
         }
 
         override fun ratedRect(): Rectangle {
