@@ -203,7 +203,7 @@ class GameScene: PunScene() {
 
 
             if(views.input.keys.justPressed(Key.UP)){
-                playfield.jump()
+                    playfield.jump()
             }
 
             if(views.input.keys.justPressed(Key.DOWN)){
@@ -243,7 +243,7 @@ class GameScene: PunScene() {
     val hand = Hand("hand",oneRectangle())
     var playfield = Playfield("playfield", oneRectangle())
     var floor = Puntainer()
-
+    var timePassed =0.0
     var obstacles = mutableListOf<Puntainer>()
 
     //val gravity = 200.0
