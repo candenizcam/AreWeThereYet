@@ -86,12 +86,26 @@ class Rectangle {
 
     /** Returns the rectangle that is rated by the other
      * this.fromRated(this.toRated(other)) == this
+     * this.fromRated(Rectangle(0.0,0.5,0.0,0.5)) returns bottom left corner
      */
     fun fromRated(other: Rectangle): Rectangle {
         val w1 = left+other.left*width
         val w2 = left+other.right*width
         val h1 = bottom+other.bottom*height
         val h2 = bottom+other.top*height
+        return Rectangle(w1,w2,h1,h2)
+    }
+
+    /** Returns the rectangle, which, when rated by the other returns this
+     * this.fromRated(Rectangle(0.0,0.5,0.0,0.5)) returns the rectangle with the same bottom left and double the vertices
+     */
+    fun decodeRated(other: Rectangle): Rectangle{
+        val largeWidth = this.width/other.width
+        val largeHeight = this.height/other.height
+        val w1 = left - largeWidth*other.left
+        val w2 = left - largeWidth*(other.left - 1)
+        val h1 = bottom - largeHeight*other.bottom
+        val h2 = bottom - largeHeight*(other.bottom - 1)
         return Rectangle(w1,w2,h1,h2)
     }
 

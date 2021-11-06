@@ -99,16 +99,10 @@ class GameScene: PunScene() {
                 playfield.duck()
             }
 
-
-
-            hand.update(dt)
-            playfield.update(dt)
             val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
 
-            hand.x = r.left
-            hand.yConv = r.top - r.height*(playfield.ducking>0).toInt()/2
-            hand.scaledHeight = r.height/(1.0+(playfield.ducking>0).toInt())
-            hand.scaledWidth = r.width
+            hand.update(dt, r)
+            playfield.update(dt)
 
             if(playfield.collisionCheck()){
                 floor.visible = false
@@ -152,7 +146,7 @@ class GameScene: PunScene() {
 
 
     object FloorData{
-        val ratedY = 0.3
+        val ratedY = 240.0/1080.0
 
         fun getHeight(x: Double?=null): Double {
             return if(x!=null){

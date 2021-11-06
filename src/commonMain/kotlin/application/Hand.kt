@@ -1,13 +1,11 @@
 package application
 
 import com.soywiz.klock.TimeSpan
-import com.soywiz.korge.view.Image
-import com.soywiz.korge.view.View
-import com.soywiz.korge.view.position
-import com.soywiz.korge.view.solidRect
+import com.soywiz.korge.view.*
 import modules.basic.Colour
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
+import pungine.geometry2D.Vector
 
 class Hand: Puntainer {
     constructor(id: String?=null, relativeRectangle: Rectangle) : super(id,relativeRectangle){
@@ -32,25 +30,23 @@ class Hand: Puntainer {
 
     }
 
-    fun update(dt: TimeSpan){
+    fun update(dt: TimeSpan, hitboxRectOnScreen: Rectangle){
         if(blockMode){
-            val korgeWidth = width
-            val korgeHeight = height
-            greenBlock.setSize(width,height)
-
+            greenBlock.setSize(hitboxRectOnScreen.width,hitboxRectOnScreen.height)
         }else{
             animIndex += dt.seconds*4
             val a = activeAnimation()
             if (animIndex>=a.size){
                 animIndex %= a.size
             }
+            val hitboxRect = hitboxRectOnScreen.decodeRated(activeAnimationType.relativeRect())
             a.children.forEachIndexed { index, image ->
                 image.visible = index==animIndex.toInt()
+                image.scaledWidth= hitboxRect.width
+                image.scaledHeight = hitboxRect.height
+                image.x = hitboxRect.left
+                image.y = GlobalAccess.virtualSize.height - (hitboxRect.top)
             }
-            a.scaledWidth = width
-            a.scaledHeight = height
-            a.x = x
-            a.y = y
         }
 
     }
@@ -108,7 +104,17 @@ class Hand: Puntainer {
     }
 
     enum class ActiveAnimationType{
-        TWOFINGER_RUN,
-        TWOFINGER_JUMP
+        TWOFINGER_RUN {
+            override fun relativeRect(): Rectangle {
+                return Rectangle(281.0/500.0,(281.0+124.0)/500.0,13.0/500.0,213.0/500.0)
+            }
+        },
+        TWOFINGER_JUMP {
+            override fun relativeRect(): Rectangle {
+                return Rectangle(281.0/500.0,(281.0+124.0)/500.0,13.0/500.0,213.0/500.0)
+            }
+        };
+
+        abstract fun relativeRect() :  Rectangle
     }
 }
