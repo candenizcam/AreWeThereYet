@@ -201,12 +201,17 @@ class GameScene : PunScene() {
                 it.visible = false
             }
 
+
+
+
             ObstacleTypes.values().forEach { thisType ->
                 playfield.level.obstacles.filter { it.type == thisType }.also { list ->
                     ObstacleRarity.values().forEach { rarity ->
+                        val obstacleData = list.filter { it.obstacleRarity ==rarity }
+
                         val o2 = obstacles.filter { it.id == thisType.relevantID(rarity.ordinal+1) }
 
-                        list.forEachIndexed { index, obs ->
+                        obstacleData.forEachIndexed { index, obs ->
                             val hit = playfield.virtualRectangle.fromRated(
                                 Rectangle(
                                     Vector(obs.centerX, obs.centerY),
