@@ -1,9 +1,6 @@
 package application
 
-import com.soywiz.klock.TimeSpan
 import com.soywiz.kmem.toInt
-import com.soywiz.korau.sound.readMusic
-import com.soywiz.korau.sound.readSound
 import com.soywiz.korev.Key
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
@@ -39,6 +36,13 @@ class GameScene: PunScene() {
             }
         }
 
+        //puntainer() {  }
+
+        outside1=punImage("outside",resourcesVfs["environment/bg-loop.png"].readBitmap(), Rectangle(0.0,7640.0,0.0,1080.0))
+        outside2=punImage("outside",resourcesVfs["environment/bg-loop.png"].readBitmap(), Rectangle(7640.0,2*7640.0,0.0,1080.0))
+
+        punImage("window",resourcesVfs["environment/window.png"].readBitmap(), oneRectangle(),true)
+
         playfield.fitToFrame(Rectangle(0.0,w,FloorData.getHeight()*h,h))
         this.addChild(playfield)
 
@@ -73,12 +77,28 @@ class GameScene: PunScene() {
 
         this.addUpdater {dt->
 
+
+
+            /*
             obstacles.forEach {
                 it.x = it.x - dt.milliseconds*0.2
             }
 
+             */
+
             obstacles.forEach {
                 it.visible = false
+            }
+
+
+
+            outside1.x -= dt.milliseconds*20
+            outside2.x -= dt.milliseconds*20
+            if(outside1.x + outside1.width< -1000.0){
+                outside1.x += outside1.width*2
+            }
+            if(outside2.x + outside2.width< -1000.0){
+                outside2.x += outside2.width*2
             }
 
             playfield.level.obstacles.forEachIndexed { index,obs->
@@ -106,16 +126,16 @@ class GameScene: PunScene() {
                 playfield.stopDuck()
             }
 
-            hand.update(dt)
-            playfield.update(dt)
             val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
 
-            hand.x = r.left
-            hand.yConv = r.top - r.height*(playfield.ducking>0).toInt()/2
-            hand.scaledHeight = r.height/(1.0+(playfield.ducking>0).toInt())
-            hand.scaledWidth = r.width
+            hand.update(dt, r)
+            playfield.update(dt)
 
-            floor.visible = !playfield.collisionCheck()
+            if(playfield.collisionCheck()){
+                floor.visible = false
+            }else{
+                floor.visible = true
+            }
 
 
 
@@ -134,14 +154,17 @@ class GameScene: PunScene() {
 
     val gravity = 200.0
     var hitboxDy =0.0
+    var outside1: Puntainer = Puntainer()
+    var outside2: Puntainer = Puntainer()
 
     suspend fun adjustHand(){
-        hand.twoFingerRun= List(4){
+        hand.twoFingerRunList= List(8){
             val i = listOf("pungo_transparent.png","pungo_transparent_2.png","pungo_transparent_3.png","pungo_transparent_4.png")
-            Image(resourcesVfs[i[it]].readBitmap())
+
+            Image(resourcesVfs["hands/walk-${it+1}.png"].readBitmap())
         }
 
-        hand.twoFingerJump =  List(2){
+        hand.twoFingerJumpList =  List(2){
             val i = listOf("pungo_transparent_2.png","pungo_transparent_4.png")
             Image(resourcesVfs[i[it]].readBitmap())
         }
@@ -152,7 +175,7 @@ class GameScene: PunScene() {
 
 
     object FloorData{
-        val ratedY = 0.3
+        val ratedY = 240.0/1080.0
 
         fun getHeight(x: Double?=null): Double {
             return if(x!=null){

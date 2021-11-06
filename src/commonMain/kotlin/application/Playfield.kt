@@ -46,10 +46,16 @@ class Playfield: Puntainer {
      */
     fun jump(){
         jumping=true
-        if(jumpCount<2){
+        if(jumpCount==0){
 
             ducking = 0.0
-            hitboxSpeed = 1.5
+            hitboxSpeed = 1.8
+            jumpCount+=1
+
+        } else if(jumpCount==1){
+
+            ducking = 0.0
+            hitboxSpeed = 1.2
             jumpCount+=1
 
         }
@@ -60,7 +66,7 @@ class Playfield: Puntainer {
      *
      */
     fun duck(){
-        ducking = 0.8
+        ducking = 1.0
         if(jumpCount!=0){
             hitboxSpeed = -2.0
             jumpCount = 2
@@ -73,8 +79,8 @@ class Playfield: Puntainer {
         }
     }
 
-    var hitboxRestRect = Rectangle(0.3,0.35,0.0,0.3)
-    var hitboxRect = Rectangle(0.3,0.35,0.0,0.1)
+    var hitboxRestRect = Rectangle(281.0/1920,281.0/1920 + 124.0/1920,0.0,200.0/840)
+    var hitboxRect = Rectangle(281.0/1920,281.0/1920 + 124.0/1920,0.0,200.0/840)
     var gravity = -0.05
     var hitboxSpeed = 0.0
     var ducking = 0.0

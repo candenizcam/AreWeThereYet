@@ -1,29 +1,23 @@
 package application
 
-import com.soywiz.kds.getExtra
 import com.soywiz.klock.TimeSpan
-import com.soywiz.klogger.AnsiEscape
-import com.soywiz.korge.view.Image
-import com.soywiz.korge.view.View
-import com.soywiz.korge.view.position
-import com.soywiz.korge.view.solidRect
-import com.soywiz.korim.bitmap.Bitmap
-import com.soywiz.korim.color.RGBA
-import com.soywiz.korim.format.readBitmap
-import com.soywiz.korio.file.std.resourcesVfs
+import com.soywiz.korge.view.*
 import modules.basic.Colour
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
-import pungine.geometry2D.oneRectangle
+import pungine.geometry2D.Vector
 
 class Hand: Puntainer {
     constructor(id: String?=null, relativeRectangle: Rectangle) : super(id,relativeRectangle){
         this.position(x,y)
 
         greenBlock = solidRect(100.0,100.0, Colour.GREEN.korgeColor).also {
-            it.visible = true
+            it.visible = blockMode
             this.addChild(it)
         }
+
+        this.addChild(twoFingerRun)
+        this.addChild(twoFingerJump)
 
 
 
@@ -36,46 +30,64 @@ class Hand: Puntainer {
 
     }
 
-    fun update(dt: TimeSpan){
+    fun update(dt: TimeSpan, hitboxRectOnScreen: Rectangle){
         if(blockMode){
-            val korgeWidth = width
-            val korgeHeight = height
-            greenBlock.setSize(width,height)
-
+            greenBlock.setSize(hitboxRectOnScreen.width,hitboxRectOnScreen.height)
         }else{
             animIndex += dt.seconds*4
             val a = activeAnimation()
             if (animIndex>=a.size){
                 animIndex %= a.size
             }
-            a.forEachIndexed { index, image ->
+            val hitboxRect = hitboxRectOnScreen.decodeRated(activeAnimationType.relativeRect())
+            a.children.forEachIndexed { index, image ->
                 image.visible = index==animIndex.toInt()
+                image.scaledWidth= hitboxRect.width
+                image.scaledHeight = hitboxRect.height
+                image.x = hitboxRect.left
+                image.y = GlobalAccess.virtualSize.height - (hitboxRect.top)
+                greenBlock.scaledWidth = hitboxRectOnScreen.width
+                greenBlock.scaledHeight = hitboxRectOnScreen.height
+                greenBlock.x = hitboxRectOnScreen.left
+                greenBlock.y = GlobalAccess.virtualSize.height-hitboxRectOnScreen.top
+                greenBlock.visible = true
             }
+            greenBlock.scaledWidth = hitboxRectOnScreen.width
+            greenBlock.scaledHeight = hitboxRectOnScreen.height
+            greenBlock.x = hitboxRectOnScreen.left
+            greenBlock.y = GlobalAccess.virtualSize.height-hitboxRectOnScreen.top
+            greenBlock.visible = true
         }
 
     }
 
-    var blockMode = true
+    var blockMode = false
     val greenBlock: View
 
 
 
 
 
-    var twoFingerRun = listOf<Image>()
+    var twoFingerRunList = listOf<Image>()
         set(value) {
             field = value
+            twoFingerRun.children.clear()
             value.forEach {
-                this.addChild(it)
+                twoFingerRun.addChild(it)
+
+                //this.addChild(it)
                 it.visible = false
             }
         }
 
-    var twoFingerJump= listOf<Image>()
+    val twoFingerRun = Puntainer()
+    val twoFingerJump = Puntainer()
+
+    var twoFingerJumpList= listOf<Image>()
         set(value) {
             field = value
             value.forEach {
-                this.addChild(it)
+                twoFingerJump.addChild(it)
                 it.visible = false
             }
         }
@@ -83,14 +95,14 @@ class Hand: Puntainer {
     var animIndex = 0.0
     var activeAnimationType = ActiveAnimationType.TWOFINGER_RUN
     set(value) {
-        activeAnimation().forEach { it.visible=false }
+        activeAnimation().children.forEach { it.visible=false }
         field=value
     }
 
 
 
 
-    fun activeAnimation(): List<Image> {
+    fun activeAnimation(): Puntainer {
         return when(activeAnimationType){
             ActiveAnimationType.TWOFINGER_RUN->{
                 twoFingerRun
@@ -102,7 +114,17 @@ class Hand: Puntainer {
     }
 
     enum class ActiveAnimationType{
-        TWOFINGER_RUN,
-        TWOFINGER_JUMP
+        TWOFINGER_RUN {
+            override fun relativeRect(): Rectangle {
+                return Rectangle(281.0/500.0,(281.0+124.0)/500.0,13.0/500.0,213.0/500.0)
+            }
+        },
+        TWOFINGER_JUMP {
+            override fun relativeRect(): Rectangle {
+                return Rectangle(281.0/500.0,(281.0+124.0)/500.0,13.0/500.0,213.0/500.0)
+            }
+        };
+
+        abstract fun relativeRect() :  Rectangle
     }
 }
