@@ -5,6 +5,7 @@ import com.soywiz.kmem.toInt
 import com.soywiz.korau.format.AudioDecodingProps
 import com.soywiz.korau.sound.*
 import com.soywiz.korev.Key
+import com.soywiz.korge.animate.play
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
 import com.soywiz.korim.format.readBitmap
@@ -31,10 +32,13 @@ class GameScene: PunScene() {
     override suspend fun Container.sceneInit(){
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
+/*
 
         var l1 = resourcesVfs["layer1.mp3"].readMusic().decode().toStream()
         var l2 = resourcesVfs["layer2.mp3"].readMusic().decode().toStream()
         var tw = resourcesVfs["twister.mp3"].readMusic()
+
+
 
         val testAudio = nativeSoundProvider.createSound(resourcesVfs["layer1.mp3"], streaming = true, props = AudioDecodingProps.DEFAULT)
 
@@ -43,6 +47,8 @@ class GameScene: PunScene() {
         launch {
             l1.playAndWait()
         }
+
+         */
 
         floor = puntainer("floor", Rectangle(0.0,1.0,0.0,FloorData.getHeight()),relative = true) {
 
@@ -67,12 +73,53 @@ class GameScene: PunScene() {
 
         // obstacles
         for(i in 0..4){
-            PunImage("normal",resourcesVfs["obstacle.png"].readBitmap()).also {
+            PunImage("dont-jump-1",resourcesVfs["obs/rare/dont-jump-1.png"].readBitmap()).also {
                 obstacles.add(it)
                 this.addChild(it)
                 it.visible=false
             }
 
+            PunImage("duck-1",resourcesVfs["obs/rare/duck-1.png"].readBitmap()).also {
+                obstacles.add(it)
+                this.addChild(it)
+                it.visible=false
+            }
+
+            PunImage("high-jump-1",resourcesVfs["obs/rare/high-jump-1.png"].readBitmap()).also {
+                obstacles.add(it)
+                this.addChild(it)
+                it.visible=false
+            }
+
+            PunImage("jump-duck-1",resourcesVfs["obs/rare/jump-duck-1.png"].readBitmap()).also {
+                obstacles.add(it)
+                this.addChild(it)
+                it.visible=false
+            }
+
+            PunImage("long-jump-1",resourcesVfs["obs/rare/long-jump-1.png"].readBitmap()).also {
+                obstacles.add(it)
+                this.addChild(it)
+                it.visible=false
+            }
+
+            PunImage("low-jump-1",resourcesVfs["obs/rare/low-jump-1.png"].readBitmap()).also {
+                obstacles.add(it)
+                this.addChild(it)
+                it.visible=false
+            }
+
+        }
+
+        for (i in (0..10)){
+            //PunImage("obshit",resourcesVfs["obstacle.png"].readBitmap()).also {
+            //    this.addChild(it)
+            //    it.visible=false
+            //}
+            solidRect("obshit", Rectangle(0.0,1.0,0.0,1.0),relative = true, colour = Colour.RED.korgeColor).also {
+                it.visible=false
+                it.alpha=0.2
+            }
         }
 
 
@@ -107,14 +154,46 @@ class GameScene: PunScene() {
 
 
 
-            outside1.x -= dt.milliseconds*20
-            outside2.x -= dt.milliseconds*20
+            outside1.x -= dt.milliseconds*0.02
+            outside2.x -= dt.milliseconds*0.02
             if(outside1.x + outside1.width< -1000.0){
                 outside1.x += outside1.width*2
             }
             if(outside2.x + outside2.width< -1000.0){
                 outside2.x += outside2.width*2
             }
+
+
+
+            val obshit = children.filterIsInstance<Puntainer>().filter { it.id=="obshit"}
+            var obshitindex = 0
+            obshit.forEach {
+                it.visible=false
+            }
+            ObstacleTypes.values().forEach { thisType->
+                playfield.level.obstacles.filter { it.type==thisType}.also {
+                    val  o = obstacles.filter { it.id==thisType.relevantID() }
+                    it.forEachIndexed { index, obs ->
+                        val hit = playfield.virtualRectangle.fromRated(Rectangle(Vector(obs.centerX,obs.centerY),obs.width,obs.height))
+                        val r = hit.let {
+                            it.decodeRated(thisType.ratedRect())
+                        }
+                        o[index].x = r.left
+                        o[index].yConv = r.top
+                        o[index].scaledHeight = r.height
+                        o[index].scaledWidth = r.width
+                        o[index].visible=true
+                        obshit[obshitindex].scaledWidth= hit.width
+                        obshit[obshitindex].scaledHeight= hit.height
+                        obshit[obshitindex].x= hit.left
+                        obshit[obshitindex].y= GlobalAccess.virtualSize.height-hit.top
+                        obshit[obshitindex].visible=true
+                        obshitindex+=1
+                    }
+                }
+            }
+
+            /*
 
             playfield.level.obstacles.forEachIndexed { index,obs->
                 val r = playfield.virtualRectangle.fromRated(Rectangle(Vector(obs.centerX,obs.centerY),obs.width,obs.height))
@@ -125,6 +204,8 @@ class GameScene: PunScene() {
                 obstacles[index].scaledWidth = r.width
                 obstacles[index].visible=true
             }
+
+             */
 
 
 
@@ -153,7 +234,7 @@ class GameScene: PunScene() {
             }
 
             if(playfield.collisionCheck()){
-                l2.currentTime = l1.currentTime
+                //l2.currentTime = l1.currentTime
                 }
         }
         super.sceneAfterInit()
@@ -165,8 +246,8 @@ class GameScene: PunScene() {
 
     var obstacles = mutableListOf<Puntainer>()
 
-    val gravity = 200.0
-    var hitboxDy =0.0
+    //val gravity = 200.0
+    //var hitboxDy =0.0
     var outside1: Puntainer = Puntainer()
     var outside2: Puntainer = Puntainer()
 
@@ -183,6 +264,8 @@ class GameScene: PunScene() {
         }
 
     }
+
+
 
 
 

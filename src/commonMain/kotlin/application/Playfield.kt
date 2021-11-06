@@ -25,7 +25,7 @@ class Playfield: Puntainer {
             jumpCount=0
             jumping=false
         }
-        hitboxSpeed += gravity
+        hitboxSpeed += gravity*dt.seconds
         level.update(dt)
 
         ducking = (ducking-dt.seconds).coerceAtLeast(0.0)
