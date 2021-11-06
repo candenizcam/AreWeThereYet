@@ -1,17 +1,10 @@
 package application
 
-import com.soywiz.klock.TimeSpan
-import com.soywiz.kmem.toInt
-import com.soywiz.korau.format.AudioDecodingProps
-import com.soywiz.korau.sound.*
 import com.soywiz.korev.Key
-import com.soywiz.korge.animate.play
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import modules.basic.Colour
 import pungine.PunImage
 import pungine.PunScene
@@ -19,7 +12,6 @@ import pungine.Puntainer
 import pungine.geometry2D.Rectangle
 import pungine.geometry2D.Vector
 import pungine.geometry2D.oneRectangle
-import kotlin.coroutines.CoroutineContext
 
 /** This scene is the template for a PunGineIV game
  *
@@ -59,8 +51,8 @@ class GameScene: PunScene() {
 
         //puntainer() {  }
 
-        outside1=punImage("outside",resourcesVfs["environment/bg-loop.png"].readBitmap(), Rectangle(0.0,7640.0,0.0,1080.0))
-        outside2=punImage("outside",resourcesVfs["environment/bg-loop.png"].readBitmap(), Rectangle(7640.0,2*7640.0,0.0,1080.0))
+        outside1=punImage("outside",resourcesVfs["environment/Bg2.png"].readBitmap(), Rectangle(0.0,3820.0,0.0,1080.0))
+        outside2=punImage("outside",resourcesVfs["environment/Bg2.png"].readBitmap().flipX(), Rectangle(3820.0,2*3820.0,0.0,1080.0))
 
         punImage("window",resourcesVfs["environment/window.png"].readBitmap(), oneRectangle(),true)
 
@@ -154,8 +146,8 @@ class GameScene: PunScene() {
 
 
 
-            outside1.x -= dt.milliseconds*0.02
-            outside2.x -= dt.milliseconds*0.02
+            outside1.x -= dt.seconds*playfield.level.speed*1920
+            outside2.x -= dt.seconds*playfield.level.speed*1920
             if(outside1.x + outside1.width< -1000.0){
                 outside1.x += outside1.width*2
             }
@@ -211,7 +203,7 @@ class GameScene: PunScene() {
 
 
             if(views.input.keys.justPressed(Key.UP)){
-                playfield.jump()
+                    playfield.jump()
             }
 
             if(views.input.keys.justPressed(Key.DOWN)){
@@ -223,6 +215,14 @@ class GameScene: PunScene() {
             }
 
             val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
+
+            if(playfield.ducking>0.0){
+                hand.activeAnimationType = Hand.ActiveAnimationType.TWOFINGER_DUCK
+            }else if(playfield.jumping){
+                hand.activeAnimationType = Hand.ActiveAnimationType.TWOFINGER_JUMP
+            }else{
+                hand.activeAnimationType = Hand.ActiveAnimationType.TWOFINGER_RUN
+            }
 
             hand.update(dt, r)
             playfield.update(dt)
@@ -243,7 +243,7 @@ class GameScene: PunScene() {
     val hand = Hand("hand",oneRectangle())
     var playfield = Playfield("playfield", oneRectangle())
     var floor = Puntainer()
-
+    var timePassed =0.0
     var obstacles = mutableListOf<Puntainer>()
 
     //val gravity = 200.0
@@ -253,15 +253,18 @@ class GameScene: PunScene() {
 
     suspend fun adjustHand(){
         hand.twoFingerRunList= List(8){
-            val i = listOf("pungo_transparent.png","pungo_transparent_2.png","pungo_transparent_3.png","pungo_transparent_4.png")
-
             Image(resourcesVfs["hands/walk-${it+1}.png"].readBitmap())
         }
 
-        hand.twoFingerJumpList =  List(2){
-            val i = listOf("pungo_transparent_2.png","pungo_transparent_4.png")
-            Image(resourcesVfs[i[it]].readBitmap())
+        hand.twoFingerDuckList =  List(8){
+            Image(resourcesVfs["hands/duck-${it+1}.png"].readBitmap())
         }
+
+        hand.twoFingerJumpList =  List(9){
+            Image(resourcesVfs["hands/jump-${it+1}.png"].readBitmap())
+        }
+
+
 
     }
 

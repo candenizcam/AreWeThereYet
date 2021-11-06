@@ -4,7 +4,7 @@ import pungine.geometry2D.Rectangle
 import pungine.geometry2D.Vector
 
 
-data class Obstacle(var type: ObstacleTypes, var centerX: Double, var centerY: Double, var height: Double, var width: Double){
+data class Obstacle(var type: ObstacleTypes,var obstacleRarity: ObstacleRarity, var centerX: Double, var centerY: Double, var height: Double, var width: Double){
     val rectangle: Rectangle
     get() {
         return Rectangle(Vector(centerX,centerY),width,height)
@@ -17,7 +17,7 @@ enum class ObstacleTypes{
         }
 
         override fun ratedRect(): Rectangle {
-            return Rectangle(476.0/1980.0,600.0,200.0,0.0)
+            return Rectangle(476.0/1980.0,600.0/1980.0,0.0/1080.0+240.0/1080.0,200.0/1080.0+240.0/1080.0)
         }
     },
     HIGHJUMP {
@@ -56,7 +56,8 @@ enum class ObstacleTypes{
             return Rectangle(1373.0/1920.0,1713.0/1920.0,500.0/1080.0+240.0/1080.0,840.0/1080.0+240.0/1080.0)
         }
     },
-    JUMPDUCT {
+
+    JUMPDUCK {
         override fun relevantID(rarity: Int): String {
             return "jump-duck-1"
         }
@@ -68,4 +69,10 @@ enum class ObstacleTypes{
 
     abstract fun relevantID(rarity:Int = 0): String
     abstract fun ratedRect(): Rectangle
+}
+
+enum class ObstacleRarity{
+    RARE,
+    RARER,
+    RAREST
 }
