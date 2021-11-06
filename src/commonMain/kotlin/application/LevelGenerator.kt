@@ -15,13 +15,13 @@ class LevelGenerator {
     var acceleration = 1.0001
     var lastGenerated = 0
     var nowGenerated = 0
-//
-    fun generate(){
+
+    fun generate(){0
         nowGenerated=(0..5).random()
         when(nowGenerated) {
             0 -> obstacles.add(Obstacle(ObstacleTypes.LOWJUMP, 1.05, 100.0/840, 200.0/840, 124.0/1920))
             1 -> obstacles.add(Obstacle(ObstacleTypes.HIGHJUMP, 1.05, 170.0/840, 340.0/840, 248.0/1920))
-            2 -> obstacles.add(Obstacle(ObstacleTypes.DUCT, 1.05, 1.0-350.0/840, 700.0/840, 124.0/1920))
+            2 -> obstacles.add(Obstacle(ObstacleTypes.DUCK, 1.05, 1.0-350.0/840, 700.0/840, 124.0/1920))
             3 -> obstacles.add(Obstacle(ObstacleTypes.LONGJUMP, 1.05, 100.0/840, 200.0/840, 248.0/1920))
             4 -> obstacles.add(Obstacle(ObstacleTypes.DONTJUMP, 1.05, 1.0-170.0/840, 340.0/840, 124.0/1920))
             5 -> obstacles.add(Obstacle(ObstacleTypes.JUMPDUCT, 1.05, 240.0/840, 200.0/840, 124.0/1920))
