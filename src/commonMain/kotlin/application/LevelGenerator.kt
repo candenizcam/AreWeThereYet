@@ -19,13 +19,13 @@ class LevelGenerator {
     var rarity = ObstacleRarity.RARE
     var rarityNumberGenerator = 0
 
-    fun generate(){
-        nowGenerated = if(lastGenerated==1) {
+    fun generate() {
+        nowGenerated = if (lastGenerated == 1) {
             (1..7).random()
-        } else{
+        } else {
             (0..7).random()
         }
-        rarityNumberGenerator=(0..5).random()
+        rarityNumberGenerator = (0..5).random()
         rarity = when (rarityNumberGenerator) {
             5 -> {
                 ObstacleRarity.RAREST
@@ -38,33 +38,60 @@ class LevelGenerator {
             }
         }
 
-        when(nowGenerated) {
-            0 -> obstacles.add(Obstacle(ObstacleTypes.DUCK,rarity, 1.05, 1.0-350.0/840, 700.0/840, 124.0/1920))
-            1 -> obstacles.add(Obstacle(ObstacleTypes.HIGHJUMP,rarity, 1.05, 170.0/840, 340.0/840, 248.0/1920))
-            2 -> obstacles.add(Obstacle(ObstacleTypes.LOWJUMP,rarity, 1.05, 100.0/840, 200.0/840, 124.0/1920))
-            3 -> obstacles.add(Obstacle(ObstacleTypes.LONGJUMP,rarity, 1.05, 100.0/840, 200.0/840, 248.0/1920))
-            4 -> obstacles.add(Obstacle(ObstacleTypes.DONTJUMP,rarity, 1.05, 1.0-170.0/840, 340.0/840, 124.0/1920))
-            5 -> obstacles.add(Obstacle(ObstacleTypes.JUMPDUCK,rarity, 1.05, 240.0/840, 200.0/840, 124.0/1920))
-            6 ->obstacles.add(Obstacle(ObstacleTypes.HIGHBIRD,rarity, 1.05, 1-240.0/840, 100.0/840, 124.0/1920))
-            7 ->obstacles.add(Obstacle(ObstacleTypes.LOWBIRD,rarity, 1.05, 1-490.0/840, 100.0/840, 124.0/1920))
+        when (nowGenerated) {
+            0 -> obstacles.add(Obstacle(ObstacleTypes.DUCK, rarity, 1.05, 1.0 - 350.0 / 840, 700.0 / 840, 124.0 / 1920))
+            1 -> obstacles.add(Obstacle(ObstacleTypes.HIGHJUMP, rarity, 1.05, 170.0 / 840, 340.0 / 840, 248.0 / 1920))
+            2 -> obstacles.add(Obstacle(ObstacleTypes.LOWJUMP, rarity, 1.05, 100.0 / 840, 200.0 / 840, 124.0 / 1920))
+            3 -> obstacles.add(Obstacle(ObstacleTypes.LONGJUMP, rarity, 1.05, 100.0 / 840, 200.0 / 840, 248.0 / 1920))
+            4 -> obstacles.add(
+                Obstacle(
+                    ObstacleTypes.DONTJUMP,
+                    rarity,
+                    1.05,
+                    1.0 - 170.0 / 840,
+                    340.0 / 840,
+                    124.0 / 1920
+                )
+            )
+            5 -> obstacles.add(Obstacle(ObstacleTypes.JUMPDUCK, rarity, 1.05, 240.0 / 840, 200.0 / 840, 124.0 / 1920))
+            6 -> obstacles.add(
+                Obstacle(
+                    ObstacleTypes.HIGHBIRD,
+                    rarity,
+                    1.05,
+                    1 - 240.0 / 840,
+                    100.0 / 840,
+                    124.0 / 1920
+                )
+            )
+            7 -> obstacles.add(
+                Obstacle(
+                    ObstacleTypes.LOWBIRD,
+                    rarity,
+                    1.05,
+                    1 - 490.0 / 840,
+                    100.0 / 840,
+                    124.0 / 1920
+                )
+            )
         }
-        lastGenerated=nowGenerated
+        lastGenerated = nowGenerated
     }
 
-    fun update(dt: TimeSpan){
-        if(speed < maxSpeed){
+    fun update(dt: TimeSpan) {
+        if (speed < maxSpeed) {
             speed *= (acceleration)
         }
 
         obstacles.forEach {
-            it.centerX -= dt.seconds*speed
+            it.centerX -= dt.seconds * speed
         }
 
-        obstacles.removeAll { obstacle -> obstacle.centerX< -0.05 }
+        obstacles.removeAll { obstacle -> obstacle.centerX < -0.05 }
 
-        obstacleDistance += dt.seconds*speed
+        obstacleDistance += dt.seconds * speed
 
-        if (obstacleDistance >= toNext && obstacles.size<5){
+        if (obstacleDistance >= toNext && obstacles.size < 5) {
             obstacleDistance = 0.0
             generate()
 

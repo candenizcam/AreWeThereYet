@@ -9,6 +9,6 @@ class ScoreKeeper {
     }
 
     fun reset() {
-        scores.removeAll {true}
+        scores.removeAll { true }
     }
 }

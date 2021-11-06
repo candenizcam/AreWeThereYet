@@ -1,39 +1,14 @@
 package application
 
 import com.soywiz.klock.TimeSpan
+import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
 import modules.basic.Colour
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
-import pungine.geometry2D.Vector
 
-class Hand: Puntainer {
-    constructor(id: String?=null, relativeRectangle: Rectangle) : super(id,relativeRectangle){
-        this.position(x,y)
-
-        greenBlock = solidRect(100.0,100.0, Colour.GREEN.korgeColor).also {
-            it.visible = blockMode
-            this.addChild(it)
-        }
-
-        //this.addChild(twoFingerRun)
-        //this.addChild(twoFingerJump)
-        //this.addChild(twoFingerDuck)
-        ActiveAnimationType.values().forEach {
-            this.addChild(it.puntainer)
-        }
-
-
-
-
-
-
-
-
-
-
-    }
-
+@KorgeInternal
+class Hand(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, relativeRectangle) {
 
 
     fun update(dt: TimeSpan, hitboxRectOnScreen: Rectangle){
@@ -197,5 +172,16 @@ class Hand: Puntainer {
 
         var puntainer: Puntainer = Puntainer()
 
+    }
+
+    init {
+        this.position(x,y)
+        greenBlock = solidRect(100.0,100.0, Colour.GREEN.korgeColor).also {
+            it.visible = blockMode
+            this.addChild(it)
+        }
+        ActiveAnimationType.values().forEach {
+            this.addChild(it.puntainer)
+        }
     }
 }
