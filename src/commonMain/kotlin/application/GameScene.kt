@@ -118,6 +118,7 @@ class GameScene: PunScene() {
             //}
             solidRect("obshit", Rectangle(0.0,1.0,0.0,1.0),relative = true, colour = Colour.RED.korgeColor).also {
                 it.visible=false
+                it.alpha=0.2
             }
         }
 
