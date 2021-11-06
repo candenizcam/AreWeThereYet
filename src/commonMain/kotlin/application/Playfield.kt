@@ -43,6 +43,7 @@ class Playfield: Puntainer {
 
     fun collisionCheck(): Boolean {
 
+
         return level.obstacles.any { hitboxRect.collides(it.rectangle) }
 
     }

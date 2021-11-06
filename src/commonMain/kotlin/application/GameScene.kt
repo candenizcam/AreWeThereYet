@@ -41,7 +41,7 @@ class GameScene: PunScene() {
             l3.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
         }
 
-        floor = puntainer("floor", Rectangle(0.0,1.0,0.0,FloorData.getHeight()),relative = true) {
+        floor = puntainer("floor", Rectangle(0.0,0.3,0.0,1.0),relative = true) {
 
             it.singleColour(Colour.GREEN.korgeColor).also {
                 it.alpha = 0.1
@@ -58,8 +58,7 @@ class GameScene: PunScene() {
         playfield.fitToFrame(Rectangle(0.0,w,FloorData.getHeight()*h,h))
         this.addChild(playfield)
 
-        adjustHand()
-        this.addChild(hand)
+
 
 
         // obstacles
@@ -108,6 +107,11 @@ class GameScene: PunScene() {
 
         }
 
+        adjustHand()
+        this.addChild(hand)
+
+
+
         for (i in (0..10)){
             //PunImage("obshit",resourcesVfs["obstacle.png"].readBitmap()).also {
             //    this.addChild(it)
@@ -118,6 +122,15 @@ class GameScene: PunScene() {
                 it.alpha=0.2
             }
         }
+
+        floor = puntainer("floor", Rectangle(0.0,1.0,0.0,1.0),relative = true) {
+
+            it.singleColour(Colour.RED.korgeColor).also {
+                it.alpha = 0.1
+            }
+        }
+
+
 
 
 
@@ -221,7 +234,11 @@ var xyz = "rare"
 
             val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
 
-            if(playfield.ducking>0.0){
+            if(playfield.collisionCheck()){
+                hand.cutFinger()
+                GlobalAccess.fingers= 1
+            }
+            else if(playfield.ducking>0.0){
                 hand.onDuck()
             }else if(playfield.jumping){
                 hand.onAir()
@@ -233,7 +250,9 @@ var xyz = "rare"
             hand.update(dt, r)
             playfield.update(dt)
 
-            floor.visible = !playfield.collisionCheck()
+
+            floor.visible = hand.activeAnimationType==Hand.ActiveAnimationType.TWOFINGER_CUT
+            floor.alpha = -1*hand.animIndex*hand.animIndex*8.0/605.0 + hand.animIndex*8.0/55.0
 
             if(playfield.collisionCheck()){
                 fadein = true
@@ -268,7 +287,23 @@ var xyz = "rare"
                 }
 
             }
+            animType.sourceListOne().forEach {
+                Image(resourcesVfs[it].readBitmap()).also {
+                    it.visible = false
+                    animType.puntainerOneFingers.addChild(it)
+                }
+            }
         }
+
+        /*
+        for(i in 1..12){
+            Image(resourcesVfs["hands/finger_cut-$i.png"].readBitmap()).also {
+                it.visible = false
+                hand.fingerCut.addChild(it)
+            }
+        }
+
+         */
     }
 
 
