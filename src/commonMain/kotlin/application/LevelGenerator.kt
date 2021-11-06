@@ -15,7 +15,7 @@ class LevelGenerator {
     var acceleration = 1.0001
     var lastGenerated = 0
     var nowGenerated = 0
-
+//
     fun generate(){
         nowGenerated=(0..5).random()
         when(nowGenerated) {
