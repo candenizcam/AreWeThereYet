@@ -2,7 +2,6 @@ package application
 
 import com.soywiz.klock.TimeSpan
 import com.soywiz.korge.internal.KorgeInternal
-import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
 import modules.basic.Colour
 import pungine.Puntainer
