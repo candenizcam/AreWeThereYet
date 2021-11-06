@@ -38,6 +38,7 @@ class Playfield(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id
 
     fun collisionCheck(): Boolean {
 
+
         return level.obstacles.any { hitboxRect.collides(it.rectangle) }
 
     }
