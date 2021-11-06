@@ -56,7 +56,7 @@ class GameScene: PunScene() {
 
 
         // obstacles
-        for(i in 0..4){
+        for(i in 0..1){
             PunImage("dont-jump-1",resourcesVfs["obs/rare/dont-jump-1.png"].readBitmap()).also {
                 obstacles.add(it)
                 this.addChild(it)
@@ -125,7 +125,7 @@ class GameScene: PunScene() {
          */
 
         var s = 0.0
-
+var xyz = "rare"
 
         this.addUpdater {dt->
 
