@@ -270,8 +270,9 @@ class GameScene : PunScene() {
             animType.sourceList().forEach { s ->
                 Image(resourcesVfs[s].readBitmap()).also {
                     it.visible = false
-                    animType.puntainer.addChild(it)
+                    animType.puntainerTwoFingers.addChild(it)
                 }
+
             }
         }
     }

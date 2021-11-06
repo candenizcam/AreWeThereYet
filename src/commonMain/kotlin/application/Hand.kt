@@ -79,16 +79,16 @@ class Hand(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, rel
 
     var animIndex = 0.0
     var activeAnimationType = ActiveAnimationType.TWOFINGER_RUN
-    set(value) {
-        if(value!=field){
-            println(value.toString())
-            activeAnimation().children.forEach { it.visible=false }
-            animIndex=0.0
-            field=value
-            jumpLocker=false
-        }
+        set(value) {
+            if(value!=field){
+                println(value.toString())
+                activeAnimation().children.forEach { it.visible=false }
+                animIndex=0.0
+                field=value
+                jumpLocker=false
+            }
 
-    }
+        }
 
     var jumpLocker=false
 
@@ -96,7 +96,7 @@ class Hand(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, rel
 
 
     fun activeAnimation(): Puntainer {
-        return activeAnimationType.puntainer
+        return activeAnimationType.puntainerTwoFingers
     }
 
     enum class ActiveAnimationType{
@@ -164,13 +164,78 @@ class Hand(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, rel
             override fun animationType(): String {
                 return "duck"
             }
+        },
+        ONEFINGER_RUN {
+            override fun relativeRect(): Rectangle {
+                return Rectangle(281.0/500.0,(281.0+124.0)/500.0,13.0/500.0,213.0/500.0)
+            }
+
+            override fun sourceList(): List<String> {
+                return List(8) {"hands/walk-${it+1}.png"}
+            }
+
+            override fun animationType(): String {
+                return "walk"
+            }
+        },
+        ONEFINGER_JUMP {
+            override fun relativeRect(): Rectangle {
+                return Rectangle(280.0/500.0,(280.0+124.0)/500.0,23.0/500.0,223.0/500.0)
+            }
+
+            override fun sourceList(): List<String> {
+                return List(4) {"hands/jump-${it+1}.png"}
+            }
+
+            override fun animationType(): String {
+                return "jump"
+            }
+        },
+        ONEFINGER_FLY {
+            override fun relativeRect(): Rectangle {
+                return Rectangle(280.0/500.0,(280.0+124.0)/500.0,23.0/500.0,223.0/500.0)
+            }
+
+            override fun sourceList(): List<String> {
+                return List(1) {"hands/jump-${it+5}.png"}
+            }
+
+            override fun animationType(): String {
+                return "jump"
+            }
+        },
+        ONEFINGER_FALL {
+            override fun relativeRect(): Rectangle {
+                return Rectangle(280.0/500.0,(280.0+124.0)/500.0,23.0/500.0,223.0/500.0)
+            }
+
+            override fun sourceList(): List<String> {
+                return List(4) {"hands/jump-${it+6}.png"}
+            }
+
+            override fun animationType(): String {
+                return "jump"
+            }
+        },
+        ONEFINGER_DUCK {
+            override fun relativeRect(): Rectangle {
+                return Rectangle(287.0/500.0,(287.0+124.0)/500.0,22.0/500.0,142.0/500.0)
+            }
+
+            override fun sourceList(): List<String> {
+                return List(8) {"hands/duck-${it+1}.png"}
+            }
+
+            override fun animationType(): String {
+                return "duck"
+            }
         };
 
         abstract fun relativeRect() :  Rectangle
         abstract fun sourceList(): List<String>
         abstract fun animationType(): String
 
-        var puntainer: Puntainer = Puntainer()
+        var puntainerTwoFingers: Puntainer = Puntainer()
 
     }
 
@@ -181,7 +246,7 @@ class Hand(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, rel
             this.addChild(it)
         }
         ActiveAnimationType.values().forEach {
-            this.addChild(it.puntainer)
+            this.addChild(it.puntainerTwoFingers)
         }
     }
 }
