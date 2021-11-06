@@ -7,13 +7,12 @@ import kotlin.random.Random
 class LevelGenerator {
 
     var obstacles = mutableListOf<Obstacle>()
-    var dtAcc = 0.0
-    var toNext = 2.0
-    var nextFloor = 3.0
-    var nextCeil = 5.0
-    var speed = 0.3
-    var acceleration = 1.001
-    var difficulty = 1.2
+    var obstacleDistance = 0.0
+    var toNext = 1.0
+    var nextFloor = 0.3
+    var nextCeil = 1.0
+    var speed = 00.3
+    var acceleration = 1.0001
 
     fun generate(){
         when((0..1).random()) {
@@ -23,27 +22,26 @@ class LevelGenerator {
     }
 
     fun update(dt: TimeSpan){
+        if(speed < 1.3){
+            speed *= (acceleration)
+        }
+
         obstacles.forEach {
-            speed = speed*(acceleration)
-            it.centerX = it.centerX - dt.seconds*speed
+            it.centerX -= dt.seconds*speed
         }
 
         obstacles.removeAll { obstacle -> obstacle.centerX<0 }
 
-        dtAcc+=dt.seconds
+        obstacleDistance += dt.seconds*speed
 
-        if (dtAcc >= toNext){
-            dtAcc = 0.0
+        if (obstacleDistance >= toNext && obstacles.size<5){
+            obstacleDistance = 0.0
             generate()
 
             val seed = Random.nextDouble()
             seed.roundDecimalPlaces(2)
 
             toNext = (nextCeil - nextFloor) * seed + nextFloor
-
-            nextCeil /= difficulty
-            nextFloor /= difficulty
-            //difficulty *= 0.95
         }
     }
 }

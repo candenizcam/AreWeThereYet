@@ -111,11 +111,7 @@ class GameScene: PunScene() {
             hand.scaledHeight = r.height/(1.0+(playfield.ducking>0).toInt())
             hand.scaledWidth = r.width
 
-            if(playfield.collisionCheck()){
-                floor.visible = false
-            }else{
-                floor.visible = true
-            }
+            floor.visible = !playfield.collisionCheck()
 
 
 
