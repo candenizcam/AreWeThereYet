@@ -75,6 +75,7 @@ class Playfield: Puntainer {
         if(jumpCount!=0){
             hitboxSpeed = -2.0
             jumpCount = 2
+            ducking=0.0
         }
     }
 
