@@ -1,22 +1,11 @@
 package application
 
-import com.soywiz.klock.TimeSpan
 import com.soywiz.kmem.toInt
-import com.soywiz.korau.sound.readMusic
-import com.soywiz.korau.sound.readSound
 import com.soywiz.korev.Key
-import com.soywiz.korge.input.keys
-import com.soywiz.korge.input.onClick
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
-import com.soywiz.korge.view.tween.moveBy
-import com.soywiz.korge.view.tween.moveTo
-import com.soywiz.korim.color.Colors
-import com.soywiz.korim.color.RGBA
 import com.soywiz.korim.format.readBitmap
-import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
-import com.soywiz.korma.geom.Angle
 import modules.basic.Colour
 import pungine.PunImage
 import pungine.PunScene
@@ -24,7 +13,6 @@ import pungine.Puntainer
 import pungine.geometry2D.Rectangle
 import pungine.geometry2D.Vector
 import pungine.geometry2D.oneRectangle
-import pungine.singleColour
 
 /** This scene is the template for a PunGineIV game
  *
@@ -111,6 +99,8 @@ class GameScene: PunScene() {
                 playfield.duck()
             }
 
+
+
             hand.update(dt)
             playfield.update(dt)
             val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
@@ -145,12 +135,13 @@ class GameScene: PunScene() {
     var hitboxDy =0.0
 
     suspend fun adjustHand(){
-        hand.twoFingerRun= List(4){
+        hand.twoFingerRunList= List(8){
             val i = listOf("pungo_transparent.png","pungo_transparent_2.png","pungo_transparent_3.png","pungo_transparent_4.png")
-            Image(resourcesVfs[i[it]].readBitmap())
+
+            Image(resourcesVfs["hands/walk-${it+1}.png"].readBitmap())
         }
 
-        hand.twoFingerJump =  List(2){
+        hand.twoFingerJumpList =  List(2){
             val i = listOf("pungo_transparent_2.png","pungo_transparent_4.png")
             Image(resourcesVfs[i[it]].readBitmap())
         }
