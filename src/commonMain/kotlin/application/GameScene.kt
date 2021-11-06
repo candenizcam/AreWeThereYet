@@ -101,6 +101,12 @@ class GameScene: PunScene() {
                 it.visible=false
             }
 
+            PunImage("bird-1",resourcesVfs["obs/rare/bird-1.png"].readBitmap()).also {
+                obstacles.add(it)
+                this.addChild(it)
+                it.visible=false
+            }
+
         }
 
         for (i in (0..10)){
