@@ -1,11 +1,16 @@
 package application
 
+import com.soywiz.klock.TimeSpan
 import com.soywiz.kmem.toInt
+import com.soywiz.korau.format.AudioDecodingProps
+import com.soywiz.korau.sound.*
 import com.soywiz.korev.Key
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import modules.basic.Colour
 import pungine.PunImage
 import pungine.PunScene
@@ -13,6 +18,7 @@ import pungine.Puntainer
 import pungine.geometry2D.Rectangle
 import pungine.geometry2D.Vector
 import pungine.geometry2D.oneRectangle
+import kotlin.coroutines.CoroutineContext
 
 /** This scene is the template for a PunGineIV game
  *
@@ -26,8 +32,17 @@ class GameScene: PunScene() {
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
 
-        //resourcesVfs["twister.mp3"].readSound().play()
+        var l1 = resourcesVfs["layer1.mp3"].readMusic().decode().toStream()
+        var l2 = resourcesVfs["layer2.mp3"].readMusic().decode().toStream()
+        var tw = resourcesVfs["twister.mp3"].readMusic()
 
+        val testAudio = nativeSoundProvider.createSound(resourcesVfs["layer1.mp3"], streaming = true, props = AudioDecodingProps.DEFAULT)
+
+        testAudio.decode()
+
+        launch {
+            l1.playAndWait()
+        }
 
         floor = puntainer("floor", Rectangle(0.0,1.0,0.0,FloorData.getHeight()),relative = true) {
 
@@ -167,12 +182,10 @@ class GameScene: PunScene() {
                 floor.visible = true
             }
 
-
-
+            if(playfield.collisionCheck()){
+                l2.currentTime = l1.currentTime
+                }
         }
-
-
-
         super.sceneAfterInit()
     }
 
