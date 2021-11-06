@@ -8,13 +8,13 @@ class LevelGenerator {
 
     var obstacles = mutableListOf<Obstacle>()
     var obstacleDistance = 0.0
-    var toNext = 1.0
+    private var toNext = 1.0
     var nextFloor = 0.3
-    var nextCeil = 1.0
+    private var nextCeil = 1.0
     var speed = 00.3
     var acceleration = 1.0001
 
-    fun generate(){
+    private fun generate(){
         when((0..1).random()) {
             0 -> obstacles.add(Obstacle(ObstacleTypes.NORMAL, 1.05, 0.05, 0.1, 0.1))
             1 -> obstacles.add(Obstacle(ObstacleTypes.HIGH, 1.05, 0.25, 0.1, 0.1))
@@ -30,7 +30,7 @@ class LevelGenerator {
             it.centerX -= dt.seconds*speed
         }
 
-        obstacles.removeAll { obstacle -> obstacle.centerX<0 }
+        obstacles.removeAll { obstacle -> obstacle.centerX< -0.05 }
 
         obstacleDistance += dt.seconds*speed
 
