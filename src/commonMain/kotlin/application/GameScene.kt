@@ -28,11 +28,18 @@ class GameScene: PunScene() {
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
 
+        var playMusic = false
         var fadein = false
-        val l1 = resourcesVfs["musicbox.mp3"].readMusic().play(PlaybackParameters(PlaybackTimes.INFINITE))
-        val l2 = resourcesVfs["altlayer.mp3"].readMusic().play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
-        val l3 = resourcesVfs["ominous.mp3"].readMusic().play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
 
+        val l1 = resourcesVfs["musicbox.mp3"].readMusic()
+        val l2 = resourcesVfs["altlayer.mp3"].readMusic()
+        val l3 = resourcesVfs["ominous.mp3"].readMusic()
+
+        if(playMusic) {
+            l1.play(PlaybackParameters(PlaybackTimes.INFINITE))
+            l2.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
+            l3.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
+        }
 
         floor = puntainer("floor", Rectangle(0.0,1.0,0.0,FloorData.getHeight()),relative = true) {
 
