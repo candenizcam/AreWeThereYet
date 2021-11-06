@@ -13,12 +13,22 @@ class Playfield: Puntainer {
     }
 
     fun update(dt: TimeSpan){
+        if(jumpDelay>0){
+            jumpDelay-=dt.seconds
+            if(jumpDelay<0){
+                hitboxSpeed = 1.2
+                jumpCount += 1
+            }
+
+        }
+
         _hitboxRect = _hitboxRect.moved(0.0,hitboxSpeed*dt.seconds)
         if(_hitboxRect.bottom<0){
             _hitboxRect = hitboxRestRect
             jumpCount=0
-            jumping=false
+            jumping= jumpDelay>0
         }
+
         gravity = if(hitboxSpeed<=0){
             -4.0
         } else{
@@ -44,13 +54,12 @@ class Playfield: Puntainer {
      */
     fun jump(){
         jumping=true
-        if(jumpCount==0){
-
+        if(jumpCount==0) {
+            jumpDelay = 0.2
             ducking = 0.0
-            hitboxSpeed = 1.2
-            jumpCount+=1
 
-        } else if(jumpCount==1){
+        }
+        else if(jumpCount==1){
 
             ducking = 0.0
             hitboxSpeed = 0.8
@@ -87,6 +96,7 @@ class Playfield: Puntainer {
     var gravity = -1.5
     var hitboxSpeed = 0.0
     var ducking = 0.0
+    var jumpDelay = 0.0
     var jumpCount = 0
     var jumping = false
 }
