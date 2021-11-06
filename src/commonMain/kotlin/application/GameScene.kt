@@ -102,7 +102,7 @@ class GameScene: PunScene() {
                 playfield.duck()
             }
 
-            if(views.input.keys.justReleased(Key.DOWN)){
+            if(views.input.keys.pressing(Key.DOWN).not()){
                 playfield.stopDuck()
             }
 
