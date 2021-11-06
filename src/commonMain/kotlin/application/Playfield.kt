@@ -43,6 +43,7 @@ class Playfield(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id
 
     }
 
+
     val level = LevelGenerator()
 
     /**
