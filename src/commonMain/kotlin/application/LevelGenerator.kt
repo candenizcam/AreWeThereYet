@@ -7,43 +7,49 @@ import kotlin.random.Random
 class LevelGenerator {
 
     var obstacles = mutableListOf<Obstacle>()
-    var dtAcc = 0.0
-    var toNext = 2.0
-    var nextFloor = 3.0
-    var nextCeil = 5.0
-    var speed = 0.3
-    var acceleration = 1.001
-    var difficulty = 1.2
+    var obstacleDistance = 0.0
+    var toNext = 1.0
+    var nextFloor = 0.3
+    var nextCeil = 1.0
+    var speed = 00.3
+    var acceleration = 1.0001
+    var lastGenerated = 0
+    var nowGenerated = 0
 
     fun generate(){
-        when((0..1).random()) {
-            0 -> obstacles.add(Obstacle(ObstacleTypes.NORMAL, 1.05, 0.05, 0.1, 0.1))
-            1 -> obstacles.add(Obstacle(ObstacleTypes.HIGH, 1.05, 0.25, 0.1, 0.1))
+        nowGenerated=(0..1).random()
+        when(nowGenerated) {
+            0 -> obstacles.add(Obstacle(ObstacleTypes.LOWJUMP, 1.05, 100.0/1080, 200.0/1080, 124.0/1920))
+            1 -> obstacles.add(Obstacle(ObstacleTypes.HIGHJUMP, 1.05, 170.0/1080, 340.0/1080, 248.0/1920))
+            2 -> obstacles.add(Obstacle(ObstacleTypes.DUCT, 1.05, 1.0-370.0/1080, 740.0/1080, 124.0/1920))
+            3 -> obstacles.add(Obstacle(ObstacleTypes.LONGJUMP, 1.05, 100.0/1080, 200.0/1080, 248.0/1920))
+            4 -> obstacles.add(Obstacle(ObstacleTypes.DONTJUMP, 1.05, 1.0-170.0/1080, 340.0/1080, 124.0/1920))
+            5 -> obstacles.add(Obstacle(ObstacleTypes.JUMPDUCT, 1.05, 240.0/1080, 200.0/1080, 124.0/1920))
         }
+        lastGenerated=nowGenerated
     }
 
     fun update(dt: TimeSpan){
+        if(speed < 1.3){
+            speed *= (acceleration)
+        }
+
         obstacles.forEach {
-            speed = speed*(acceleration)
-            it.centerX = it.centerX - dt.seconds*speed
+            it.centerX -= dt.seconds*speed
         }
 
         obstacles.removeAll { obstacle -> obstacle.centerX<0 }
 
-        dtAcc+=dt.seconds
+        obstacleDistance += dt.seconds*speed
 
-        if (dtAcc >= toNext){
-            dtAcc = 0.0
+        if (obstacleDistance >= toNext && obstacles.size<5){
+            obstacleDistance = 0.0
             generate()
 
             val seed = Random.nextDouble()
             seed.roundDecimalPlaces(2)
 
             toNext = (nextCeil - nextFloor) * seed + nextFloor
-
-            nextCeil /= difficulty
-            nextFloor /= difficulty
-            //difficulty *= 0.95
         }
     }
 }

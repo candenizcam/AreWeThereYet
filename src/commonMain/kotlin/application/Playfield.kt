@@ -1,9 +1,11 @@
 package application
 
 import com.soywiz.klock.TimeSpan
+import com.soywiz.korev.Key
 import com.soywiz.korge.view.Image
 import com.soywiz.korge.view.position
 import com.soywiz.korge.view.solidRect
+import com.soywiz.korge.view.views
 import com.soywiz.korim.bitmap.Bitmap
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
@@ -21,6 +23,7 @@ class Playfield: Puntainer {
         if(hitboxRect.bottom<0){
             hitboxRect = hitboxRestRect
             jumpCount=0
+            jumping=false
         }
         hitboxSpeed += gravity
         level.update(dt)
@@ -42,6 +45,7 @@ class Playfield: Puntainer {
      *  Jumpingu Jumpingu everybody
      */
     fun jump(){
+        jumping=true
         if(jumpCount<2){
 
             ducking = 0.0
@@ -61,7 +65,12 @@ class Playfield: Puntainer {
             hitboxSpeed = -2.0
             jumpCount = 2
         }
+    }
 
+    fun stopDuck(){
+        if (ducking!=0.0 && !jumping){
+            ducking=0.0
+        }
     }
 
     var hitboxRestRect = Rectangle(281.0/1920,281.0/1920 + 124.0/1920,0.0,200.0/840)
@@ -70,4 +79,5 @@ class Playfield: Puntainer {
     var hitboxSpeed = 0.0
     var ducking = 0.0
     var jumpCount = 0
+    var jumping = false
 }

@@ -99,10 +99,16 @@ class GameScene: PunScene() {
                 playfield.duck()
             }
 
+            if(views.input.keys.pressing(Key.DOWN).not()){
+                playfield.stopDuck()
+            }
+
             val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
 
-            hand.update(dt, r)
-            playfield.update(dt)
+            hand.x = r.left
+            hand.yConv = r.top - r.height*(playfield.ducking>0).toInt()/2
+            hand.scaledHeight = r.height/(1.0+(playfield.ducking>0).toInt())
+            hand.scaledWidth = r.width
 
             if(playfield.collisionCheck()){
                 floor.visible = false
