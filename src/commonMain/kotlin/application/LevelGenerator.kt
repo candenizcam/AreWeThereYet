@@ -37,6 +37,7 @@ class LevelGenerator {
                 ObstacleRarity.RARE
             }
         }
+
         when(nowGenerated) {
             0 -> obstacles.add(Obstacle(ObstacleTypes.DUCK,rarity, 1.05, 1.0-350.0/840, 700.0/840, 124.0/1920))
             1 -> obstacles.add(Obstacle(ObstacleTypes.HIGHJUMP,rarity, 1.05, 170.0/840, 340.0/840, 248.0/1920))
