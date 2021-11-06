@@ -257,8 +257,9 @@ var xyz = "rare"
             animType.sourceList().forEach {
                 Image(resourcesVfs[it].readBitmap()).also {
                     it.visible = false
-                    animType.puntainer.addChild(it)
+                    animType.puntainerTwoFingers.addChild(it)
                 }
+
             }
         }
     }
