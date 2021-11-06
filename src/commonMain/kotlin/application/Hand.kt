@@ -1,11 +1,14 @@
 package application
 
 import com.soywiz.klock.TimeSpan
+import com.soywiz.korge.internal.KorgeInternal
+import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
 import modules.basic.Colour
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
 
+@KorgeInternal
 class Hand: Puntainer {
     constructor(id: String?=null, relativeRectangle: Rectangle) : super(id,relativeRectangle){
         this.position(x,y)

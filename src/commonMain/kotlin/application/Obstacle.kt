@@ -4,20 +4,33 @@ import pungine.geometry2D.Rectangle
 import pungine.geometry2D.Vector
 
 
-data class Obstacle(var type: ObstacleTypes,var obstacleRarity: ObstacleRarity, var centerX: Double, var centerY: Double, var height: Double, var width: Double){
+data class Obstacle(
+    var type: ObstacleTypes,
+    var obstacleRarity: ObstacleRarity,
+    var centerX: Double,
+    var centerY: Double,
+    var height: Double,
+    var width: Double
+) {
     val rectangle: Rectangle
-    get() {
-        return Rectangle(Vector(centerX,centerY),width,height)
-    }
+        get() {
+            return Rectangle(Vector(centerX, centerY), width, height)
+        }
 }
-enum class ObstacleTypes{
+
+enum class ObstacleTypes {
     LOWJUMP {
         override fun relevantID(rarity: Int): String {
             return "low-jump-1"
         }
 
         override fun ratedRect(): Rectangle {
-            return Rectangle(476.0/1980.0,600.0/1980.0,0.0/1080.0+240.0/1080.0,200.0/1080.0+240.0/1080.0)
+            return Rectangle(
+                476.0 / 1980.0,
+                600.0 / 1980.0,
+                0.0 / 1080.0 + 240.0 / 1080.0,
+                200.0 / 1080.0 + 240.0 / 1080.0
+            )
         }
     },
     HIGHJUMP {
@@ -26,7 +39,12 @@ enum class ObstacleTypes{
         }
 
         override fun ratedRect(): Rectangle {
-            return Rectangle(88.0/1920.0,336.0/1920.0,0.0/1080.0+240.0/1080.0,340.0/1080.0+240.0/1080.0)
+            return Rectangle(
+                88.0 / 1920.0,
+                336.0 / 1920.0,
+                0.0 / 1080.0 + 240.0 / 1080.0,
+                340.0 / 1080.0 + 240.0 / 1080.0
+            )
         }
     },
     DUCK {
@@ -35,7 +53,12 @@ enum class ObstacleTypes{
         }
 
         override fun ratedRect(): Rectangle {
-            return Rectangle(778.0/1920.0,902.0/1920.0,140.0/1080.0+240.0/1080.0,840.0/1080.0+240.0/1080.0)
+            return Rectangle(
+                778.0 / 1920.0,
+                902.0 / 1920.0,
+                140.0 / 1080.0 + 240.0 / 1080.0,
+                840.0 / 1080.0 + 240.0 / 1080.0
+            )
         }
     },
     LONGJUMP {
@@ -44,7 +67,12 @@ enum class ObstacleTypes{
         }
 
         override fun ratedRect(): Rectangle {
-            return Rectangle(1042.0/1920.0,1290.0/1920.0,0.0/1080.0+240.0/1080.0,200.0/1080.0+240.0/1080.0)
+            return Rectangle(
+                1042.0 / 1920.0,
+                1290.0 / 1920.0,
+                0.0 / 1080.0 + 240.0 / 1080.0,
+                200.0 / 1080.0 + 240.0 / 1080.0
+            )
         }
     },
     DONTJUMP {
@@ -53,25 +81,40 @@ enum class ObstacleTypes{
         }
 
         override fun ratedRect(): Rectangle {
-            return Rectangle(1373.0/1920.0,1713.0/1920.0,500.0/1080.0+240.0/1080.0,840.0/1080.0+240.0/1080.0)
+            return Rectangle(
+                1373.0 / 1920.0,
+                1713.0 / 1920.0,
+                500.0 / 1080.0 + 240.0 / 1080.0,
+                840.0 / 1080.0 + 240.0 / 1080.0
+            )
         }
     },
-    LOWBIRD{
+    LOWBIRD {
         override fun relevantID(rarity: Int): String {
             return "bird-1"
         }
 
         override fun ratedRect(): Rectangle {
-            return Rectangle(1373.0/1920.0,1497.0/1920.0,500.0/1080.0+240.0/1080.0,640.0/1080.0+240.0/1080.0)
+            return Rectangle(
+                1373.0 / 1920.0,
+                1497.0 / 1920.0,
+                500.0 / 1080.0 + 240.0 / 1080.0,
+                640.0 / 1080.0 + 240.0 / 1080.0
+            )
         }
     },
-    HIGHBIRD{
+    HIGHBIRD {
         override fun relevantID(rarity: Int): String {
             return "bird-1"
         }
 
         override fun ratedRect(): Rectangle {
-            return Rectangle(1373.0/1920.0,1497.0/1920.0,500.0/1080.0+240.0/1080.0,640.0/1080.0+240.0/1080.0)
+            return Rectangle(
+                1373.0 / 1920.0,
+                1497.0 / 1920.0,
+                500.0 / 1080.0 + 240.0 / 1080.0,
+                640.0 / 1080.0 + 240.0 / 1080.0
+            )
         }
     },
     JUMPDUCK {
@@ -80,15 +123,20 @@ enum class ObstacleTypes{
         }
 
         override fun ratedRect(): Rectangle {
-            return Rectangle(1621.0/1920.0,1761.0/1920.0,140.0/1080.0+240.0/1080.0,340.0/1080.0+240.0/1080.0)
+            return Rectangle(
+                1621.0 / 1920.0,
+                1761.0 / 1920.0,
+                140.0 / 1080.0 + 240.0 / 1080.0,
+                340.0 / 1080.0 + 240.0 / 1080.0
+            )
         }
     };
 
-    abstract fun relevantID(rarity:Int = 0): String
+    abstract fun relevantID(rarity: Int = 0): String
     abstract fun ratedRect(): Rectangle
 }
 
-enum class ObstacleRarity{
+enum class ObstacleRarity {
     RARE,
     RARER,
     RAREST
