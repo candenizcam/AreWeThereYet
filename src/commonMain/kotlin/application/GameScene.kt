@@ -102,6 +102,10 @@ class GameScene: PunScene() {
                 playfield.duck()
             }
 
+            if(views.input.keys.justReleased(Key.DOWN)){
+                playfield.stopDuck()
+            }
+
             hand.update(dt)
             playfield.update(dt)
             val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
