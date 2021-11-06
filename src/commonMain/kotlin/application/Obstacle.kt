@@ -56,6 +56,7 @@ enum class ObstacleTypes{
             return Rectangle(1373.0/1920.0,1713.0/1920.0,500.0/1080.0+240.0/1080.0,840.0/1080.0+240.0/1080.0)
         }
     },
+
     JUMPDUCK {
         override fun relevantID(rarity: Int): String {
             return "jump-duck-1"
