@@ -9,7 +9,10 @@ import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.Image
 import com.soywiz.korge.view.addUpdater
+import com.soywiz.korge.view.text
+import com.soywiz.korim.font.TtfFont
 import com.soywiz.korim.format.readBitmap
+import com.soywiz.korim.text.TextAlignment
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
 import kotlinx.coroutines.GlobalScope
@@ -116,7 +119,7 @@ class GameScene : PunScene() {
             Rectangle(3820.0, 2 * 3820.0, 0.0, 1080.0)
         )
 
-        punImage("window", resourcesVfs["environment/window.png"].readBitmap(), oneRectangle(), true)
+
 
         playfield.fitToFrame(Rectangle(0.0, w, FloorData.getHeight() * h, h))
         this.addChild(playfield)
@@ -124,6 +127,39 @@ class GameScene : PunScene() {
         val rareScavengerList = listOf("Red Bird","Red Traffic Sign","Yellow Tractor","Green Road Sign","Large Blue Sign","Small Blue Sign")
         val rarerScavengerList = listOf("Green Bird","Green Traffic Sign","Red Tractor","Yellow Road Sign","Large Green Sign","Small Green Sign")
         val rarestScavengerList = listOf("Blue Bird","Yellow Traffic Sign","Blue Tractor","Blue Road Sign","Large Yellow Sign","Small Yellow Sign")
+
+        var hunt1 = rareScavengerList.random()
+        var hunt2 = rarerScavengerList.random()
+        var hunt3 = rarestScavengerList.random()
+        var scavengerHuntList = listOf(hunt1,hunt2,hunt3)
+        var sh1Type: ObstacleTypes
+        var sh2Type: ObstacleTypes
+        var sh3Type: ObstacleTypes
+        when(rareScavengerList.indexOf(hunt1)){
+            0 ->  sh1Type = ObstacleTypes.LOWBIRD
+            1 ->  sh1Type = ObstacleTypes.LOWJUMP
+            2 ->  sh1Type = ObstacleTypes.LONGJUMP
+            3 ->  sh1Type = ObstacleTypes.DONTJUMP
+            4 ->  sh1Type = ObstacleTypes.DUCK
+            5 ->  sh1Type = ObstacleTypes.JUMPDUCK
+        }
+        when(rareScavengerList.indexOf(hunt2)){
+            0 ->  sh2Type = ObstacleTypes.LOWBIRD
+            1 ->  sh2Type = ObstacleTypes.LOWJUMP
+            2 ->  sh2Type = ObstacleTypes.LONGJUMP
+            3 ->  sh2Type = ObstacleTypes.DONTJUMP
+            4 ->  sh2Type = ObstacleTypes.DUCK
+            5 ->  sh2Type = ObstacleTypes.JUMPDUCK
+        }
+        when(rareScavengerList.indexOf(hunt3)){
+            0 ->  sh3Type = ObstacleTypes.LOWBIRD
+            1 ->  sh3Type = ObstacleTypes.LOWJUMP
+            2 ->  sh3Type = ObstacleTypes.LONGJUMP
+            3 ->  sh3Type = ObstacleTypes.DONTJUMP
+            4 ->  sh3Type = ObstacleTypes.DUCK
+            5 ->  sh3Type = ObstacleTypes.JUMPDUCK
+        }
+        //TODO rare-sh1Type, rarer-sh2Type ve rarest-sh3Typelar puan kazandıracak
 
         // obstacles
         val rarityList = listOf("rare","rarer","rarest")
@@ -176,6 +212,26 @@ class GameScene : PunScene() {
 
             }
         }
+        punImage("window", resourcesVfs["environment/window.png"].readBitmap(), oneRectangle(), true)
+
+        punImage("hud", resourcesVfs["UI/hunt-score.png"].readBitmap())
+        val font = TtfFont(resourcesVfs["MPLUSRounded1c-Medium.ttf"].readAll())
+        val t = text("im a lunatic",font=font, textSize = 28.0,color = Colour.byHex("131A14").korgeColor).also {
+            it.x = 108.0
+            it.y = 117.0
+
+        }
+
+        val scoreText = text("11111",font=font, textSize = 42.0,color = Colour.byHex("131A14").korgeColor,alignment = TextAlignment.TOP_CENTER).also {
+            it.x = (1594.0+1894.0)*0.5
+            it.y = 26.0+12.0
+
+        }
+        scoreText.text = "0"
+
+
+
+        //1594, 1894, 26, 106
 
         adjustHand()
         this.addChild(hand)
@@ -206,6 +262,9 @@ class GameScene : PunScene() {
 
 
 
+        //108, 350, 117, 267
+
+
 
         ////////////////////////////////////////////////////////////////
 
@@ -231,6 +290,9 @@ class GameScene : PunScene() {
                 obstacles.forEach {
                     it.visible = false
                 }
+
+                score+= dt.seconds*10
+                scoreText.text = score.toInt().toString()
 
 
 
@@ -347,6 +409,8 @@ class GameScene : PunScene() {
 
 
     // GAME SCENE VARIABLES
+
+    var score = 0.0
 
     var gameActive = true
 
