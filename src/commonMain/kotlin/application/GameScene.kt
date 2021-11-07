@@ -146,7 +146,14 @@ class GameScene : PunScene() {
         }
 
         this.addUpdater { dt ->
+            if(views.input.keys.justPressed(Key.ESCAPE)){
+                doUpdate = doUpdate.not()
+            }
+
             if(doUpdate){
+
+
+
                 obstacles.forEach {
                     it.visible = false
                 }
