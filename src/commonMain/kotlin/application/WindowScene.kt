@@ -89,6 +89,7 @@ class WindowScene  : PunScene() {
             }
 
 
+
             if (views.input.keys.justPressed(Key.DOWN)) {
                 windowUp = false
                 windowDown = true

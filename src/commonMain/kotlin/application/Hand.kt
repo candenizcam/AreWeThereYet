@@ -49,6 +49,7 @@ class Hand: Puntainer {
                     activeAnimationType = ActiveAnimationType.TWOFINGER_RUN
                     a = activeAnimation()
                 }else if(activeAnimationType==ActiveAnimationType.TWOFINGER_CUT){
+                    println("cutfinger ended $animIndex")
                     activeAnimationType = ActiveAnimationType.TWOFINGER_RUN
                     a = activeAnimation()
                 }
@@ -121,7 +122,11 @@ class Hand: Puntainer {
             //activeAnimation().forEachChild { it.visible=false }
             SfxPlayer.playSfx("cut.mp3")
             activeAnimationType = ActiveAnimationType.TWOFINGER_CUT
-
+            ActiveAnimationType.values().forEach {
+                it.puntainerTwoFingers.children.fastForEach { it.visible=false }
+                it.puntainerOneFingers.children.fastForEach { it.visible=false }
+            }
+            println("cutfinger calld")
         }
 
     }
@@ -137,6 +142,9 @@ class Hand: Puntainer {
             animIndex=0.0
             field=value
             jumpLocker=false
+            if(value==ActiveAnimationType.TWOFINGER_CUT){
+                println("cutfinger switched to active")
+            }
         }
     }
 
