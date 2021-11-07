@@ -31,13 +31,17 @@ class EntryScene : PunScene() {
         //openingCrawl()
         SfxPlayer.loadSounds()
 
-        outside1 =
-            punImage("outside", resourcesVfs["environment/Bg2.png"].readBitmap(), Rectangle(0.0, 3820.0, 0.0, 1080.0))
-        outside2 = punImage(
-            "outside",
-            resourcesVfs["environment/Bg2.png"].readBitmap().flipX(),
-            Rectangle(3820.0, 2 * 3820.0, 0.0, 1080.0)
-        )
+
+
+
+
+        val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
+        outsiders.add(punImage("o1",bmp.clone(),Rectangle(0.0, 960.0, 0.0, 1080.0)))
+        outsiders.add(punImage("o2",bmp.clone(),Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
+        outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
+
+
+
 
         window = punImage(
             "id",
@@ -75,6 +79,8 @@ class EntryScene : PunScene() {
             resourcesVfs["UI/Windown.png"].readBitmap(),
             Rectangle(0.0,1.0,0.0,1.0),relative = true
         )
+
+
 
         val playDown = punImage("play_down",resourcesVfs["UI/play-pushed.png"].readBitmap(),Rectangle(232.0/1920.0,557.0/1920.0,1-864.0/1080.0,1-971.0/1080.0),relative = true).also {
             it.visible = false
@@ -189,14 +195,13 @@ class EntryScene : PunScene() {
          */
 
         addUpdater {dt->
-            outside1.x -= dt.seconds * 0.3 * 1920
-            outside2.x -= dt.seconds * 0.3 * 1920
-            if (outside1.x + outside1.width < -1000.0) {
-                outside1.x += outside1.width * 2
+            outsiders.forEach {
+                it.x -= dt.seconds*0.3*1920
+                if(it.x + it.width< -20.0){
+                    it.x += it.width * 3
+                }
             }
-            if (outside2.x + outside2.width < -1000.0) {
-                outside2.x += outside2.width * 2
-            }
+
         }
 
 
@@ -208,10 +213,9 @@ class EntryScene : PunScene() {
         super.sceneAfterInit()
     }
 
-    var outside1: Puntainer = Puntainer()
-    var outside2: Puntainer = Puntainer()
     var window: Puntainer = Puntainer()
     var credits: Puntainer= Puntainer()
+    val outsiders = mutableListOf<Puntainer>()
 
 
 
