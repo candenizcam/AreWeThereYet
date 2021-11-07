@@ -1,6 +1,9 @@
 package application
 
 import com.soywiz.klock.TimeSpan
+import com.soywiz.korau.sound.PlaybackParameters
+import com.soywiz.korau.sound.PlaybackTimes
+import com.soywiz.korau.sound.readMusic
 import com.soywiz.korev.Key
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.internal.KorgeInternal
@@ -21,9 +24,10 @@ import pungine.geometry2D.Rectangle
 class WindowScene  : PunScene() {
     override fun createSceneView(): Container = Puntainer()
 
-    @OptIn(KorgeInternal::class)
+    @OptIn(KorgeInternal::class, kotlinx.coroutines.DelicateCoroutinesApi::class)
     override suspend fun Container.sceneInit(){
         //openingCrawl()
+        val engineLoop = resourcesVfs["SFX/engine_heavy_loop-20.mp3"].readMusic()
 
         outside1 =
             punImage("outside", resourcesVfs["environment/Bg2.png"].readBitmap(), Rectangle(0.0, 3820.0, 0.0, 1080.0))
@@ -68,6 +72,10 @@ class WindowScene  : PunScene() {
                 outside2.x += outside2.width * 2
             }
 
+            if (views.input.keys.justPressed((Key.DOWN))){
+                SfxPlayer.playSfx("windowDown-4.mp3")
+            }
+
             if (views.input.keys.pressing(Key.DOWN)) {
                 window.yConv-=(dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtLeast(0.0)
             }else if(views.input.keys.pressing(Key.UP)){
@@ -82,7 +90,7 @@ class WindowScene  : PunScene() {
 
 
         }
-
+        engineLoop.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
         super.sceneAfterInit()
     }
 
