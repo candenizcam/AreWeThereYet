@@ -88,10 +88,10 @@ class EntryScene : PunScene() {
             }
         }
 
-        val settingsDown = punImage("settings_down",resourcesVfs["UI/settings-pushed.png"].readBitmap(),Rectangle(880.0/1920.0,1200.0/1920.0,1-844.0/1080.0,1-951.0/1080.0),relative = true).also {
+        val settingsDown = punImage("settings_down",resourcesVfs["UI/credits-pushed.png"].readBitmap(),Rectangle(880.0/1920.0,1200.0/1920.0,1-844.0/1080.0,1-951.0/1080.0),relative = true).also {
             it.visible = false
         }
-        val settingsUp = punImage("settings_up",resourcesVfs["UI/settings-normal.png"].readBitmap(),Rectangle(880.0/1920.0,1200.0/1920.0,1-844.0/1080.0,1-951.0/1080.0),relative = true).also { exit->
+        val settingsUp = punImage("settings_up",resourcesVfs["UI/credits-normal.png"].readBitmap(),Rectangle(880.0/1920.0,1200.0/1920.0,1-844.0/1080.0,1-951.0/1080.0),relative = true).also { exit->
             exit.onDown {
                 exit.visible = false
                 settingsDown.visible=true
