@@ -68,13 +68,11 @@ class GameScene : PunScene() {
             }
         }
 
-        outside1 =
-            punImage("outside", resourcesVfs["environment/Bg2.png"].readBitmap(), Rectangle(0.0, 3820.0, 0.0, 1080.0))
-        outside2 = punImage(
-            "outside",
-            resourcesVfs["environment/Bg2.png"].readBitmap().flipX(),
-            Rectangle(3820.0, 2 * 3820.0, 0.0, 1080.0)
-        )
+
+        val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
+        outsiders.add(punImage("o1",bmp.clone(),Rectangle(0.0, 960.0, 0.0, 1080.0)))
+        outsiders.add(punImage("o2",bmp.clone(),Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
+        outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
 
 
 
@@ -370,7 +368,6 @@ class GameScene : PunScene() {
                         playfield.sliced()
                         hand.cutFinger()
                         scoreKeeper.addScore(score)
-                        scoreKeeper.scores.forEach { println(it) }
                         scoreKeeper.save()
                     }
                 } else if (playfield.ducking > 0.0) {
@@ -396,7 +393,6 @@ class GameScene : PunScene() {
 
             }
         }
-        println("initiate is done")
 
     }
 
@@ -427,14 +423,14 @@ class GameScene : PunScene() {
     var outside1: Puntainer = Puntainer()
     var outside2: Puntainer = Puntainer()
 
+    val outsiders = mutableListOf<Puntainer>()
+
     fun backgroundRoll(dt: TimeSpan) {
-        outside1.x -= dt.seconds * playfield.level.speed * 1920
-        outside2.x -= dt.seconds * playfield.level.speed * 1920
-        if (outside1.x + outside1.width < -1000.0) {
-            outside1.x += outside1.width * 2
-        }
-        if (outside2.x + outside2.width < -1000.0) {
-            outside2.x += outside2.width * 2
+        outsiders.forEach {
+            it.x -= dt.seconds *playfield.level.speed * 1920
+            if(it.x + it.width< -20.0){
+                it.x += it.width * 3
+            }
         }
     }
 
@@ -448,13 +444,7 @@ class GameScene : PunScene() {
                     animType.puntainerTwoFingers.addChild(it)
                 }
 
-                if (animType == Hand.ActiveAnimationType.TWOFINGER_JUMP) {
-                    println(s)
-                }
 
-            }
-            if (animType == Hand.ActiveAnimationType.TWOFINGER_JUMP) {
-                println("${animType.puntainerTwoFingers.children.size}")
             }
             animType.puntainerOneFingers.children.clear()
             animType.sourceListOne().forEach {
