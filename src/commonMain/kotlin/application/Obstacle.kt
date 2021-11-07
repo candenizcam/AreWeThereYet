@@ -41,9 +41,9 @@ enum class ObstacleTypes {
         override fun ratedRect(): Rectangle {
             return Rectangle(
                 68.0 /384.0,
-                218.0/ 384.0,
+                318.0/ 384.0,
                 0.0 / 1080.0+ 240.0 / 1080.0,
-                300.0 / 1080.0 + 240.0 / 1080.0
+                340.0 / 1080.0 + 240.0 / 1080.0
             )
         }
     },
