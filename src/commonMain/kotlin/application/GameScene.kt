@@ -216,10 +216,26 @@ class GameScene : PunScene() {
 
         punImage("hud", resourcesVfs["UI/hunt-score.png"].readBitmap())
         val font = TtfFont(resourcesVfs["MPLUSRounded1c-Medium.ttf"].readAll())
-        val t = text("im a lunatic",font=font, textSize = 28.0,color = Colour.byHex("131A14").korgeColor).also {
+
+
+        val t1 = text(scavengerHuntList[0],font=font, textSize = 28.0,color = Colour.byHex("131A14").korgeColor).also {
             it.x = 108.0
             it.y = 117.0
+            it.visible=false
 
+        }
+
+        val t2= text(scavengerHuntList[1],font=font, textSize = 28.0,color = Colour.byHex("131A14").korgeColor).also {
+            it.x = 108.0
+            it.y = 167.0
+            it.visible=false
+
+        }
+
+        val t3= text(scavengerHuntList[2],font=font, textSize = 28.0,color = Colour.byHex("131A14").korgeColor).also {
+            it.x = 108.0
+            it.y = 217.0
+            it.visible=false
         }
 
         val scoreText = text("11111",font=font, textSize = 42.0,color = Colour.byHex("131A14").korgeColor,alignment = TextAlignment.TOP_CENTER).also {
@@ -276,15 +292,18 @@ class GameScene : PunScene() {
 
 
         this.addUpdater { dt ->
-            score += dt.seconds * 10
-            if(views.input.keys.justPressed(Key.ESCAPE)){
-                doUpdate = doUpdate.not()
+            if(firstRun){
+                firstRun=false
+                t1.visible=true
+                t2.visible=true
+                t3.visible=true
             }
 
 
 
-
             if(gameActive){
+
+
 
                 backgroundRoll(dt)
                 obstacles.forEach {
@@ -396,6 +415,7 @@ class GameScene : PunScene() {
 
             }
         }
+        println("initiate is done")
 
     }
 
@@ -464,6 +484,9 @@ class GameScene : PunScene() {
         }
 
     }
+
+    var firstRun = true
+
 
     fun death(){
         gameActive=false
