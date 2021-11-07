@@ -45,15 +45,17 @@ class Playfield(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id
         immune = 1.0
     }
 
-    fun collisionCheck(): Boolean {
+    fun collisionCheck(): Int {
         return if (immune==0.0){
-            level.obstacles.any { hitboxRect.collides(it.rectangle) }
+            try {
+                level.obstacles.first { hitboxRect.collides(it.rectangle) }.type.ordinal
+            } catch (e: Exception) {
+                return -1
+            }
+
         }else{
-            false
+            -1
         }
-
-
-
     }
 
 
