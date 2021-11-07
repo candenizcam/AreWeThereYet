@@ -47,6 +47,14 @@ class EntryScene : PunScene() {
             it.alpha=0.8
         }
 
+        window = punImage(
+            "id",
+            resourcesVfs["UI/name.png"].readBitmap(),
+            Rectangle(0.0,1.0,0.0,1.0),relative = true
+        ).also {
+            it.alpha=0.8
+        }
+
         credits = punImage(
             "credits_scene",
             resourcesVfs["UI/glass-credits.png"].readBitmap(),
