@@ -91,7 +91,7 @@ class LevelGenerator() {
         }
         lastGenerated = nowGenerated
 
-        SfxPlayer.playSfx("cut.mp3")
+        SfxPlayer.playSfx("daddy.mp3")
     }
 
 

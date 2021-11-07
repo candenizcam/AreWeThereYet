@@ -38,10 +38,10 @@ class WindowScene  : PunScene() {
         //solidRect("blur", Rectangle(0.0,1.0,0.0,1.0),colour = Colour.rgba256(100,100,100,100).korgeColor,relative = true)
         window = punImage(
             "id",
-            resourcesVfs["UI/blur.jpg"].readBitmap(),
+            resourcesVfs["UI/glass.png"].readBitmap(),
             Rectangle(0.0,1.0,0.0,1.0),relative = true
         ).also {
-            it.alpha=0.8
+            it.alpha=1.0
         }
 
         punImage(

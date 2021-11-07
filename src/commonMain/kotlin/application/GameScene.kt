@@ -161,7 +161,14 @@ class GameScene : PunScene() {
          */
 
         this.addUpdater { dt ->
+            if(views.input.keys.justPressed(Key.ESCAPE)){
+                doUpdate = doUpdate.not()
+            }
+
             if(doUpdate){
+
+
+
                 obstacles.forEach {
                     it.visible = false
                 }
@@ -269,7 +276,7 @@ class GameScene : PunScene() {
         super.sceneAfterInit()
     }
 
-    var doUpdate = false
+    var doUpdate = true
 
     val hand = Hand("hand", oneRectangle())
     var playfield = Playfield("playfield", oneRectangle())
