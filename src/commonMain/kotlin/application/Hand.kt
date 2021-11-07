@@ -36,6 +36,8 @@ class Hand: Puntainer {
             animIndex += dt.seconds*12
 
 
+
+
             var a = activeAnimation()
             if (animIndex>=a.size){
                 if(activeAnimationType==ActiveAnimationType.TWOFINGER_JUMP){
@@ -45,6 +47,7 @@ class Hand: Puntainer {
                     activeAnimationType = ActiveAnimationType.TWOFINGER_RUN
                     a = activeAnimation()
                 }else if(activeAnimationType==ActiveAnimationType.TWOFINGER_CUT){
+                    println("cutfinger ended $animIndex")
                     activeAnimationType = ActiveAnimationType.TWOFINGER_RUN
                     a = activeAnimation()
                 }
@@ -115,6 +118,11 @@ class Hand: Puntainer {
         if(activeAnimationType!=ActiveAnimationType.TWOFINGER_CUT){
             //activeAnimation().forEachChild { it.visible=false }
             activeAnimationType = ActiveAnimationType.TWOFINGER_CUT
+            ActiveAnimationType.values().forEach {
+                it.puntainerTwoFingers.children.fastForEach { it.visible=false }
+                it.puntainerOneFingers.children.fastForEach { it.visible=false }
+            }
+            println("cutfinger calld")
         }
 
     }
@@ -125,11 +133,13 @@ class Hand: Puntainer {
     var activeAnimationType = ActiveAnimationType.TWOFINGER_RUN
     set(value) {
         if(value!=field){
-            println(value.toString())
             activeAnimation().children.forEach { it.visible=false }
             animIndex=0.0
             field=value
             jumpLocker=false
+            if(value==ActiveAnimationType.TWOFINGER_CUT){
+                println("cutfinger switched to active")
+            }
         }
     }
 

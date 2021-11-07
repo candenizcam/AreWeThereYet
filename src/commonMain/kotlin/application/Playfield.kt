@@ -35,12 +35,24 @@ class Playfield(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id
 
         ducking = (ducking - dt.seconds).coerceAtLeast(0.0)
 
+        immune = (immune-dt.seconds).coerceAtLeast(0.0)
+
+    }
+
+    var immune = 0.0
+
+    fun sliced(){
+        immune = 1.0
     }
 
     fun collisionCheck(): Boolean {
+        return if (immune==0.0){
+            level.obstacles.any { hitboxRect.collides(it.rectangle) }
+        }else{
+            false
+        }
 
 
-        return level.obstacles.any { hitboxRect.collides(it.rectangle) }
 
     }
 

@@ -75,8 +75,8 @@ class WindowScene  : PunScene() {
             }
 
             if(window.yConv<0.0){
-                GlobalScope.launch { sceneContainer.changeTo<GameScene>( ) }
-                //launchImmediately{}
+
+                launchImmediately{sceneContainer.changeTo<GameScene>( )}
             }
 
 
