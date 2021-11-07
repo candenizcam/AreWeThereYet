@@ -119,8 +119,9 @@ class GameScene : PunScene() {
         playfield.fitToFrame(Rectangle(0.0, w, FloorData.getHeight() * h, h))
         this.addChild(playfield)
 
-
-
+        val rareScavengerList = listOf("Red Bird","Red Traffic Sign","Yellow Tractor","Green Road Sign","Large Blue Sign","Small Blue Sign")
+        val rarerScavengerList = listOf("Green Bird","Green Traffic Sign","Red Tractor","Yellow Road Sign","Large Green Sign","Small Green Sign")
+        val rarestScavengerList = listOf("Blue Bird","Yellow Traffic Sign","Blue Tractor","Blue Road Sign","Large Yellow Sign","Small Yellow Sign")
 
         // obstacles
         val rarityList = listOf("rare","rarer","rarest")
@@ -196,6 +197,12 @@ class GameScene : PunScene() {
             }
         }
 
+        puntainer("floor", Rectangle(0.0,1.0,0.0,1.0),relative = true){}.also{
+
+        }
+
+
+
 
 
         ////////////////////////////////////////////////////////////////
@@ -255,12 +262,12 @@ class GameScene : PunScene() {
                                 o2[index].scaledHeight = r.height
                                 o2[index].scaledWidth = r.width
                                 o2[index].visible = true
-                                obshit[obshitindex].scaledWidth = hit.width
-                                obshit[obshitindex].scaledHeight = hit.height
-                                obshit[obshitindex].x = hit.left
-                                obshit[obshitindex].y = GlobalAccess.virtualSize.height - hit.top
-                                obshit[obshitindex].visible = true
-                                obshitindex += 1
+                                //obshit[obshitindex].scaledWidth = hit.width
+                                //obshit[obshitindex].scaledHeight = hit.height
+                                //obshit[obshitindex].x = hit.left
+                                //obshit[obshitindex].y = GlobalAccess.virtualSize.height - hit.top
+                                //obshit[obshitindex].visible = true
+                                //obshitindex += 1
                             }
                         }
                     }
@@ -287,7 +294,7 @@ class GameScene : PunScene() {
                     fadein = true
                     if(GlobalAccess.fingers==1){
                         death()
-                        GlobalScope.launchImmediately { sceneContainer.changeTo<EntryScene>( ) }
+                        GlobalScope.launchImmediately { sceneContainer.changeTo<GameOverScene>( ) }
                     }else{
                         GlobalAccess.fingers-= 1
                         playfield.sliced()
@@ -318,6 +325,8 @@ class GameScene : PunScene() {
                     if (l2.volume < 0.6) l2.volume += 0.1
                     else fadein = false
                 }
+            }else{
+
             }
         }
 
