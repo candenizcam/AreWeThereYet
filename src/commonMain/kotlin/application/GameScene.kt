@@ -206,6 +206,12 @@ class GameScene : PunScene() {
                         this.addChild(it)
                         it.visible = false
                     }
+
+                    PunImage("bird-$i$goreText", resourcesVfs["obs/$folder/bird-$i.png"].readBitmap()).also {
+                        obstacles.add(it)
+                        this.addChild(it)
+                        it.visible = false
+                    }
                 }
 
             }
