@@ -1,19 +1,17 @@
 package application
 
+import com.soywiz.klock.TimeSpan
 import com.soywiz.korau.sound.PlaybackParameters
 import com.soywiz.korau.sound.PlaybackTimes
 import com.soywiz.korau.sound.readMusic
 import com.soywiz.korev.Key
-import com.soywiz.korge.input.onClick
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.Image
 import com.soywiz.korge.view.addUpdater
 import com.soywiz.korim.format.readBitmap
-import com.soywiz.korio.async.launch
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import modules.basic.Colour
 import pungine.PunImage
@@ -35,8 +33,58 @@ class GameScene : PunScene() {
 
     override suspend fun Container.sceneInit() {
         GlobalAccess.fingers=2
+
+
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
+
+        /////////
+        // WINDOW SCENE
+        /////////
+
+        /*
+        val engineLoop = resourcesVfs["SFX/engine_heavy_loop-20.mp3"].readMusic()
+
+        outside1 =
+            punImage("outside", resourcesVfs["environment/Bg2.png"].readBitmap(), Rectangle(0.0, 3820.0, 0.0, 1080.0))
+        outside2 = punImage(
+            "outside",
+            resourcesVfs["environment/Bg2.png"].readBitmap().flipX(),
+            Rectangle(3820.0, 2 * 3820.0, 0.0, 1080.0)
+        )
+
+        //solidRect("blur", Rectangle(0.0,1.0,0.0,1.0),colour = Colour.rgba256(100,100,100,100).korgeColor,relative = true)
+        window = punImage(
+            "id",
+            resourcesVfs["UI/glass.png"].readBitmap(),
+            Rectangle(0.0,1.0,0.0,1.0),relative = true
+        ).also {
+            it.alpha=1.0
+        }
+
+        punImage(
+            "id",
+            resourcesVfs["UI/Wintop.png"].readBitmap(),
+            Rectangle(0.0,1.0,0.0,1.0),relative = true
+        )
+
+        punImage(
+            "id",
+            resourcesVfs["UI/Windown.png"].readBitmap(),
+            Rectangle(0.0,1.0,0.0,1.0),relative = true
+        )
+
+         */
+
+
+
+
+
+        /////////
+        //GAME SCENE
+        /////////
+
+
 
         val playMusic = false
         var fadein = false
@@ -148,27 +196,30 @@ class GameScene : PunScene() {
             }
         }
 
+
+
+        ////////////////////////////////////////////////////////////////
+
+        // UPDATER
+
+        ////////////////////////////////////////////////////////////////
+
+
+
+
         this.addUpdater { dt ->
-            if(views.input.keys.justPressed(Key.ESCAPE)){
-                doUpdate = doUpdate.not()
-            }
-
-            if(doUpdate){
 
 
 
+
+            if(gameActive){
+
+                backgroundRoll(dt)
                 obstacles.forEach {
                     it.visible = false
                 }
 
-                outside1.x -= dt.seconds * playfield.level.speed * 1920
-                outside2.x -= dt.seconds * playfield.level.speed * 1920
-                if (outside1.x + outside1.width < -1000.0) {
-                    outside1.x += outside1.width * 2
-                }
-                if (outside2.x + outside2.width < -1000.0) {
-                    outside2.x += outside2.width * 2
-                }
+
 
 
                 val obshit = children.filterIsInstance<Puntainer>().filter { it.id == "obshit" }
@@ -269,29 +320,41 @@ class GameScene : PunScene() {
                 }
             }
         }
-        println("scene after init")
-        //super.sceneAfterInit()
-        println("scene after init after init")
-
-    }
-
-    override suspend fun Container.sceneMain(): Unit {
 
     }
 
 
+    // WINDOW SCENE VARIABLES
 
-    var doUpdate = true
+    //var windowDown = false
+    //var windowUp = false
+    //var window: Puntainer = Puntainer()
+    //var gameScene = GameScene()
+
+
+    // GAME SCENE VARIABLES
+
+    var gameActive = true
 
     val hand = Hand("hand", oneRectangle())
     var playfield = Playfield("playfield", oneRectangle())
     var floor = Puntainer()
     var obstacles = mutableListOf<Puntainer>()
 
-    //val gravity = 200.0
-    //var hitboxDy =0.0
+
     var outside1: Puntainer = Puntainer()
     var outside2: Puntainer = Puntainer()
+
+    fun backgroundRoll(dt: TimeSpan){
+        outside1.x -= dt.seconds * playfield.level.speed * 1920
+        outside2.x -= dt.seconds * playfield.level.speed * 1920
+        if (outside1.x + outside1.width < -1000.0) {
+            outside1.x += outside1.width * 2
+        }
+        if (outside2.x + outside2.width < -1000.0) {
+            outside2.x += outside2.width * 2
+        }
+    }
 
     suspend fun adjustHand() {
         Hand.ActiveAnimationType.values().forEach { animType ->
@@ -322,19 +385,10 @@ class GameScene : PunScene() {
             }
         }
 
-        /*
-        for(i in 1..12){
-            Image(resourcesVfs["hands/finger_cut-$i.png"].readBitmap()).also {
-                it.visible = false
-                hand.fingerCut.addChild(it)
-            }
-        }
-
-         */
     }
 
     fun death(){
-        doUpdate=false
+        gameActive=false
         hand.activeAnimationType = Hand.ActiveAnimationType.TWOFINGER_RUN
         /*
         Hand.ActiveAnimationType.values().forEach {

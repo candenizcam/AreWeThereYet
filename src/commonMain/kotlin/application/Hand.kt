@@ -32,6 +32,7 @@ class Hand: Puntainer {
 
 
     fun update(dt: TimeSpan, hitboxRectOnScreen: Rectangle){
+
         if(blockMode){
             greenBlock.setSize(hitboxRectOnScreen.width,hitboxRectOnScreen.height)
         }else{
@@ -40,7 +41,8 @@ class Hand: Puntainer {
 
 
             var a = activeAnimation()
-            if (animIndex>=a.size){
+
+            if (animIndex>=activeSize()){
                 if(activeAnimationType==ActiveAnimationType.TWOFINGER_JUMP){
                     activeAnimationType = ActiveAnimationType.TWOFINGER_FLY
                     a = activeAnimation()
@@ -53,7 +55,7 @@ class Hand: Puntainer {
                     a = activeAnimation()
                 }
                 else{
-                    animIndex %= a.size
+                    animIndex %= activeSize()
                 }
 
             }
@@ -153,6 +155,10 @@ class Hand: Puntainer {
 
     fun activeAnimation(): Puntainer {
         return activeAnimationType.puntainer
+    }
+
+    fun activeSize(): Int{
+        return activeAnimationType.sourceList().size
     }
 
     enum class ActiveAnimationType{

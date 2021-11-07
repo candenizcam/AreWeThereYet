@@ -8,7 +8,7 @@ import pungine.InternalGlobalAccess
 
 @KorgeInternal
 object TestModule: Module() {
-    override val mainScene = GameScene::class
+    override val mainScene = WindowScene::class
     override val size = InternalGlobalAccess.virtualSize // Virtual Size
     override val windowSize = InternalGlobalAccess.windowSize// Window Size
 

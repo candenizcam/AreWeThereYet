@@ -117,7 +117,7 @@ class WindowScene  : PunScene() {
     var window: Puntainer = Puntainer()
 
 
-    var gameScene = GameScene()
+    //var gameScene = GameScene()
 
     // delete from all under here for a new scene
 
@@ -135,7 +135,7 @@ class WindowScene  : PunScene() {
                     //sceneContainer.changeTo<GameScene>(gameScene)
                     //sceneContainer = gameScene.sceneContainer
                     //sceneContainer.changeTo<GameScene>()
-                    launchImmediately{sceneContainer.changeTo<GameScene>(gameScene)}
+                    launchImmediately{sceneContainer.changeTo<GameScene>()}
                 }
             }
         }
