@@ -73,12 +73,25 @@ class GameScene : PunScene() {
         // obstacles
         for (j in 0..0) {
             var folder = "rare"
+            folder = if(GlobalAccess.fingers==2) {
+                "rare"
+            } else{
+                "rare-gore"
+            }
             for (i in 1..3) {
                 if(i == 2){
-                    folder = "rarer"
+                    folder = if(GlobalAccess.fingers==2) {
+                        "rarer"
+                    } else{
+                        "rarer-gore"
+                    }
                 }
                 if(i == 3){
-                    folder = "rarest"
+                    folder = if(GlobalAccess.fingers==2) {
+                        "rarest"
+                    } else{
+                        "rarest-gore"
+                    }
                 }
                 PunImage("dont-jump-$i", resourcesVfs["obs/$folder/dont-jump-$i.png"].readBitmap()).also {
                     obstacles.add(it)
@@ -235,23 +248,6 @@ class GameScene : PunScene() {
                    }
                 }
             }
-
-            /*
-
-            playfield.level.obstacles.forEachIndexed { index,obs->
-                val r = playfield.virtualRectangle.fromRated(Rectangle(Vector(obs.centerX,obs.centerY),obs.width,obs.height))
-
-                obstacles[index].x = r.left
-                obstacles[index].yConv = r.top
-                obstacles[index].scaledHeight = r.height
-                obstacles[index].scaledWidth = r.width
-                obstacles[index].visible=true
-            }
-
-             */
-
-
-
 
             if (views.input.keys.justPressed(Key.UP)) {
                 playfield.jump()
