@@ -71,7 +71,7 @@ class GameScene : PunScene() {
 
 
         // obstacles
-        for (j in 0..1) {
+        for (j in 0..0) {
             var folder = "rare"
             for (i in 1..3) {
                 if(i == 2){

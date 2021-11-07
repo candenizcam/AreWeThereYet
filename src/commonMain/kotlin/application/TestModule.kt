@@ -14,5 +14,6 @@ object TestModule: Module() {
     override suspend fun AsyncInjector.configure() {
         mapPrototype { GameScene() }
         mapPrototype { EntryScene() }
+        mapPrototype { WindowScene() }
     }
 }
