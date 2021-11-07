@@ -101,9 +101,9 @@ class WindowScene  : PunScene() {
                 windowUp = false
             }
             if (windowDown) {
-                window.yConv-=(dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtLeast(0.0)
+                window.yConv=( window.yConv-dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtLeast(-10.0)
             }else if (windowUp) {
-                window.yConv+= (dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
+                window.yConv= (window.yConv+dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
             }
 
             if(window.yConv<0.0){
