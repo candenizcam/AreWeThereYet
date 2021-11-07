@@ -123,7 +123,38 @@ class GameScene : PunScene() {
         val rarerScavengerList = listOf("Green Bird","Green Traffic Sign","Red Tractor","Yellow Road Sign","Large Green Sign","Small Green Sign")
         val rarestScavengerList = listOf("Blue Bird","Yellow Traffic Sign","Blue Tractor","Blue Road Sign","Large Yellow Sign","Small Yellow Sign")
 
-        var scavengerHuntList = listOf(rareScavengerList.random(),rarerScavengerList.random(),rarestScavengerList.random())
+        var hunt1 = rareScavengerList.random()
+        var hunt2 = rarerScavengerList.random()
+        var hunt3 = rarestScavengerList.random()
+        var scavengerHuntList = listOf(hunt1,hunt2,hunt3)
+        var sh1Type: ObstacleTypes
+        var sh2Type: ObstacleTypes
+        var sh3Type: ObstacleTypes
+        when(rareScavengerList.indexOf(hunt1)){
+            0 ->  sh1Type = ObstacleTypes.LOWBIRD
+            1 ->  sh1Type = ObstacleTypes.LOWJUMP
+            2 ->  sh1Type = ObstacleTypes.LONGJUMP
+            3 ->  sh1Type = ObstacleTypes.DONTJUMP
+            4 ->  sh1Type = ObstacleTypes.DUCK
+            5 ->  sh1Type = ObstacleTypes.JUMPDUCK
+        }
+        when(rareScavengerList.indexOf(hunt2)){
+            0 ->  sh2Type = ObstacleTypes.LOWBIRD
+            1 ->  sh2Type = ObstacleTypes.LOWJUMP
+            2 ->  sh2Type = ObstacleTypes.LONGJUMP
+            3 ->  sh2Type = ObstacleTypes.DONTJUMP
+            4 ->  sh2Type = ObstacleTypes.DUCK
+            5 ->  sh2Type = ObstacleTypes.JUMPDUCK
+        }
+        when(rareScavengerList.indexOf(hunt3)){
+            0 ->  sh3Type = ObstacleTypes.LOWBIRD
+            1 ->  sh3Type = ObstacleTypes.LOWJUMP
+            2 ->  sh3Type = ObstacleTypes.LONGJUMP
+            3 ->  sh3Type = ObstacleTypes.DONTJUMP
+            4 ->  sh3Type = ObstacleTypes.DUCK
+            5 ->  sh3Type = ObstacleTypes.JUMPDUCK
+        }
+        //TODO rare-sh1Type, rarer-sh2Type ve rarest-sh3Typelar puan kazandıracak
 
         // obstacles
         val rarityList = listOf("rare","rarer","rarest")
