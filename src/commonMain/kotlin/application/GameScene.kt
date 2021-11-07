@@ -199,6 +199,12 @@ class GameScene : PunScene() {
             }
         }
 
+        puntainer("floor", Rectangle(0.0,1.0,0.0,1.0),relative = true){}.also{
+
+        }
+
+
+
 
 
         ////////////////////////////////////////////////////////////////
@@ -258,12 +264,12 @@ class GameScene : PunScene() {
                                 o2[index].scaledHeight = r.height
                                 o2[index].scaledWidth = r.width
                                 o2[index].visible = true
-                                obshit[obshitindex].scaledWidth = hit.width
-                                obshit[obshitindex].scaledHeight = hit.height
-                                obshit[obshitindex].x = hit.left
-                                obshit[obshitindex].y = GlobalAccess.virtualSize.height - hit.top
-                                obshit[obshitindex].visible = true
-                                obshitindex += 1
+                                //obshit[obshitindex].scaledWidth = hit.width
+                                //obshit[obshitindex].scaledHeight = hit.height
+                                //obshit[obshitindex].x = hit.left
+                                //obshit[obshitindex].y = GlobalAccess.virtualSize.height - hit.top
+                                //obshit[obshitindex].visible = true
+                                //obshitindex += 1
                             }
                         }
                     }
@@ -290,7 +296,7 @@ class GameScene : PunScene() {
                     fadein = true
                     if(GlobalAccess.fingers==1){
                         death()
-                        GlobalScope.launchImmediately { sceneContainer.changeTo<EntryScene>( ) }
+                        GlobalScope.launchImmediately { sceneContainer.changeTo<GameOverScene>( ) }
                     }else{
                         GlobalAccess.fingers-= 1
                         playfield.sliced()
@@ -321,6 +327,8 @@ class GameScene : PunScene() {
                     if (l2.volume < 0.6) l2.volume += 0.1
                     else fadein = false
                 }
+            }else{
+
             }
         }
 
