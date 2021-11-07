@@ -14,6 +14,7 @@ import com.soywiz.korim.color.RGBA
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
+import kotlinx.coroutines.DelicateCoroutinesApi
 import pungine.PunImage
 import pungine.PunScene
 import pungine.Puntainer
@@ -23,12 +24,13 @@ import pungine.geometry2D.Rectangle
  *
  */
 
+@DelicateCoroutinesApi
 class EntryScene : PunScene() {
     override fun createSceneView(): Container = Puntainer()
 
     override suspend fun Container.sceneInit(){
         //openingCrawl()
-
+        SfxPlayer.loadSounds()
 
         outside1 =
             punImage("outside", resourcesVfs["environment/Bg2.png"].readBitmap(), Rectangle(0.0, 3820.0, 0.0, 1080.0))
