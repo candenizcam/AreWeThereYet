@@ -51,7 +51,6 @@ class Hand: Puntainer {
                     activeAnimationType = ActiveAnimationType.TWOFINGER_RUN
                     a = activeAnimation()
                 }else if(activeAnimationType==ActiveAnimationType.TWOFINGER_CUT){
-                    println("cutfinger ended $animIndex")
                     activeAnimationType = ActiveAnimationType.TWOFINGER_RUN
                     a = activeAnimation()
                 }
@@ -70,7 +69,6 @@ class Hand: Puntainer {
             }
             if(activeAnimationType==ActiveAnimationType.TWOFINGER_DUCK){
                 val vss = a.children.map { it.visible }
-                println(vss)
             }
             //greenBlock.scaledWidth = hitboxRectOnScreen.width
             //greenBlock.scaledHeight = hitboxRectOnScreen.height
@@ -134,7 +132,6 @@ class Hand: Puntainer {
                 1 -> SfxPlayer.playSfx("mommyScared.mp3")
                 2 -> SfxPlayer.playSfx("mommy&daddy.mp3")
             }
-            println("cutfinger calld")
         }
 
     }
@@ -145,14 +142,10 @@ class Hand: Puntainer {
     var activeAnimationType = ActiveAnimationType.TWOFINGER_RUN
     set(value) {
         if(value!=field){
-            println(value.toString())
             activeAnimation().children.forEach { it.visible=false }
             animIndex=0.0
             field=value
             jumpLocker=false
-            if(value==ActiveAnimationType.TWOFINGER_CUT){
-                println("cutfinger switched to active")
-            }
         }
     }
 
