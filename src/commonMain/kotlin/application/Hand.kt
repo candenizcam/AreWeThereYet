@@ -1,11 +1,14 @@
 package application
 
 import com.soywiz.klock.TimeSpan
+import com.soywiz.korau.sound.readMusic
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
+import com.soywiz.korio.file.std.resourcesVfs
 import modules.basic.Colour
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
+import com.soywiz.korau.sound.readMusic
 
 @KorgeInternal
 class Hand: Puntainer {
@@ -114,7 +117,9 @@ class Hand: Puntainer {
     fun cutFinger(){
         if(activeAnimationType!=ActiveAnimationType.TWOFINGER_CUT){
             //activeAnimation().forEachChild { it.visible=false }
+
             activeAnimationType = ActiveAnimationType.TWOFINGER_CUT
+
         }
 
     }
