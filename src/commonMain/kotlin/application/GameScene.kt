@@ -46,9 +46,9 @@ class GameScene : PunScene() {
         val l3 = resourcesVfs["ominous.mp3"].readMusic()
 
         if (playMusic) {
-            l1.play(PlaybackParameters(PlaybackTimes.INFINITE))
-            l2.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
-            l3.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
+            l1.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.3))
+            l2.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.3))
+            l3.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.3))
         }
 
         floor = puntainer("floor", Rectangle(0.0, 1.0, 0.0, FloorData.getHeight()), relative = true) { puntainer ->

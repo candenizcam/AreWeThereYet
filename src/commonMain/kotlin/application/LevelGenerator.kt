@@ -90,8 +90,27 @@ class LevelGenerator() {
             )
         }
         lastGenerated = nowGenerated
+        if(GlobalAccess.fingers==2){
+            when((0..19).random()){
+                13 -> SfxPlayer.playSfx("radiotune.mp3")
+                17 -> SfxPlayer.playSfx("turnSignal.mp3")
+            }
+        } else {
+            when((0..29).random()){
+                13 -> SfxPlayer.playSfx("radiotune.mp3")
+                17 -> SfxPlayer.playSfx("turnSignal.mp3")
+                5 -> SfxPlayer.playSfx("daddy.mp3")
+                8 -> SfxPlayer.playSfx("mommy.mp3")
+            }
+        }
 
-        //SfxPlayer.playSfx("daddy.mp3")
+        SfxPlayer.playSfx("daddy.mp3")
+
+            if(nowGenerated==5 || nowGenerated==6) {
+                if ((0..2).random()==1) {
+                    SfxPlayer.playSfx("crows-or-rooks-10.mp3")
+                }
+            }
     }
 
 
