@@ -72,11 +72,11 @@ class Hand: Puntainer {
                 val vss = a.children.map { it.visible }
                 println(vss)
             }
-            greenBlock.scaledWidth = hitboxRectOnScreen.width
-            greenBlock.scaledHeight = hitboxRectOnScreen.height
-            greenBlock.x = hitboxRectOnScreen.left
-            greenBlock.y = GlobalAccess.virtualSize.height-hitboxRectOnScreen.top
-            greenBlock.visible = true
+            //greenBlock.scaledWidth = hitboxRectOnScreen.width
+            //greenBlock.scaledHeight = hitboxRectOnScreen.height
+            //greenBlock.x = hitboxRectOnScreen.left
+            //greenBlock.y = GlobalAccess.virtualSize.height-hitboxRectOnScreen.top
+            //greenBlock.visible = true
         }
 
     }
