@@ -1,10 +1,17 @@
 package application
 
 import com.soywiz.klock.TimeSpan
+import com.soywiz.korau.sound.readSound
+import com.soywiz.korio.async.launch
+import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korma.math.roundDecimalPlaces
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 import kotlin.random.Random
 
-class LevelGenerator {
+class LevelGenerator() {
 
     var obstacles = mutableListOf<Obstacle>()
     var obstacleDistance = 0.0
@@ -30,11 +37,7 @@ class LevelGenerator {
         return nowGenerated
     }
 
-    fun generateUniqueType(){
-
-    }
-
-
+    @DelicateCoroutinesApi
     fun generate() {
         nowGenerated = generateType()
         rarity = when ((0..5).random()) {
@@ -87,7 +90,10 @@ class LevelGenerator {
             )
         }
         lastGenerated = nowGenerated
+
+        SfxPlayer.playSfx("cut.mp3")
     }
+
 
     fun update(dt: TimeSpan) {
         if (speed < maxSpeed) {

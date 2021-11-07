@@ -1,5 +1,8 @@
 package application
 
+import com.soywiz.korau.sound.Sound
+import com.soywiz.korau.sound.readSound
+import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korma.geom.SizeInt
 import kotlin.native.concurrent.ThreadLocal
 
@@ -13,4 +16,6 @@ object GlobalAccess {
     var windowSize = SizeInt(1920, 1080) // Window Size, this is the actual size of the window in pixels
 
     var fingers = 2
+
+
 }

@@ -10,6 +10,7 @@ import com.soywiz.korge.view.Image
 import com.soywiz.korge.view.addUpdater
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
+import kotlinx.coroutines.DelicateCoroutinesApi
 import modules.basic.Colour
 import pungine.PunImage
 import pungine.PunScene
@@ -22,6 +23,7 @@ import pungine.geometry2D.oneRectangle
  *
  */
 
+@DelicateCoroutinesApi
 @KorgeInternal
 class GameScene : PunScene() {
     override fun createSceneView(): Container = Puntainer()
@@ -39,6 +41,8 @@ class GameScene : PunScene() {
         val l2 = resourcesVfs["altlayer.mp3"].readMusic()
         val l3 = resourcesVfs["ominous.mp3"].readMusic()
 
+        SfxPlayer.loadSounds()
+
         if (playMusic) {
             l1.play(PlaybackParameters(PlaybackTimes.INFINITE))
             l2.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
@@ -51,8 +55,6 @@ class GameScene : PunScene() {
                 it.alpha = 0.1
             }
         }
-
-        //puntainer() {  }
 
         outside1 =
             punImage("outside", resourcesVfs["environment/Bg2.png"].readBitmap(), Rectangle(0.0, 3820.0, 0.0, 1080.0))
@@ -156,17 +158,6 @@ class GameScene : PunScene() {
         })
 
          */
-
-        // TODO bu fonksyon nedir ve niye initin içinde
-        fun sameRarity(name: String?, rarity: ObstacleRarity) : Boolean {
-            when(name?.get(-1)){
-                '1' -> return rarity == ObstacleRarity.RARE
-                '2' -> return rarity == ObstacleRarity.RARER
-                '3' -> return rarity == ObstacleRarity.RAREST
-            }
-            return false
-        }
-
 
         this.addUpdater { dt ->
 
