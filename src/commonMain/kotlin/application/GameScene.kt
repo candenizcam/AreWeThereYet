@@ -32,63 +32,20 @@ import pungine.geometry2D.oneRectangle
 class GameScene : PunScene() {
     override fun createSceneView(): Container = Puntainer()
 
-    var score = 0.0
     var scoreKeeper = ScoreKeeper()
 
     override suspend fun Container.sceneInit() {
         scoreKeeper.load()
-        GlobalAccess.fingers=2
+        GlobalAccess.fingers = 2
 
 
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
 
-        /////////
-        // WINDOW SCENE
-        /////////
-
-        /*
-        val engineLoop = resourcesVfs["SFX/engine_heavy_loop-20.mp3"].readMusic()
-
-        outside1 =
-            punImage("outside", resourcesVfs["environment/Bg2.png"].readBitmap(), Rectangle(0.0, 3820.0, 0.0, 1080.0))
-        outside2 = punImage(
-            "outside",
-            resourcesVfs["environment/Bg2.png"].readBitmap().flipX(),
-            Rectangle(3820.0, 2 * 3820.0, 0.0, 1080.0)
-        )
-
-        //solidRect("blur", Rectangle(0.0,1.0,0.0,1.0),colour = Colour.rgba256(100,100,100,100).korgeColor,relative = true)
-        window = punImage(
-            "id",
-            resourcesVfs["UI/glass.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
-        ).also {
-            it.alpha=1.0
-        }
-
-        punImage(
-            "id",
-            resourcesVfs["UI/Wintop.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
-        )
-
-        punImage(
-            "id",
-            resourcesVfs["UI/Windown.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
-        )
-
-         */
-
-
-
-
 
         /////////
         //GAME SCENE
         /////////
-
 
 
         val playMusic = false
@@ -100,8 +57,8 @@ class GameScene : PunScene() {
 
         if (playMusic) {
             l1.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.3))
-            l2.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.3))
-            l3.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.3))
+            l2.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
+            l3.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
         }
 
         floor = puntainer("floor", Rectangle(0.0, 1.0, 0.0, FloorData.getHeight()), relative = true) { puntainer ->
@@ -124,49 +81,68 @@ class GameScene : PunScene() {
         playfield.fitToFrame(Rectangle(0.0, w, FloorData.getHeight() * h, h))
         this.addChild(playfield)
 
-        val rareScavengerList = listOf("Red Bird","Red Traffic Sign","Yellow Tractor","Green Road Sign","Large Blue Sign","Small Blue Sign")
-        val rarerScavengerList = listOf("Green Bird","Green Traffic Sign","Red Tractor","Yellow Road Sign","Large Green Sign","Small Green Sign")
-        val rarestScavengerList = listOf("Blue Bird","Yellow Traffic Sign","Blue Tractor","Blue Road Sign","Large Yellow Sign","Small Yellow Sign")
+        val rareScavengerList = listOf(
+            "Red Bird",
+            "Red Traffic Sign",
+            "Yellow Tractor",
+            "Green Road Sign",
+            "Large Blue Sign",
+            "Small Blue Sign"
+        )
+        val rarerScavengerList = listOf(
+            "Green Bird",
+            "Green Traffic Sign",
+            "Red Tractor",
+            "Yellow Road Sign",
+            "Large Green Sign",
+            "Small Green Sign"
+        )
+        val rarestScavengerList = listOf(
+            "Blue Bird",
+            "Yellow Traffic Sign",
+            "Blue Tractor",
+            "Blue Road Sign",
+            "Large Yellow Sign",
+            "Small Yellow Sign"
+        )
 
         var hunt1 = rareScavengerList.random()
         var hunt2 = rarerScavengerList.random()
         var hunt3 = rarestScavengerList.random()
-        var scavengerHuntList = listOf(hunt1,hunt2,hunt3)
-        var sh1Type: ObstacleTypes
-        var sh2Type: ObstacleTypes
-        var sh3Type: ObstacleTypes
-        when(rareScavengerList.indexOf(hunt1)){
-            0 ->  sh1Type = ObstacleTypes.LOWBIRD
-            1 ->  sh1Type = ObstacleTypes.LOWJUMP
-            2 ->  sh1Type = ObstacleTypes.LONGJUMP
-            3 ->  sh1Type = ObstacleTypes.DONTJUMP
-            4 ->  sh1Type = ObstacleTypes.DUCK
-            5 ->  sh1Type = ObstacleTypes.JUMPDUCK
+        var scavengerHuntList = listOf(hunt1, hunt2, hunt3)
+
+        when (rareScavengerList.indexOf(hunt1)) {
+            0 -> sh1Type = ObstacleTypes.LOWBIRD
+            1 -> sh1Type = ObstacleTypes.LOWJUMP
+            2 -> sh1Type = ObstacleTypes.LONGJUMP
+            3 -> sh1Type = ObstacleTypes.DONTJUMP
+            4 -> sh1Type = ObstacleTypes.DUCK
+            5 -> sh1Type = ObstacleTypes.JUMPDUCK
         }
-        when(rareScavengerList.indexOf(hunt2)){
-            0 ->  sh2Type = ObstacleTypes.LOWBIRD
-            1 ->  sh2Type = ObstacleTypes.LOWJUMP
-            2 ->  sh2Type = ObstacleTypes.LONGJUMP
-            3 ->  sh2Type = ObstacleTypes.DONTJUMP
-            4 ->  sh2Type = ObstacleTypes.DUCK
-            5 ->  sh2Type = ObstacleTypes.JUMPDUCK
+        when (rarerScavengerList.indexOf(hunt2)) {
+            0 -> sh2Type = ObstacleTypes.LOWBIRD
+            1 -> sh2Type = ObstacleTypes.LOWJUMP
+            2 -> sh2Type = ObstacleTypes.LONGJUMP
+            3 -> sh2Type = ObstacleTypes.DONTJUMP
+            4 -> sh2Type = ObstacleTypes.DUCK
+            5 -> sh2Type = ObstacleTypes.JUMPDUCK
         }
-        when(rareScavengerList.indexOf(hunt3)){
-            0 ->  sh3Type = ObstacleTypes.LOWBIRD
-            1 ->  sh3Type = ObstacleTypes.LOWJUMP
-            2 ->  sh3Type = ObstacleTypes.LONGJUMP
-            3 ->  sh3Type = ObstacleTypes.DONTJUMP
-            4 ->  sh3Type = ObstacleTypes.DUCK
-            5 ->  sh3Type = ObstacleTypes.JUMPDUCK
+        when (rarestScavengerList.indexOf(hunt3)) {
+            0 -> sh3Type = ObstacleTypes.LOWBIRD
+            1 -> sh3Type = ObstacleTypes.LOWJUMP
+            2 -> sh3Type = ObstacleTypes.LONGJUMP
+            3 -> sh3Type = ObstacleTypes.DONTJUMP
+            4 -> sh3Type = ObstacleTypes.DUCK
+            5 -> sh3Type = ObstacleTypes.JUMPDUCK
         }
         //TODO rare-sh1Type, rarer-sh2Type ve rarest-sh3Typelar puan kazandıracak
 
         // obstacles
-        val rarityList = listOf("rare","rarer","rarest")
+        val rarityList = listOf("rare", "rarer", "rarest")
         for (j in 0..0) {
             for (i in 1..3) {
-                listOf("","-gore").forEach { goreText->
-                    val folder = rarityList[i-1]+goreText
+                listOf("", "-gore").forEach { goreText ->
+                    val folder = rarityList[i - 1] + goreText
                     PunImage("dont-jump-$i$goreText", resourcesVfs["obs/$folder/dont-jump-$i.png"].readBitmap()).also {
                         obstacles.add(it)
                         this.addChild(it)
@@ -218,33 +194,41 @@ class GameScene : PunScene() {
         val font = TtfFont(resourcesVfs["MPLUSRounded1c-Medium.ttf"].readAll())
 
 
-        val t1 = text(scavengerHuntList[0],font=font, textSize = 28.0,color = Colour.byHex("131A14").korgeColor).also {
-            it.x = 108.0
-            it.y = 117.0
-            it.visible=false
+        val t1 =
+            text(scavengerHuntList[0], font = font, textSize = 28.0, color = Colour.byHex("131A14").korgeColor).also {
+                it.x = 108.0
+                it.y = 117.0
+                it.visible = false
 
-        }
+            }
 
-        val t2= text(scavengerHuntList[1],font=font, textSize = 28.0,color = Colour.byHex("131A14").korgeColor).also {
-            it.x = 108.0
-            it.y = 167.0
-            it.visible=false
+        val t2 =
+            text(scavengerHuntList[1], font = font, textSize = 28.0, color = Colour.byHex("131A14").korgeColor).also {
+                it.x = 108.0
+                it.y = 167.0
+                it.visible = false
 
-        }
+            }
 
-        val t3= text(scavengerHuntList[2],font=font, textSize = 28.0,color = Colour.byHex("131A14").korgeColor).also {
-            it.x = 108.0
-            it.y = 217.0
-            it.visible=false
-        }
+        val t3 =
+            text(scavengerHuntList[2], font = font, textSize = 28.0, color = Colour.byHex("131A14").korgeColor).also {
+                it.x = 108.0
+                it.y = 217.0
+                it.visible = false
+            }
 
-        val scoreText = text("11111",font=font, textSize = 42.0,color = Colour.byHex("131A14").korgeColor,alignment = TextAlignment.TOP_CENTER).also {
-            it.x = (1594.0+1894.0)*0.5
-            it.y = 26.0+12.0
+        val scoreText = text(
+            "11111",
+            font = font,
+            textSize = 42.0,
+            color = Colour.byHex("131A14").korgeColor,
+            alignment = TextAlignment.TOP_CENTER
+        ).also {
+            it.x = (1594.0 + 1894.0) * 0.5
+            it.y = 26.0 + 12.0
 
         }
         scoreText.text = "0"
-
 
 
         //1594, 1894, 26, 106
@@ -265,21 +249,18 @@ class GameScene : PunScene() {
             }
         }
 
-        floor = puntainer("floor", Rectangle(0.0,1.0,0.0,1.0),relative = true) {
+        floor = puntainer("floor", Rectangle(0.0, 1.0, 0.0, 1.0), relative = true) {
             it.singleColour(Colour.RED.korgeColor).also {
                 it.alpha = 0.1
             }
         }
 
-        puntainer("floor", Rectangle(0.0,1.0,0.0,1.0),relative = true){}.also{
+        puntainer("floor", Rectangle(0.0, 1.0, 0.0, 1.0), relative = true) {}.also {
 
         }
 
 
-
-
         //108, 350, 117, 267
-
 
 
         ////////////////////////////////////////////////////////////////
@@ -289,20 +270,17 @@ class GameScene : PunScene() {
         ////////////////////////////////////////////////////////////////
 
 
-
-
         this.addUpdater { dt ->
-            if(firstRun){
-                firstRun=false
-                t1.visible=true
-                t2.visible=true
-                t3.visible=true
+            if (firstRun) {
+                firstRun = false
+                t1.visible = true
+                t2.visible = true
+                t3.visible = true
             }
 
 
 
-            if(gameActive){
-
+            if (gameActive) {
 
 
                 backgroundRoll(dt)
@@ -310,10 +288,8 @@ class GameScene : PunScene() {
                     it.visible = false
                 }
 
-                score+= dt.seconds*10
+                score += dt.seconds * 10
                 scoreText.text = score.toInt().toString()
-
-
 
 
                 val obshit = children.filterIsInstance<Puntainer>().filter { it.id == "obshit" }
@@ -323,17 +299,16 @@ class GameScene : PunScene() {
                 }
 
 
-
-                val goreText = if(GlobalAccess.fingers==2){
+                val goreText = if (GlobalAccess.fingers == 2) {
                     ""
-                }else{
+                } else {
                     "-gore"
                 }
                 ObstacleTypes.values().forEach { thisType ->
                     playfield.level.obstacles.filter { it.type == thisType }.also { list ->
                         ObstacleRarity.values().forEach { rarity ->
-                            val obstacleData = list.filter { it.obstacleRarity ==rarity }
-                            val o2 = obstacles.filter { it.id == thisType.relevantID(rarity.ordinal+1)+goreText }
+                            val obstacleData = list.filter { it.obstacleRarity == rarity }
+                            val o2 = obstacles.filter { it.id == thisType.relevantID(rarity.ordinal + 1) + goreText }
 
                             obstacleData.forEachIndexed { index, obs ->
                                 val hit = playfield.virtualRectangle.fromRated(
@@ -349,12 +324,6 @@ class GameScene : PunScene() {
                                 o2[index].scaledHeight = r.height
                                 o2[index].scaledWidth = r.width
                                 o2[index].visible = true
-                                //obshit[obshitindex].scaledWidth = hit.width
-                                //obshit[obshitindex].scaledHeight = hit.height
-                                //obshit[obshitindex].x = hit.left
-                                //obshit[obshitindex].y = GlobalAccess.virtualSize.height - hit.top
-                                //obshit[obshitindex].visible = true
-                                //obshitindex += 1
                             }
                         }
                     }
@@ -374,21 +343,31 @@ class GameScene : PunScene() {
 
                 val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
 
-                if(playfield.collisionCheck()){
+
+                var collided = playfield.collisionCheck()
+                if (collided == sh1Type.ordinal) {
+                    score += 20
+                    playfield.sliced()
+                } else if (collided == sh2Type.ordinal) {
+                    score += 50
+                    playfield.sliced()
+                } else if (collided == sh3Type.ordinal) {
+                    score += 100
+                    playfield.sliced()
+                } else if (collided != -1) {
                     fadein = true
-                    if(GlobalAccess.fingers==1){
+                    if (GlobalAccess.fingers == 1) {
                         death()
-                        GlobalScope.launchImmediately { sceneContainer.changeTo<GameOverScene>( ) }
-                    }else{
-                        GlobalAccess.fingers-= 1
+                        GlobalScope.launchImmediately { sceneContainer.changeTo<GameOverScene>() }
+                    } else {
+                        GlobalAccess.fingers -= 1
                         playfield.sliced()
                         hand.cutFinger()
                         scoreKeeper.addScore(score)
                         scoreKeeper.scores.forEach { println(it) }
                         scoreKeeper.save()
                     }
-                }
-                else if(playfield.ducking>0.0){
+                } else if (playfield.ducking > 0.0) {
                     hand.onDuck()
                 } else if (playfield.jumping) {
                     hand.onAir()
@@ -400,25 +379,20 @@ class GameScene : PunScene() {
                 playfield.update(dt)
 
 
-                floor.visible = hand.activeAnimationType==Hand.ActiveAnimationType.TWOFINGER_CUT
-                floor.alpha = -1*hand.animIndex*hand.animIndex*8.0/605.0 + hand.animIndex*8.0/55.0
-
-                if (playfield.collisionCheck()) {
-
-                }
+                floor.visible = hand.activeAnimationType == Hand.ActiveAnimationType.TWOFINGER_CUT
+                floor.alpha = -1 * hand.animIndex * hand.animIndex * 8.0 / 605.0 + hand.animIndex * 8.0 / 55.0
 
                 if (fadein) {
                     if (l2.volume < 0.6) l2.volume += 0.1
                     else fadein = false
                 }
-            }else{
+            } else {
 
             }
         }
         println("initiate is done")
 
     }
-
 
     // WINDOW SCENE VARIABLES
 
@@ -429,6 +403,10 @@ class GameScene : PunScene() {
 
 
     // GAME SCENE VARIABLES
+
+    lateinit var sh1Type: ObstacleTypes
+    lateinit var sh2Type: ObstacleTypes
+    lateinit var sh3Type: ObstacleTypes
 
     var score = 0.0
 
@@ -443,7 +421,7 @@ class GameScene : PunScene() {
     var outside1: Puntainer = Puntainer()
     var outside2: Puntainer = Puntainer()
 
-    fun backgroundRoll(dt: TimeSpan){
+    fun backgroundRoll(dt: TimeSpan) {
         outside1.x -= dt.seconds * playfield.level.speed * 1920
         outside2.x -= dt.seconds * playfield.level.speed * 1920
         if (outside1.x + outside1.width < -1000.0) {
@@ -464,12 +442,12 @@ class GameScene : PunScene() {
                     animType.puntainerTwoFingers.addChild(it)
                 }
 
-                if (animType==Hand.ActiveAnimationType.TWOFINGER_JUMP){
+                if (animType == Hand.ActiveAnimationType.TWOFINGER_JUMP) {
                     println(s)
                 }
 
             }
-            if (animType==Hand.ActiveAnimationType.TWOFINGER_JUMP){
+            if (animType == Hand.ActiveAnimationType.TWOFINGER_JUMP) {
                 println("${animType.puntainerTwoFingers.children.size}")
             }
             animType.puntainerOneFingers.children.clear()
@@ -488,8 +466,8 @@ class GameScene : PunScene() {
     var firstRun = true
 
 
-    fun death(){
-        gameActive=false
+    fun death() {
+        gameActive = false
         hand.activeAnimationType = Hand.ActiveAnimationType.TWOFINGER_RUN
         /*
         Hand.ActiveAnimationType.values().forEach {
