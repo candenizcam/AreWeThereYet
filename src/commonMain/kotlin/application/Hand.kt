@@ -9,6 +9,7 @@ import modules.basic.Colour
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
 import com.soywiz.korau.sound.readMusic
+import kotlinx.coroutines.DelicateCoroutinesApi
 
 @KorgeInternal
 class Hand: Puntainer {
@@ -114,10 +115,11 @@ class Hand: Puntainer {
 
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun cutFinger(){
         if(activeAnimationType!=ActiveAnimationType.TWOFINGER_CUT){
             //activeAnimation().forEachChild { it.visible=false }
-
+            SfxPlayer.playSfx("cut.mp3")
             activeAnimationType = ActiveAnimationType.TWOFINGER_CUT
 
         }
