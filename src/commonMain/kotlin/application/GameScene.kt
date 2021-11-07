@@ -119,8 +119,9 @@ class GameScene : PunScene() {
         playfield.fitToFrame(Rectangle(0.0, w, FloorData.getHeight() * h, h))
         this.addChild(playfield)
 
-
-
+        val rareScavengerList = listOf("Red Bird","Red Traffic Sign","Yellow Tractor","Green Road Sign","Large Blue Sign","Small Blue Sign")
+        val rarerScavengerList = listOf("Green Bird","Green Traffic Sign","Red Tractor","Yellow Road Sign","Large Green Sign","Small Green Sign")
+        val rarestScavengerList = listOf("Blue Bird","Yellow Traffic Sign","Blue Tractor","Blue Road Sign","Large Yellow Sign","Small Yellow Sign")
 
         // obstacles
         val rarityList = listOf("rare","rarer","rarest")
