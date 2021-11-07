@@ -48,17 +48,19 @@ class GameScene : PunScene() {
         /////////
 
 
-        val playMusic = false
+        val playMusic = true
         var fadein = false
 
         val l1 = resourcesVfs["musicbox.mp3"].readMusic()
         val l2 = resourcesVfs["altlayer.mp3"].readMusic()
         val l3 = resourcesVfs["ominous.mp3"].readMusic()
+        val engineLoop = resourcesVfs["SFX/engine_heavy_loop-20.mp3"].readMusic()
 
         if (playMusic) {
             l1.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.3))
             l2.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
             l3.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
+            engineLoop.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
         }
 
         floor = puntainer("floor", Rectangle(0.0, 1.0, 0.0, FloorData.getHeight()), relative = true) { puntainer ->
