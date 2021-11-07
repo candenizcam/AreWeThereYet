@@ -104,7 +104,8 @@ class Hand: Puntainer {
 
     fun onDuck(){
         if(activeAnimationType!=ActiveAnimationType.TWOFINGER_CUT){
-            ActiveAnimationType.TWOFINGER_DUCK
+            activeAnimationType=ActiveAnimationType.TWOFINGER_DUCK
+
         }
 
         /*
