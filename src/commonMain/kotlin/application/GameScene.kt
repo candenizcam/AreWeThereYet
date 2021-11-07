@@ -48,7 +48,7 @@ class GameScene : PunScene() {
         /////////
 
 
-        val playMusic = false
+        val playMusic = true
         var fadein = false
 
         val l1 = resourcesVfs["musicbox.mp3"].readMusic()
@@ -62,7 +62,6 @@ class GameScene : PunScene() {
         }
 
         floor = puntainer("floor", Rectangle(0.0, 1.0, 0.0, FloorData.getHeight()), relative = true) { puntainer ->
-
             puntainer.singleColour(Colour.GREEN.korgeColor).also {
                 it.alpha = 0.1
             }
@@ -135,7 +134,6 @@ class GameScene : PunScene() {
             4 -> sh3Type = ObstacleTypes.DUCK
             5 -> sh3Type = ObstacleTypes.JUMPDUCK
         }
-        //TODO rare-sh1Type, rarer-sh2Type ve rarest-sh3Typelar puan kazandıracak
 
         // obstacles
         val rarityList = listOf("rare", "rarer", "rarest")
@@ -299,7 +297,6 @@ class GameScene : PunScene() {
 
 
                 val obshit = children.filterIsInstance<Puntainer>().filter { it.id == "obshit" }
-                var obshitindex = 0
                 obshit.forEach {
                     it.visible = false
                 }
@@ -352,13 +349,13 @@ class GameScene : PunScene() {
 
                 var collided = playfield.collisionCheck()
                 if (collided == sh1Type.ordinal) {
-                    score += 20
+                    score += 100
                     playfield.sliced()
                 } else if (collided == sh2Type.ordinal) {
-                    score += 50
+                    score += 250
                     playfield.sliced()
                 } else if (collided == sh3Type.ordinal) {
-                    score += 100
+                    score += 500
                     playfield.sliced()
                 } else if (collided != -1) {
                     fadein = true
@@ -475,14 +472,6 @@ class GameScene : PunScene() {
     fun death() {
         gameActive = false
         hand.activeAnimationType = Hand.ActiveAnimationType.TWOFINGER_RUN
-        /*
-        Hand.ActiveAnimationType.values().forEach {
-            it.puntainerTwoFingers.children.fastForEach { it.visible=false }
-            it.puntainerOneFingers.children.fastForEach { it.visible=false }
-        }
-
-         */
-
     }
 
 
