@@ -15,15 +15,22 @@ import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.async.launch
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import modules.basic.Colour
 import pungine.PunScene
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
 
+@KorgeInternal
+@DelicateCoroutinesApi
 class WindowScene  : PunScene() {
     override fun createSceneView(): Container = Puntainer()
 
+    var windowDown = false
+    var windowUp = false
+
+    @OptIn(KorgeInternal::class)
     @OptIn(KorgeInternal::class, kotlinx.coroutines.DelicateCoroutinesApi::class)
     override suspend fun Container.sceneInit(){
         //openingCrawl()
@@ -37,15 +44,13 @@ class WindowScene  : PunScene() {
             Rectangle(3820.0, 2 * 3820.0, 0.0, 1080.0)
         )
 
-
-
         //solidRect("blur", Rectangle(0.0,1.0,0.0,1.0),colour = Colour.rgba256(100,100,100,100).korgeColor,relative = true)
         window = punImage(
             "id",
-            resourcesVfs["UI/blur.jpg"].readBitmap(),
+            resourcesVfs["UI/glass.png"].readBitmap(),
             Rectangle(0.0,1.0,0.0,1.0),relative = true
         ).also {
-            it.alpha=0.8
+            it.alpha=1.0
         }
 
         punImage(
@@ -60,7 +65,8 @@ class WindowScene  : PunScene() {
             Rectangle(0.0,1.0,0.0,1.0),relative = true
         )
 
-
+        //launchImmediately { gameScene.load() }
+        //SceneContainer
 
         addUpdater {dt->
             outside1.x -= dt.seconds * 0.3 * 1920
@@ -82,13 +88,27 @@ class WindowScene  : PunScene() {
                 window.yConv+= (dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
             }
 
-            if(window.yConv<0.0){
-                GlobalScope.launch { sceneContainer.changeTo<GameScene>( ) }
-                //launchImmediately{}
+             */
+
+            if (views.input.keys.justPressed(Key.DOWN)) {
+                windowUp = false
+                windowDown = true
+            } else if (views.input.keys.justPressed(Key.UP)) {
+                windowDown = false
+                windowUp = true
+            } else if (views.input.keys.justPressed(Key.SPACE)) {
+                windowDown = false
+                windowUp = false
+            }
+            if (windowDown) {
+                window.yConv-=(dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtLeast(0.0)
+            }else if (windowUp) {
+                window.yConv+= (dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
             }
 
-
-
+            if(window.yConv<0.0){
+                launchImmediately{ sceneContainer.changeTo<GameScene>( ) }
+            }
         }
         engineLoop.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
         super.sceneAfterInit()
@@ -99,11 +119,11 @@ class WindowScene  : PunScene() {
     var window: Puntainer = Puntainer()
 
 
+    var gameScene = GameScene()
+
     // delete from all under here for a new scene
 
     suspend fun openingCrawl() {
-
-
         val bg = solidRect("id", Rectangle(0.0, 1.0, 0.0, 1.0), RGBA.float(0.04f, 0.02f, 0.04f, 1f), relative = true)
 
         val img = punImage(
@@ -113,9 +133,11 @@ class WindowScene  : PunScene() {
         ).also {
             it.visible = false
             it.onClick {
-                launchImmediately {
-                //sceneContainer.changeTo<GameScene>(gameScene)
+                GlobalScope.launch {
+                    //sceneContainer.changeTo<GameScene>(gameScene)
+                    //sceneContainer = gameScene.sceneContainer
                     //sceneContainer.changeTo<GameScene>()
+                    launchImmediately{sceneContainer.changeTo<GameScene>(gameScene)}
                 }
             }
         }
@@ -141,7 +163,5 @@ class WindowScene  : PunScene() {
                 }
             }
         }
-
-
     }
 }

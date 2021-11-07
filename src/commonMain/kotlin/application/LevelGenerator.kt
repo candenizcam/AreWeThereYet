@@ -104,6 +104,7 @@ class LevelGenerator() {
             }
         }
 
+        SfxPlayer.playSfx("daddy.mp3")
 
             if(nowGenerated==5 || nowGenerated==6) {
                 if ((0..2).random()==1) {

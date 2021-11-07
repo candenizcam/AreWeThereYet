@@ -42,9 +42,6 @@ class GameScene : PunScene() {
         val l2 = resourcesVfs["altlayer.mp3"].readMusic()
         val l3 = resourcesVfs["ominous.mp3"].readMusic()
 
-
-
-
         if (playMusic) {
             l1.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.3))
             l2.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.3))
@@ -143,31 +140,23 @@ class GameScene : PunScene() {
         }
 
         floor = puntainer("floor", Rectangle(0.0,1.0,0.0,1.0),relative = true) {
-
             it.singleColour(Colour.RED.korgeColor).also {
                 it.alpha = 0.1
             }
         }
 
-
-
-
-        /*
-        obstacles.add(puntainer("obs", Rectangle(w,w+50.0,FloorData.getHeight()*GlobalAccess.virtualSize.height,FloorData.getHeight()*GlobalAccess.virtualSize.height+50.0)) {
-            it.singleColour(Colour.RED.korgeColor)
-
-
-        })
-
-         */
-
         this.addUpdater { dt ->
+            if(views.input.keys.justPressed(Key.ESCAPE)){
+                doUpdate = doUpdate.not()
+            }
+
             if(doUpdate){
+
+
+
                 obstacles.forEach {
                     it.visible = false
                 }
-
-
 
                 outside1.x -= dt.seconds * playfield.level.speed * 1920
                 outside2.x -= dt.seconds * playfield.level.speed * 1920

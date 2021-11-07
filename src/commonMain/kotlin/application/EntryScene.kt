@@ -30,7 +30,6 @@ class EntryScene : PunScene() {
 
     override suspend fun Container.sceneInit(){
         //openingCrawl()
-
         SfxPlayer.loadSounds()
 
         outside1 =
