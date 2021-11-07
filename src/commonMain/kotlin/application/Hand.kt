@@ -9,6 +9,7 @@ import modules.basic.Colour
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
 import com.soywiz.korau.sound.readMusic
+import kotlinx.coroutines.DelicateCoroutinesApi
 
 @KorgeInternal
 class Hand: Puntainer {
@@ -32,6 +33,7 @@ class Hand: Puntainer {
 
 
     fun update(dt: TimeSpan, hitboxRectOnScreen: Rectangle){
+
         if(blockMode){
             greenBlock.setSize(hitboxRectOnScreen.width,hitboxRectOnScreen.height)
         }else{
@@ -40,7 +42,8 @@ class Hand: Puntainer {
 
 
             var a = activeAnimation()
-            if (animIndex>=a.size){
+
+            if (animIndex>=activeSize()){
                 if(activeAnimationType==ActiveAnimationType.TWOFINGER_JUMP){
                     activeAnimationType = ActiveAnimationType.TWOFINGER_FLY
                     a = activeAnimation()
@@ -48,11 +51,12 @@ class Hand: Puntainer {
                     activeAnimationType = ActiveAnimationType.TWOFINGER_RUN
                     a = activeAnimation()
                 }else if(activeAnimationType==ActiveAnimationType.TWOFINGER_CUT){
+                    println("cutfinger ended $animIndex")
                     activeAnimationType = ActiveAnimationType.TWOFINGER_RUN
                     a = activeAnimation()
                 }
                 else{
-                    animIndex %= a.size
+                    animIndex %= activeSize()
                 }
 
             }
@@ -114,12 +118,17 @@ class Hand: Puntainer {
 
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun cutFinger(){
         if(activeAnimationType!=ActiveAnimationType.TWOFINGER_CUT){
             //activeAnimation().forEachChild { it.visible=false }
-
+            SfxPlayer.playSfx("cut.mp3")
             activeAnimationType = ActiveAnimationType.TWOFINGER_CUT
-
+            ActiveAnimationType.values().forEach {
+                it.puntainerTwoFingers.children.fastForEach { it.visible=false }
+                it.puntainerOneFingers.children.fastForEach { it.visible=false }
+            }
+            println("cutfinger calld")
         }
 
     }
@@ -135,6 +144,9 @@ class Hand: Puntainer {
             animIndex=0.0
             field=value
             jumpLocker=false
+            if(value==ActiveAnimationType.TWOFINGER_CUT){
+                println("cutfinger switched to active")
+            }
         }
     }
 
@@ -145,6 +157,10 @@ class Hand: Puntainer {
 
     fun activeAnimation(): Puntainer {
         return activeAnimationType.puntainer
+    }
+
+    fun activeSize(): Int{
+        return activeAnimationType.sourceList().size
     }
 
     enum class ActiveAnimationType{

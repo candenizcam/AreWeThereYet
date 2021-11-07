@@ -26,8 +26,8 @@ enum class ObstacleTypes {
 
         override fun ratedRect(): Rectangle {
             return Rectangle(
-                476.0 / 1980.0,
-                600.0 / 1980.0,
+                20.0 / 164.0,
+                144.0 / 164.0,
                 0.0 / 1080.0 + 240.0 / 1080.0,
                 200.0 / 1080.0 + 240.0 / 1080.0
             )
@@ -54,8 +54,8 @@ enum class ObstacleTypes {
 
         override fun ratedRect(): Rectangle {
             return Rectangle(
-                778.0 / 1920.0,
-                902.0 / 1920.0,
+                32.0 / 188.0,
+                156.0 / 188.0,
                 140.0 / 1080.0 + 240.0 / 1080.0,
                 840.0 / 1080.0 + 240.0 / 1080.0
             )
@@ -68,8 +68,8 @@ enum class ObstacleTypes {
 
         override fun ratedRect(): Rectangle {
             return Rectangle(
-                1042.0 / 1920.0,
-                1290.0 / 1920.0,
+                284.0 / 636.0,
+                568.0 / 636.0,
                 0.0 / 1080.0 + 240.0 / 1080.0,
                 200.0 / 1080.0 + 240.0 / 1080.0
             )
@@ -82,8 +82,8 @@ enum class ObstacleTypes {
 
         override fun ratedRect(): Rectangle {
             return Rectangle(
-                1373.0 / 1920.0,
-                1713.0 / 1920.0,
+                238.0 / 426.0,
+                362.0 / 426.0,
                 500.0 / 1080.0 + 240.0 / 1080.0,
                 840.0 / 1080.0 + 240.0 / 1080.0
             )
@@ -96,8 +96,8 @@ enum class ObstacleTypes {
 
         override fun ratedRect(): Rectangle {
             return Rectangle(
-                1373.0 / 1920.0,
-                1497.0 / 1920.0,
+                50.0 / 318.0,
+                174.0 / 318.0,
                 500.0 / 1080.0 + 240.0 / 1080.0,
                 640.0 / 1080.0 + 240.0 / 1080.0
             )
@@ -110,8 +110,8 @@ enum class ObstacleTypes {
 
         override fun ratedRect(): Rectangle {
             return Rectangle(
-                1373.0 / 1920.0,
-                1497.0 / 1920.0,
+                50.0 / 318.0,
+                174.0 / 318.0,
                 500.0 / 1080.0 + 240.0 / 1080.0,
                 640.0 / 1080.0 + 240.0 / 1080.0
             )
@@ -124,8 +124,8 @@ enum class ObstacleTypes {
 
         override fun ratedRect(): Rectangle {
             return Rectangle(
-                1621.0 / 1920.0,
-                1761.0 / 1920.0,
+                52.0 / 238.0,
+                176.0 / 238.0,
                 140.0 / 1080.0 + 240.0 / 1080.0,
                 340.0 / 1080.0 + 240.0 / 1080.0
             )

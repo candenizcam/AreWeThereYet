@@ -31,7 +31,7 @@ class WindowScene  : PunScene() {
     var windowUp = false
 
     @OptIn(KorgeInternal::class)
-    @OptIn(KorgeInternal::class, kotlinx.coroutines.DelicateCoroutinesApi::class)
+
     override suspend fun Container.sceneInit(){
         //openingCrawl()
         val engineLoop = resourcesVfs["SFX/engine_heavy_loop-20.mp3"].readMusic()
@@ -88,7 +88,7 @@ class WindowScene  : PunScene() {
                 window.yConv+= (dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
             }
 
-             */
+
 
             if (views.input.keys.justPressed(Key.DOWN)) {
                 windowUp = false
@@ -119,7 +119,7 @@ class WindowScene  : PunScene() {
     var window: Puntainer = Puntainer()
 
 
-    var gameScene = GameScene()
+    //var gameScene = GameScene()
 
     // delete from all under here for a new scene
 
@@ -137,7 +137,7 @@ class WindowScene  : PunScene() {
                     //sceneContainer.changeTo<GameScene>(gameScene)
                     //sceneContainer = gameScene.sceneContainer
                     //sceneContainer.changeTo<GameScene>()
-                    launchImmediately{sceneContainer.changeTo<GameScene>(gameScene)}
+                    launchImmediately{sceneContainer.changeTo<GameScene>()}
                 }
             }
         }
