@@ -54,7 +54,7 @@ class LevelGenerator() {
 
         when (nowGenerated) {
             ObstacleTypes.DUCK.ordinal -> obstacles.add(Obstacle(ObstacleTypes.DUCK, rarity, 1.05, 1.0 - 350.0 / 840, 700.0 / 840, 124.0 / 1920))
-            ObstacleTypes.HIGHJUMP.ordinal -> obstacles.add(Obstacle(ObstacleTypes.HIGHJUMP, rarity, 1.05, 170.0 / 840, 340.0 / 840, 248.0 / 1920))
+            ObstacleTypes.HIGHJUMP.ordinal -> obstacles.add(Obstacle(ObstacleTypes.HIGHJUMP, rarity, 1.05, 125.0 / 840, 250.0 / 840, 150.0 / 1920)) //1.05 170 340 248
             ObstacleTypes.LOWJUMP.ordinal -> obstacles.add(Obstacle(ObstacleTypes.LOWJUMP, rarity, 1.05, 100.0 / 840, 200.0 / 840, 124.0 / 1920))
             ObstacleTypes.LONGJUMP.ordinal -> obstacles.add(Obstacle(ObstacleTypes.LONGJUMP, rarity, 1.05, 100.0 / 840, 200.0 / 840, 248.0 / 1920))
             ObstacleTypes.DONTJUMP.ordinal -> obstacles.add(
