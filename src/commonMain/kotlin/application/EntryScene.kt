@@ -129,6 +129,7 @@ class EntryScene : PunScene() {
             if(playDown.visible){
                 playUp.visible=true
                 playDown.visible=false
+                SfxPlayer.playSfx("carDoorStartUp-16.mp3")
                 launchImmediately{sceneContainer.changeTo<WindowScene>()}
             }
 
