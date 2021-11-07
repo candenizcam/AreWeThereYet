@@ -47,6 +47,15 @@ class EntryScene : PunScene() {
             it.alpha=0.8
         }
 
+        credits = punImage(
+            "credits_scene",
+            resourcesVfs["UI/glass-credits.png"].readBitmap(),
+            Rectangle(0.0,1.0,0.0,1.0),relative = true
+
+        ).also {
+            it.visible=false
+        }
+
         punImage(
             "id",
             resourcesVfs["UI/Wintop.png"].readBitmap(),
@@ -98,16 +107,20 @@ class EntryScene : PunScene() {
             exit.onDown {
                 exit.visible = false
                 exitDown.visible=true
-                println("exit down")
             }
 
             exit.onClick {
-                println("exit clicked")
             }
         }
 
 
-
+        this.onClick {
+            settingsUp.visible=true
+            exitUp.visible=true
+            scoreUp.visible=true
+            playUp.visible=true
+            credits.visible=false
+        }
 
 
         this.onUp {
@@ -118,8 +131,15 @@ class EntryScene : PunScene() {
             }
 
             if(settingsDown.visible){
-                settingsUp.visible=true
+                settingsUp.visible=false
                 settingsDown.visible=false
+                exitUp.visible=false
+                exitDown.visible=false
+                scoreUp.visible=false
+                scoreDown.visible=false
+                playUp.visible=false
+                playDown.visible=false
+                credits.visible=true
 
                 // settings event
             }
@@ -183,6 +203,7 @@ class EntryScene : PunScene() {
     var outside1: Puntainer = Puntainer()
     var outside2: Puntainer = Puntainer()
     var window: Puntainer = Puntainer()
+    var credits: Puntainer= Puntainer()
 
 
 
