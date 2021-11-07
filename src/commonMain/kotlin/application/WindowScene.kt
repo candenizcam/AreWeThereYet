@@ -47,7 +47,7 @@ class WindowScene  : PunScene() {
         //solidRect("blur", Rectangle(0.0,1.0,0.0,1.0),colour = Colour.rgba256(100,100,100,100).korgeColor,relative = true)
         window = punImage(
             "id",
-            resourcesVfs["UI/glass.png"].readBitmap(),
+            resourcesVfs["UI/Glass-tutorial.png"].readBitmap(),
             Rectangle(0.0,1.0,0.0,1.0),relative = true
         ).also {
             it.alpha=1.0
@@ -101,9 +101,9 @@ class WindowScene  : PunScene() {
                 windowUp = false
             }
             if (windowDown) {
-                window.yConv-=(dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtLeast(0.0)
+                window.yConv=( window.yConv-dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtLeast(-10.0)
             }else if (windowUp) {
-                window.yConv+= (dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
+                window.yConv= (window.yConv+dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
             }
 
             if(window.yConv<0.0){

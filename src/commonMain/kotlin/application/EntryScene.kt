@@ -6,15 +6,14 @@ import com.soywiz.korge.input.mouse
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.input.onDown
 import com.soywiz.korge.input.onUp
-import com.soywiz.korge.view.Container
-import com.soywiz.korge.view.Image
-import com.soywiz.korge.view.addUpdater
-import com.soywiz.korge.view.centerOnStage
+import com.soywiz.korge.view.*
 import com.soywiz.korim.color.RGBA
+import com.soywiz.korim.font.TtfFont
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
 import kotlinx.coroutines.DelicateCoroutinesApi
+import modules.basic.Colour
 import pungine.PunImage
 import pungine.PunScene
 import pungine.Puntainer
@@ -42,7 +41,7 @@ class EntryScene : PunScene() {
 
         window = punImage(
             "id",
-            resourcesVfs["UI/blur.jpg"].readBitmap(),
+            resourcesVfs["UI/glass-up.png"].readBitmap(),
             Rectangle(0.0,1.0,0.0,1.0),relative = true
         ).also {
             it.alpha=0.8
@@ -107,6 +106,10 @@ class EntryScene : PunScene() {
             }
         }
 
+
+
+
+
         this.onUp {
             if(exitDown.visible){
                 exitUp.visible=true
@@ -117,6 +120,7 @@ class EntryScene : PunScene() {
             if(settingsDown.visible){
                 settingsUp.visible=true
                 settingsDown.visible=false
+
                 // settings event
             }
 
@@ -135,6 +139,9 @@ class EntryScene : PunScene() {
 
 
         }
+
+
+
 
 
 

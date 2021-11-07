@@ -9,7 +9,10 @@ import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.Image
 import com.soywiz.korge.view.addUpdater
+import com.soywiz.korge.view.text
+import com.soywiz.korim.font.TtfFont
 import com.soywiz.korim.format.readBitmap
+import com.soywiz.korim.text.TextAlignment
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
 import kotlinx.coroutines.GlobalScope
@@ -114,7 +117,7 @@ class GameScene : PunScene() {
             Rectangle(3820.0, 2 * 3820.0, 0.0, 1080.0)
         )
 
-        punImage("window", resourcesVfs["environment/window.png"].readBitmap(), oneRectangle(), true)
+
 
         playfield.fitToFrame(Rectangle(0.0, w, FloorData.getHeight() * h, h))
         this.addChild(playfield)
@@ -203,10 +206,52 @@ class GameScene : PunScene() {
                         this.addChild(it)
                         it.visible = false
                     }
+
+                    PunImage("bird-$i$goreText", resourcesVfs["obs/$folder/bird-$i.png"].readBitmap()).also {
+                        obstacles.add(it)
+                        this.addChild(it)
+                        it.visible = false
+                    }
                 }
 
             }
         }
+        punImage("window", resourcesVfs["environment/window.png"].readBitmap(), oneRectangle(), true)
+
+        punImage("hud", resourcesVfs["UI/hunt-score.png"].readBitmap())
+        val font = TtfFont(resourcesVfs["MPLUSRounded1c-Medium.ttf"].readAll())
+
+
+        val t1 = text(scavengerHuntList[0],font=font, textSize = 28.0,color = Colour.byHex("131A14").korgeColor).also {
+            it.x = 108.0
+            it.y = 117.0
+            it.visible=false
+
+        }
+
+        val t2= text(scavengerHuntList[1],font=font, textSize = 28.0,color = Colour.byHex("131A14").korgeColor).also {
+            it.x = 108.0
+            it.y = 167.0
+            it.visible=false
+
+        }
+
+        val t3= text(scavengerHuntList[2],font=font, textSize = 28.0,color = Colour.byHex("131A14").korgeColor).also {
+            it.x = 108.0
+            it.y = 217.0
+            it.visible=false
+        }
+
+        val scoreText = text("11111",font=font, textSize = 42.0,color = Colour.byHex("131A14").korgeColor,alignment = TextAlignment.TOP_CENTER).also {
+            it.x = (1594.0+1894.0)*0.5
+            it.y = 26.0+12.0
+
+        }
+        scoreText.text = "0"
+
+
+
+        //1594, 1894, 26, 106
 
         adjustHand()
         this.addChild(hand)
@@ -237,6 +282,9 @@ class GameScene : PunScene() {
 
 
 
+        //108, 350, 117, 267
+
+
 
         ////////////////////////////////////////////////////////////////
 
@@ -248,16 +296,26 @@ class GameScene : PunScene() {
 
 
         this.addUpdater { dt ->
-
+            if(firstRun){
+                firstRun=false
+                t1.visible=true
+                t2.visible=true
+                t3.visible=true
+            }
 
 
 
             if(gameActive){
 
+
+
                 backgroundRoll(dt)
                 obstacles.forEach {
                     it.visible = false
                 }
+
+                score+= dt.seconds*10
+                scoreText.text = score.toInt().toString()
 
 
 
@@ -362,6 +420,7 @@ class GameScene : PunScene() {
 
             }
         }
+        println("initiate is done")
 
     }
 
@@ -375,6 +434,8 @@ class GameScene : PunScene() {
 
 
     // GAME SCENE VARIABLES
+
+    var score = 0.0
 
     var gameActive = true
 
@@ -428,6 +489,9 @@ class GameScene : PunScene() {
         }
 
     }
+
+    var firstRun = true
+
 
     fun death(){
         gameActive=false

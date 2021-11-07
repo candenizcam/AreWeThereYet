@@ -104,7 +104,8 @@ class Hand: Puntainer {
 
     fun onDuck(){
         if(activeAnimationType!=ActiveAnimationType.TWOFINGER_CUT){
-            ActiveAnimationType.TWOFINGER_DUCK
+            activeAnimationType=ActiveAnimationType.TWOFINGER_DUCK
+
         }
 
         /*
@@ -120,13 +121,18 @@ class Hand: Puntainer {
 
     @OptIn(DelicateCoroutinesApi::class)
     fun cutFinger(){
-        if(activeAnimationType!=ActiveAnimationType.TWOFINGER_CUT){
+        if(activeAnimationType!=ActiveAnimationType.TWOFINGER_CUT) {
             //activeAnimation().forEachChild { it.visible=false }
             SfxPlayer.playSfx("cut.mp3")
             activeAnimationType = ActiveAnimationType.TWOFINGER_CUT
             ActiveAnimationType.values().forEach {
-                it.puntainerTwoFingers.children.fastForEach { it.visible=false }
-                it.puntainerOneFingers.children.fastForEach { it.visible=false }
+                it.puntainerTwoFingers.children.fastForEach { it.visible = false }
+                it.puntainerOneFingers.children.fastForEach { it.visible = false }
+            }
+            when ((0..2).random()) {
+                0 -> SfxPlayer.playSfx("daddyScared.mp3")
+                1 -> SfxPlayer.playSfx("mommyScared.mp3")
+                2 -> SfxPlayer.playSfx("mommy&daddy.mp3")
             }
             println("cutfinger calld")
         }
