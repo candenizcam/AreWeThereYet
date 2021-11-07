@@ -71,69 +71,54 @@ class GameScene : PunScene() {
 
 
         // obstacles
+        val rarityList = listOf("rare","rarer","rarest")
         for (j in 0..0) {
-            var folder = "rare"
-            folder = if(GlobalAccess.fingers==2) {
-                "rare"
-            } else{
-                "rare-gore"
-            }
             for (i in 1..3) {
-                if(i == 2){
-                    folder = if(GlobalAccess.fingers==2) {
-                        "rarer"
-                    } else{
-                        "rarer-gore"
+                listOf("","-gore").forEach { goreText->
+                    val folder = rarityList[i-1]+goreText
+                    PunImage("dont-jump-$i$goreText", resourcesVfs["obs/$folder/dont-jump-$i.png"].readBitmap()).also {
+                        obstacles.add(it)
+                        this.addChild(it)
+                        it.visible = false
+                    }
+
+                    PunImage("duck-$i$goreText", resourcesVfs["obs/$folder/duck-$i.png"].readBitmap()).also {
+                        obstacles.add(it)
+                        this.addChild(it)
+                        it.visible = false
+                    }
+
+                    PunImage("high-jump-$i$goreText", resourcesVfs["obs/$folder/high-jump-$i.png"].readBitmap()).also {
+                        obstacles.add(it)
+                        this.addChild(it)
+                        it.visible = false
+                    }
+
+                    PunImage("jump-duck-$i$goreText", resourcesVfs["obs/$folder/jump-duck-$i.png"].readBitmap()).also {
+                        obstacles.add(it)
+                        this.addChild(it)
+                        it.visible = false
+                    }
+
+                    PunImage("long-jump-$i$goreText", resourcesVfs["obs/$folder/long-jump-$i.png"].readBitmap()).also {
+                        obstacles.add(it)
+                        this.addChild(it)
+                        it.visible = false
+                    }
+
+                    PunImage("low-jump-$i$goreText", resourcesVfs["obs/$folder/low-jump-$i.png"].readBitmap()).also {
+                        obstacles.add(it)
+                        this.addChild(it)
+                        it.visible = false
+                    }
+
+                    PunImage("bird-$i$goreText", resourcesVfs["obs/$folder/bird-$i.png"].readBitmap()).also {
+                        obstacles.add(it)
+                        this.addChild(it)
+                        it.visible = false
                     }
                 }
-                if(i == 3){
-                    folder = if(GlobalAccess.fingers==2) {
-                        "rarest"
-                    } else{
-                        "rarest-gore"
-                    }
-                }
-                PunImage("dont-jump-$i", resourcesVfs["obs/$folder/dont-jump-$i.png"].readBitmap()).also {
-                    obstacles.add(it)
-                    this.addChild(it)
-                    it.visible = false
-                }
 
-                PunImage("duck-$i", resourcesVfs["obs/$folder/duck-$i.png"].readBitmap()).also {
-                    obstacles.add(it)
-                    this.addChild(it)
-                    it.visible = false
-                }
-
-                PunImage("high-jump-$i", resourcesVfs["obs/$folder/high-jump-$i.png"].readBitmap()).also {
-                    obstacles.add(it)
-                    this.addChild(it)
-                    it.visible = false
-                }
-
-                PunImage("jump-duck-$i", resourcesVfs["obs/$folder/jump-duck-$i.png"].readBitmap()).also {
-                    obstacles.add(it)
-                    this.addChild(it)
-                    it.visible = false
-                }
-
-                PunImage("long-jump-$i", resourcesVfs["obs/$folder/long-jump-$i.png"].readBitmap()).also {
-                    obstacles.add(it)
-                    this.addChild(it)
-                    it.visible = false
-                }
-
-                PunImage("low-jump-$i", resourcesVfs["obs/$folder/low-jump-$i.png"].readBitmap()).also {
-                    obstacles.add(it)
-                    this.addChild(it)
-                    it.visible = false
-                }
-
-                PunImage("bird-$i", resourcesVfs["obs/$folder/bird-$i.png"].readBitmap()).also {
-                    obstacles.add(it)
-                    this.addChild(it)
-                    it.visible = false
-                }
             }
         }
 
@@ -172,6 +157,7 @@ class GameScene : PunScene() {
 
          */
 
+        // TODO bu fonksyon nedir ve niye initin içinde
         fun sameRarity(name: String?, rarity: ObstacleRarity) : Boolean {
             when(name?.get(-1)){
                 '1' -> return rarity == ObstacleRarity.RARE
@@ -216,13 +202,16 @@ class GameScene : PunScene() {
 
 
 
-
+            val goreText = if(GlobalAccess.fingers==2){
+                ""
+            }else{
+                "-gore"
+            }
             ObstacleTypes.values().forEach { thisType ->
                 playfield.level.obstacles.filter { it.type == thisType }.also { list ->
                     ObstacleRarity.values().forEach { rarity ->
                         val obstacleData = list.filter { it.obstacleRarity ==rarity }
-
-                        val o2 = obstacles.filter { it.id == thisType.relevantID(rarity.ordinal+1) }
+                        val o2 = obstacles.filter { it.id == thisType.relevantID(rarity.ordinal+1)+goreText }
 
                         obstacleData.forEachIndexed { index, obs ->
                             val hit = playfield.virtualRectangle.fromRated(
