@@ -4,7 +4,6 @@ import com.soywiz.korau.sound.PlaybackParameters
 import com.soywiz.korau.sound.PlaybackTimes
 import com.soywiz.korau.sound.readMusic
 import com.soywiz.korev.Key
-import com.soywiz.korge.input.onClick
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.Image
@@ -29,9 +28,11 @@ import pungine.geometry2D.oneRectangle
 class GameScene : PunScene() {
     override fun createSceneView(): Container = Puntainer()
 
+    var score = 0.0
     var scoreKeeper = ScoreKeeper()
 
     override suspend fun Container.sceneInit() {
+        scoreKeeper.load()
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
 
@@ -146,6 +147,7 @@ class GameScene : PunScene() {
         }
 
         this.addUpdater { dt ->
+            score += dt.seconds * 10
             if(views.input.keys.justPressed(Key.ESCAPE)){
                 doUpdate = doUpdate.not()
             }
@@ -228,7 +230,14 @@ class GameScene : PunScene() {
 
                 if(playfield.collisionCheck()){
                     hand.cutFinger()
-                    GlobalAccess.fingers= 1
+                    GlobalAccess.fingers -= 1
+                    if(GlobalAccess.fingers == 0) {
+                        scoreKeeper.addScore(score)
+                        println("Score: $score")
+                        println ("High Scores")
+                        scoreKeeper.scores.forEach { println(it) }
+                        scoreKeeper.save()
+                    }
                 }
                 else if(playfield.ducking>0.0){
                     hand.onDuck()
@@ -236,7 +245,6 @@ class GameScene : PunScene() {
                     hand.onAir()
                 } else {
                     hand.onGround()
-
                 }
 
                 hand.update(dt, r)
