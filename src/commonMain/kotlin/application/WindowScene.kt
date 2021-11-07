@@ -3,12 +3,16 @@ package application
 import com.soywiz.klock.TimeSpan
 import com.soywiz.korev.Key
 import com.soywiz.korge.input.onClick
+import com.soywiz.korge.internal.KorgeInternal
+import com.soywiz.korge.scene.SceneContainer
 import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.addUpdater
 import com.soywiz.korim.color.RGBA
 import com.soywiz.korim.format.readBitmap
+import com.soywiz.korio.async.launch
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
+import kotlinx.coroutines.GlobalScope
 import modules.basic.Colour
 import pungine.PunScene
 import pungine.Puntainer
@@ -17,6 +21,7 @@ import pungine.geometry2D.Rectangle
 class WindowScene  : PunScene() {
     override fun createSceneView(): Container = Puntainer()
 
+    @OptIn(KorgeInternal::class)
     override suspend fun Container.sceneInit(){
         //openingCrawl()
 
@@ -64,9 +69,14 @@ class WindowScene  : PunScene() {
             }
 
             if (views.input.keys.pressing(Key.DOWN)) {
-                window.yConv-=(dt.seconds*0.1*GlobalAccess.virtualSize.height).coerceAtLeast(0.0)
+                window.yConv-=(dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtLeast(0.0)
             }else if(views.input.keys.pressing(Key.UP)){
-                window.yConv+= (dt.seconds*0.1*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
+                window.yConv+= (dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
+            }
+
+            if(window.yConv<0.0){
+                GlobalScope.launch { sceneContainer.changeTo<GameScene>( ) }
+                //launchImmediately{}
             }
 
 
@@ -85,6 +95,7 @@ class WindowScene  : PunScene() {
 
     suspend fun openingCrawl() {
 
+
         val bg = solidRect("id", Rectangle(0.0, 1.0, 0.0, 1.0), RGBA.float(0.04f, 0.02f, 0.04f, 1f), relative = true)
 
         val img = punImage(
@@ -94,7 +105,10 @@ class WindowScene  : PunScene() {
         ).also {
             it.visible = false
             it.onClick {
-                launchImmediately { sceneContainer.changeTo<GameScene>() }
+                launchImmediately {
+                //sceneContainer.changeTo<GameScene>(gameScene)
+                    //sceneContainer.changeTo<GameScene>()
+                }
             }
         }
 

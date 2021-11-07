@@ -4,6 +4,7 @@ import com.soywiz.klock.TimeSpan
 import com.soywiz.korge.view.position
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
+import kotlin.coroutines.CoroutineContext
 
 class Playfield(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, relativeRectangle) {
 
