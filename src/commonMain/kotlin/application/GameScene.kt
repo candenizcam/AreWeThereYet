@@ -1,15 +1,13 @@
 package application
 
 import com.soywiz.klock.TimeSpan
+import com.soywiz.klock.measureTime
 import com.soywiz.korau.sound.PlaybackParameters
 import com.soywiz.korau.sound.PlaybackTimes
 import com.soywiz.korau.sound.readMusic
 import com.soywiz.korev.Key
 import com.soywiz.korge.internal.KorgeInternal
-import com.soywiz.korge.view.Container
-import com.soywiz.korge.view.Image
-import com.soywiz.korge.view.addUpdater
-import com.soywiz.korge.view.text
+import com.soywiz.korge.view.*
 import com.soywiz.korim.font.TtfFont
 import com.soywiz.korim.format.ImageFormats
 import com.soywiz.korim.format.RegisteredImageFormats
@@ -40,6 +38,10 @@ class GameScene : PunScene() {
 
     override suspend fun Container.sceneInit(){
         GlobalAccess.fingers = 2
+        val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
+        outsiders.add(punImage("o1",bmp,Rectangle(0.0, 960.0, 0.0, 1080.0)))
+        outsiders.add(punImage("o2",bmp,Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
+        outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
 
 
 
@@ -76,18 +78,9 @@ class GameScene : PunScene() {
             engineLoop.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
         }
 
-        floor = puntainer("floor", Rectangle(0.0, 1.0, 0.0, FloorData.getHeight()), relative = true) { puntainer ->
-
-            puntainer.singleColour(Colour.GREEN.korgeColor).also {
-                it.alpha = 0.1
-            }
-        }
 
 
-        val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
-        outsiders.add(punImage("o1",bmp.clone(),Rectangle(0.0, 960.0, 0.0, 1080.0)))
-        outsiders.add(punImage("o2",bmp.clone(),Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
-        outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
+
 
 
 
@@ -192,7 +185,7 @@ class GameScene : PunScene() {
                         it.visible = false
                     }
 
-                    PunImage("bird-$i$goreText", resourcesVfs["obs/$folder/bird-$i.png"].readBitmap()).also {
+                    PunImage("low-bird-$i$goreText", resourcesVfs["obs/$folder/bird-$i.png"].readBitmap()).also {
                         obstacles.add(it)
                         this.addChild(it)
                         it.visible = false
@@ -288,8 +281,34 @@ class GameScene : PunScene() {
 
         ////////////////////////////////////////////////////////////////
 
+        val fixedTime = TimeSpan(1000.0/60.0)
+        this.addFixedUpdater(time=fixedTime){
+            //backgroundRoll(TimeSpan(1000.0/60.0))
+            if (views.input.keys.justPressed(Key.UP)) {
+                playfield.jump()
+            }
+
+            if (views.input.keys.justPressed(Key.DOWN)) {
+                playfield.duck()
+            }
+
+            if (views.input.keys.pressing(Key.DOWN).not()) {
+                playfield.stopDuck()
+            }
+
+            score += fixedTime.seconds * 10
+            scoreText.text = score.toInt().toString()
+            val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
+            hand.update(fixedTime, r)
+
+            playfield.update(fixedTime)
+        }
+
+
+
 
         this.addUpdater { dt ->
+
             if (firstRun) {
                 firstRun = false
                 t1.visible = true
@@ -297,26 +316,12 @@ class GameScene : PunScene() {
                 t3.visible = true
             }
 
-
+            backgroundRoll(dt)
 
             if (gameActive) {
-
-
-                backgroundRoll(dt)
                 obstacles.forEach {
                     it.visible = false
                 }
-
-                score += dt.seconds * 10
-                scoreText.text = score.toInt().toString()
-
-
-                val obshit = children.filterIsInstance<Puntainer>().filter { it.id == "obshit" }
-                var obshitindex = 0
-                obshit.forEach {
-                    it.visible = false
-                }
-
 
                 val goreText = if (GlobalAccess.fingers == 2) {
                     ""
@@ -348,19 +353,9 @@ class GameScene : PunScene() {
                     }
                 }
 
-                if (views.input.keys.justPressed(Key.UP)) {
-                    playfield.jump()
-                }
 
-                if (views.input.keys.justPressed(Key.DOWN)) {
-                    playfield.duck()
-                }
 
-                if (views.input.keys.pressing(Key.DOWN).not()) {
-                    playfield.stopDuck()
-                }
 
-                val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
 
 
                 var collided = playfield.collisionCheck()
@@ -393,8 +388,9 @@ class GameScene : PunScene() {
                     hand.onGround()
                 }
 
-                hand.update(dt, r)
-                playfield.update(dt)
+                //val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
+                //hand.update(dt, r)
+                //playfield.update(dt)
 
 
                 floor.visible = hand.activeAnimationType == Hand.ActiveAnimationType.TWOFINGER_CUT
@@ -404,12 +400,8 @@ class GameScene : PunScene() {
                     if (l2.volume < 0.6) l2.volume += 0.1
                     else fadein = false
                 }
-            } else {
-
             }
         }
-        println("game called")
-
     }
 
     // WINDOW SCENE VARIABLES
@@ -434,10 +426,6 @@ class GameScene : PunScene() {
     var playfield = Playfield("playfield", oneRectangle())
     var floor = Puntainer()
     var obstacles = mutableListOf<Puntainer>()
-
-
-    var outside1: Puntainer = Puntainer()
-    var outside2: Puntainer = Puntainer()
 
     val outsiders = mutableListOf<Puntainer>()
 

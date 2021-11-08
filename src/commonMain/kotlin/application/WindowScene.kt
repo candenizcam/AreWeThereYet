@@ -32,7 +32,7 @@ class WindowScene  : PunScene() {
 
     @OptIn(KorgeInternal::class)
 
-    override suspend fun Container.sceneInit(){
+    override suspend fun Container.sceneMain(){
         //openingCrawl()
         val engineLoop = resourcesVfs["SFX/engine_heavy_loop-20.mp3"].readMusic()
 

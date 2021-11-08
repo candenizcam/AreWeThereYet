@@ -15,7 +15,7 @@ import pungine.geometry2D.Rectangle
 class GameOverScene: PunScene() {
     override fun createSceneView(): Container = Puntainer()
 
-    override suspend fun Container.sceneInit(){
+    override suspend fun Container.sceneMain(){
         val gameOver = Puntainer("gameover", Rectangle(0.0,1.0,0.0,1.0)).also { pt->
             this.addChild(pt)
             for(i in 1..7){
