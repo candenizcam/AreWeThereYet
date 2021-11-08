@@ -211,6 +211,7 @@ class EntryScene : PunScene() {
 
 
         super.sceneAfterInit()
+        println("entry called")
     }
 
     var window: Puntainer = Puntainer()

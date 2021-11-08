@@ -11,6 +11,8 @@ import com.soywiz.korge.view.Image
 import com.soywiz.korge.view.addUpdater
 import com.soywiz.korge.view.text
 import com.soywiz.korim.font.TtfFont
+import com.soywiz.korim.format.ImageFormats
+import com.soywiz.korim.format.RegisteredImageFormats
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korim.text.TextAlignment
 import com.soywiz.korio.async.launchImmediately
@@ -34,13 +36,24 @@ class GameScene : PunScene() {
 
     var scoreKeeper = ScoreKeeper()
 
-    override suspend fun Container.sceneInit() {
-        scoreKeeper.load()
+
+
+    override suspend fun Container.sceneInit(){
         GlobalAccess.fingers = 2
 
 
+
+    }
+
+
+
+    override suspend fun Container.sceneMain() {
+        scoreKeeper.load()
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
+
+
+
 
 
         /////////
@@ -395,6 +408,7 @@ class GameScene : PunScene() {
 
             }
         }
+        println("game called")
 
     }
 
@@ -437,6 +451,7 @@ class GameScene : PunScene() {
     }
 
     suspend fun adjustHand() {
+        println("hand adjusting")
         Hand.ActiveAnimationType.values().forEach { animType ->
             animType.puntainerOneFingers.children.clear()
 

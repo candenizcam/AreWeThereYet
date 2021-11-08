@@ -100,7 +100,7 @@ class WindowScene  : PunScene() {
                 }else if (windowUp) {
                     window.yConv= (window.yConv+dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
                 }
-                println(window.yConv)
+                //println(window.yConv)
                 if(window.yConv<100.0){
                     freeze=true
                     GlobalScope.launch{ sceneContainer.changeTo<GameScene>( ) }
@@ -111,6 +111,7 @@ class WindowScene  : PunScene() {
         }
         engineLoop.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
         super.sceneAfterInit()
+        println("window called")
     }
 
     var freeze = false
