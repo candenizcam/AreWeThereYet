@@ -65,49 +65,55 @@ class WindowScene  : PunScene() {
         //SceneContainer
 
         addUpdater {dt->
+            if(freeze.not()){
+                outsiders.forEach {
+                    it.x -= dt.seconds*0.3*1920
+                    if(it.x + it.width< -20.0){
+                        it.x += it.width * 3
+                    }
+                }
 
-            outsiders.forEach {
-                it.x -= dt.seconds*0.3*1920
-                if(it.x + it.width< -20.0){
-                    it.x += it.width * 3
+                if (views.input.keys.justPressed((Key.DOWN))){
+                    SfxPlayer.playSfx("windowDown-4.mp3")
+                }
+
+                if (views.input.keys.pressing(Key.DOWN)) {
+                    window.yConv-=(dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtLeast(0.0)
+                }else if(views.input.keys.pressing(Key.UP)){
+                    window.yConv+= (dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
+                }
+
+
+
+                if (views.input.keys.justPressed(Key.DOWN)) {
+                    windowUp = false
+                    windowDown = true
+                } else if (views.input.keys.justPressed(Key.UP)) {
+                    windowDown = false
+                    windowUp = true
+                } else if (views.input.keys.justPressed(Key.SPACE)) {
+                    windowDown = false
+                    windowUp = false
+                }
+                if (windowDown) {
+                    window.yConv=( window.yConv-dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtLeast(-10.0)
+                }else if (windowUp) {
+                    window.yConv= (window.yConv+dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
+                }
+                println(window.yConv)
+                if(window.yConv<100.0){
+                    freeze=true
+                    GlobalScope.launch{ sceneContainer.changeTo<GameScene>( ) }
                 }
             }
 
-            if (views.input.keys.justPressed((Key.DOWN))){
-                SfxPlayer.playSfx("windowDown-4.mp3")
-            }
 
-            if (views.input.keys.pressing(Key.DOWN)) {
-                window.yConv-=(dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtLeast(0.0)
-            }else if(views.input.keys.pressing(Key.UP)){
-                window.yConv+= (dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
-            }
-
-
-
-            if (views.input.keys.justPressed(Key.DOWN)) {
-                windowUp = false
-                windowDown = true
-            } else if (views.input.keys.justPressed(Key.UP)) {
-                windowDown = false
-                windowUp = true
-            } else if (views.input.keys.justPressed(Key.SPACE)) {
-                windowDown = false
-                windowUp = false
-            }
-            if (windowDown) {
-                window.yConv=( window.yConv-dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtLeast(-10.0)
-            }else if (windowUp) {
-                window.yConv= (window.yConv+dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
-            }
-
-            if(window.yConv<0.0){
-                launchImmediately{ sceneContainer.changeTo<GameScene>( ) }
-            }
         }
         engineLoop.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
         super.sceneAfterInit()
     }
+
+    var freeze = false
 
     var outside1: Puntainer = Puntainer()
     var outside2: Puntainer = Puntainer()
