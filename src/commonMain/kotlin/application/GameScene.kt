@@ -402,6 +402,7 @@ class GameScene : PunScene() {
                 }
             }
         }
+        println("game scene called")
     }
 
     // WINDOW SCENE VARIABLES

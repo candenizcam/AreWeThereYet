@@ -12,6 +12,7 @@ import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.addUpdater
 import com.soywiz.korim.color.RGBA
 import com.soywiz.korim.format.readBitmap
+import com.soywiz.korio.async.async
 import com.soywiz.korio.async.launch
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
@@ -136,11 +137,18 @@ class WindowScene  : PunScene() {
         ).also {
             it.visible = false
             it.onClick {
+                /*
                 GlobalScope.launch {
                     //sceneContainer.changeTo<GameScene>(gameScene)
                     //sceneContainer = gameScene.sceneContainer
                     //sceneContainer.changeTo<GameScene>()
-                    launchImmediately{sceneContainer.changeTo<GameScene>()}
+                    //launchImmediately{sceneContainer.changeTo<GameScene>()}
+
+                }
+
+                 */
+                async {
+                    sceneContainer.changeTo<GameScene>()
                 }
             }
         }
