@@ -32,7 +32,7 @@ class GameOverScene: PunScene() {
 
             animIndex+=dt.seconds*2
             if(animIndex>=gameOver.size){
-                GlobalScope.launchImmediately { sceneContainer.changeTo<EntryScene>( ) }
+                launchImmediately { sceneContainer.changeTo<EntryScene>( ) }
             }else{
                 gameOver.children.fastForEach { it.visible=false }
                 gameOver.children[animIndex.toInt()].visible=true

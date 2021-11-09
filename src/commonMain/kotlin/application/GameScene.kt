@@ -1,7 +1,6 @@
 package application
 
 import com.soywiz.klock.TimeSpan
-import com.soywiz.klock.measureTime
 import com.soywiz.korau.sound.PlaybackParameters
 import com.soywiz.korau.sound.PlaybackTimes
 import com.soywiz.korau.sound.readMusic
@@ -9,8 +8,6 @@ import com.soywiz.korev.Key
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
 import com.soywiz.korim.font.TtfFont
-import com.soywiz.korim.format.ImageFormats
-import com.soywiz.korim.format.RegisteredImageFormats
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korim.text.TextAlignment
 import com.soywiz.korio.async.launchImmediately
@@ -37,6 +34,7 @@ class GameScene : PunScene() {
 
 
     override suspend fun Container.sceneInit(){
+        println("game scene starts")
         GlobalAccess.fingers = 2
         val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
         outsiders.add(punImage("o1",bmp,Rectangle(0.0, 960.0, 0.0, 1080.0)))
@@ -245,7 +243,14 @@ class GameScene : PunScene() {
 
         //1594, 1894, 26, 106
 
-        adjustHand()
+        ////////////////////////////////////////// HEEEEREEEE
+        println("enter")
+        hand = Hand("hand", oneRectangle())
+        println("middle")
+        hand.suspendInit()
+        //adjustHand()
+        println("out")
+        //////////////////////////////////////////
         this.addChild(hand)
 
 
@@ -372,7 +377,7 @@ class GameScene : PunScene() {
                     fadein = true
                     if (GlobalAccess.fingers == 1) {
                         death()
-                        GlobalScope.launchImmediately { sceneContainer.changeTo<GameOverScene>() }
+                        launchImmediately { sceneContainer.changeTo<GameOverScene>() }
                     } else {
                         GlobalAccess.fingers -= 1
                         playfield.sliced()
@@ -393,7 +398,7 @@ class GameScene : PunScene() {
                 //playfield.update(dt)
 
 
-                floor.visible = hand.activeAnimationType == Hand.ActiveAnimationType.TWOFINGER_CUT
+                floor.visible = hand.activeAnimationType == Hand.ActiveAnimationType.CUT
                 floor.alpha = -1 * hand.animIndex * hand.animIndex * 8.0 / 605.0 + hand.animIndex * 8.0 / 55.0
 
                 if (fadein) {
@@ -420,15 +425,13 @@ class GameScene : PunScene() {
     lateinit var sh3Type: ObstacleTypes
 
     var score = 0.0
-
     var gameActive = true
-
-    val hand = Hand("hand", oneRectangle())
+    lateinit var hand: Hand //= Hand("hand", oneRectangle())
     var playfield = Playfield("playfield", oneRectangle())
-    var floor = Puntainer()
+    lateinit var floor:Puntainer
     var obstacles = mutableListOf<Puntainer>()
-
     val outsiders = mutableListOf<Puntainer>()
+    var firstRun = true
 
     fun backgroundRoll(dt: TimeSpan) {
         outsiders.forEach {
@@ -439,6 +442,7 @@ class GameScene : PunScene() {
         }
     }
 
+    /*
     suspend fun adjustHand() {
         println("hand adjusting")
         Hand.ActiveAnimationType.values().forEach { animType ->
@@ -465,12 +469,14 @@ class GameScene : PunScene() {
 
     }
 
-    var firstRun = true
+     */
+
+
 
 
     fun death() {
         gameActive = false
-        hand.activeAnimationType = Hand.ActiveAnimationType.TWOFINGER_RUN
+        hand.activeAnimationType = Hand.ActiveAnimationType.RUN
         /*
         Hand.ActiveAnimationType.values().forEach {
             it.puntainerTwoFingers.children.fastForEach { it.visible=false }

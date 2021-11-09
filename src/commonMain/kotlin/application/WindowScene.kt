@@ -9,6 +9,7 @@ import com.soywiz.korge.input.onClick
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.scene.SceneContainer
 import com.soywiz.korge.view.Container
+import com.soywiz.korge.view.addFixedUpdater
 import com.soywiz.korge.view.addUpdater
 import com.soywiz.korim.color.RGBA
 import com.soywiz.korim.format.readBitmap
@@ -18,6 +19,7 @@ import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import modules.basic.Colour
 import pungine.PunScene
 import pungine.Puntainer
@@ -103,13 +105,17 @@ class WindowScene  : PunScene() {
                 }
                 //println(window.yConv)
                 if(window.yConv<100.0){
-                    freeze=true
-                    GlobalScope.launch{ sceneContainer.changeTo<GameScene>( ) }
+                    println("out coming")
+                    launchImmediately {sceneContainer.changeTo<GameScene>( )   }
+
+
+                    println("out came")
                 }
             }
 
 
         }
+
         engineLoop.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
         super.sceneAfterInit()
         println("window called")
@@ -117,8 +123,6 @@ class WindowScene  : PunScene() {
 
     var freeze = false
 
-    var outside1: Puntainer = Puntainer()
-    var outside2: Puntainer = Puntainer()
     val outsiders = mutableListOf<Puntainer>()
     var window: Puntainer = Puntainer()
 
@@ -126,7 +130,7 @@ class WindowScene  : PunScene() {
     //var gameScene = GameScene()
 
     // delete from all under here for a new scene
-
+/*
     suspend fun openingCrawl() {
         val bg = solidRect("id", Rectangle(0.0, 1.0, 0.0, 1.0), RGBA.float(0.04f, 0.02f, 0.04f, 1f), relative = true)
 
@@ -145,11 +149,13 @@ class WindowScene  : PunScene() {
                     //launchImmediately{sceneContainer.changeTo<GameScene>()}
 
                 }
-
-                 */
-                async {
+async {
+                    println("out calling")
                     sceneContainer.changeTo<GameScene>()
+                    println("out called")
                 }
+                 */
+
             }
         }
 
@@ -175,4 +181,6 @@ class WindowScene  : PunScene() {
             }
         }
     }
+
+ */
 }
