@@ -377,7 +377,7 @@ class GameScene : PunScene() {
                     fadein = true
                     if (GlobalAccess.fingers == 1) {
                         death()
-                        launchImmediately { sceneContainer.changeTo<GameOverScene>() }
+
                     } else {
                         GlobalAccess.fingers -= 1
                         playfield.sliced()
@@ -404,6 +404,12 @@ class GameScene : PunScene() {
                 if (fadein) {
                     if (l2.volume < 0.6) l2.volume += 0.1
                     else fadein = false
+                }
+            }else{
+                val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
+                hand.update(dt,r)
+                if(hand.isDead){
+                    launchImmediately { sceneContainer.changeTo<GameOverScene>() }
                 }
             }
         }
@@ -434,12 +440,15 @@ class GameScene : PunScene() {
     var firstRun = true
 
     fun backgroundRoll(dt: TimeSpan) {
-        outsiders.forEach {
-            it.x -= dt.seconds *playfield.level.speed * 1920
-            if(it.x + it.width< -20.0){
-                it.x += it.width * 3
+        if(GlobalAccess.fingers>0){
+            outsiders.forEach {
+                it.x -= dt.seconds *playfield.level.speed * 1920
+                if(it.x + it.width< -20.0){
+                    it.x += it.width * 3
+                }
             }
         }
+
     }
 
     /*
@@ -476,7 +485,8 @@ class GameScene : PunScene() {
 
     fun death() {
         gameActive = false
-        hand.activeAnimationType = Hand.ActiveAnimationType.RUN
+        hand.activeAnimationType = Hand.ActiveAnimationType.CUT
+        GlobalAccess.fingers=0
         /*
         Hand.ActiveAnimationType.values().forEach {
             it.puntainerTwoFingers.children.fastForEach { it.visible=false }

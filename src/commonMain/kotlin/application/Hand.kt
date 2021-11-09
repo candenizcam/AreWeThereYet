@@ -22,21 +22,9 @@ class Hand: Puntainer {
             it.visible = blockMode
             this.addChild(it)
         }
-        /*
-        ActiveAnimationType.values().forEach {
-            this.addChild(it.puntainerTwoFingers)
-            this.addChild(it.puntainerOneFingers)
-        }
-
-         */
         fingerCut = Puntainer()
         this.addChild(fingerCut)
 
-        //"run", "jump", "fly", "fall
-        //
-        // ", "duck", "cut"
-
-         println("hand construction complete")
 
 
     }
@@ -67,7 +55,7 @@ class Hand: Puntainer {
     }
 
 
-
+    val animationSpeed = 15 //12 frames per second
 
     fun update(dt: TimeSpan, hitboxRectOnScreen: Rectangle){
 
@@ -75,51 +63,68 @@ class Hand: Puntainer {
             greenBlock.setSize(hitboxRectOnScreen.width,hitboxRectOnScreen.height)
         }else{
 
-            animIndex += dt.seconds*12
+            animIndex += dt.seconds*animationSpeed
 
 
-            var a = activeAnimation()
 
-            if (animIndex>=activeSize()){
-                if(activeAnimationType==ActiveAnimationType.JUMP){
-                    activeAnimationType = ActiveAnimationType.FLY
-                    a = activeAnimation()
-                }else if(activeAnimationType==ActiveAnimationType.FALL){
-                    activeAnimationType = ActiveAnimationType.RUN
-                    a = activeAnimation()
-                }else if(activeAnimationType==ActiveAnimationType.CUT){
-                    activeAnimationType = ActiveAnimationType.RUN
-                    a = activeAnimation()
+            if(isDying.not()){
+                var a = activeAnimation()
+
+                if (animIndex>=activeSize()){
+                    if(activeAnimationType==ActiveAnimationType.JUMP){
+                        activeAnimationType = ActiveAnimationType.FLY
+                        a = activeAnimation()
+                    }else if(activeAnimationType==ActiveAnimationType.FALL){
+                        activeAnimationType = ActiveAnimationType.RUN
+                        a = activeAnimation()
+                    }else if(activeAnimationType==ActiveAnimationType.CUT){
+                        if(GlobalAccess.fingers==0){
+                            isDying = true
+                            animIndex=0.0
+                            return
+                        }else{
+                            activeAnimationType = ActiveAnimationType.RUN
+                        }
+
+                        a = activeAnimation()
+                    }
+                    else{
+                        animIndex %= activeSize()
+                    }
+
                 }
-                else{
-                    animIndex %= activeSize()
+                val hitboxRect = hitboxRectOnScreen.decodeRated(activeAnimationType.relativeRect())
+
+                a.children.forEachIndexed { index, image ->
+                    image.visible = index==animIndex.toInt()
+                    //image.visible = true
+                    image.scaledWidth= hitboxRect.width
+                    image.scaledHeight = hitboxRect.height
+                    image.x = hitboxRect.left
+                    image.y = GlobalAccess.virtualSize.height - (hitboxRect.top)
                 }
+                if(activeAnimationType==ActiveAnimationType.DUCK){
+                    val vss = a.children.map { it.visible }
+                }
+                //greenBlock.scaledWidth = hitboxRectOnScreen.width
+                //greenBlock.scaledHeight = hitboxRectOnScreen.height
+                //greenBlock.x = hitboxRectOnScreen.left
+                //greenBlock.y = GlobalAccess.virtualSize.height-hitboxRectOnScreen.top
+                //greenBlock.visible = true
+            }else{
+                if(animIndex>=animationSpeed*0.5){
+                    isDead=true
+                }
+            }
 
-            }
-            val hitboxRect = hitboxRectOnScreen.decodeRated(activeAnimationType.relativeRect())
-
-            a.children.forEachIndexed { index, image ->
-                image.visible = index==animIndex.toInt()
-                //image.visible = true
-                image.scaledWidth= hitboxRect.width
-                image.scaledHeight = hitboxRect.height
-                image.x = hitboxRect.left
-                image.y = GlobalAccess.virtualSize.height - (hitboxRect.top)
-            }
-            if(activeAnimationType==ActiveAnimationType.DUCK){
-                val vss = a.children.map { it.visible }
-            }
-            //greenBlock.scaledWidth = hitboxRectOnScreen.width
-            //greenBlock.scaledHeight = hitboxRectOnScreen.height
-            //greenBlock.x = hitboxRectOnScreen.left
-            //greenBlock.y = GlobalAccess.virtualSize.height-hitboxRectOnScreen.top
-            //greenBlock.visible = true
         }
 
     }
 
     var blockMode = false
     val greenBlock: View
+    var isDead = false
+    var isDying = false
 
     fun onAir(){
         if(activeAnimationType!=ActiveAnimationType.CUT){
@@ -206,7 +211,15 @@ class Hand: Puntainer {
 
 
     fun activeAnimation(): Puntainer {
-        val pref = listOf("one_","two_")[GlobalAccess.fingers-1]
+        val pref = if(GlobalAccess.fingers!=0){
+            if(activeAnimationType!=ActiveAnimationType.CUT){
+                listOf("one_","two_")[GlobalAccess.fingers-1]
+            }else{
+                "two_"
+            }
+        }else{
+            "one_"
+        }
         return children.filterIsInstance<Puntainer>().filter { it.id==pref+activeAnimationType.animationID() }[0]
     }
 

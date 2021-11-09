@@ -103,17 +103,10 @@ class WindowScene  : PunScene() {
                 }else if (windowUp) {
                     window.yConv= (window.yConv+dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
                 }
-                //println(window.yConv)
                 if(window.yConv<100.0){
-                    println("out coming")
                     launchImmediately {sceneContainer.changeTo<GameScene>( )   }
-
-
-                    println("out came")
                 }
             }
-
-
         }
 
         engineLoop.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
@@ -127,60 +120,4 @@ class WindowScene  : PunScene() {
     var window: Puntainer = Puntainer()
 
 
-    //var gameScene = GameScene()
-
-    // delete from all under here for a new scene
-/*
-    suspend fun openingCrawl() {
-        val bg = solidRect("id", Rectangle(0.0, 1.0, 0.0, 1.0), RGBA.float(0.04f, 0.02f, 0.04f, 1f), relative = true)
-
-        val img = punImage(
-            "id",
-            resourcesVfs["pungo_transparent.png"].readBitmap(),
-            Rectangle(390.0, 890.0, 110.0, 610.0)
-        ).also {
-            it.visible = false
-            it.onClick {
-                /*
-                GlobalScope.launch {
-                    //sceneContainer.changeTo<GameScene>(gameScene)
-                    //sceneContainer = gameScene.sceneContainer
-                    //sceneContainer.changeTo<GameScene>()
-                    //launchImmediately{sceneContainer.changeTo<GameScene>()}
-
-                }
-async {
-                    println("out calling")
-                    sceneContainer.changeTo<GameScene>()
-                    println("out called")
-                }
-                 */
-
-            }
-        }
-
-
-        val resource = resourcesVfs["PunGine.png"].readBitmap()
-        punImage("id", resource, Rectangle(0.0, 1.0, 0.0, 1.0), true).also {
-            it.alpha = 0.0
-            var counter = 0.0
-            it.addUpdater { dt: TimeSpan ->
-                if (counter < 3.0) {
-                    bg.alpha = 1.0
-                    counter += dt.seconds
-                    if (counter < 1.2) {
-                        it.alpha = counter / 1.2
-                    } else if (counter > 1.8) {
-                        it.alpha = (3.0 - counter) / 1.2
-                    }
-                } else {
-                    it.alpha = 0.0
-                    bg.alpha = 0.0
-                    img.visible = true
-                }
-            }
-        }
-    }
-
- */
 }
