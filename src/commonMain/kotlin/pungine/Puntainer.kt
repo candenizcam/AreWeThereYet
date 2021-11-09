@@ -76,6 +76,10 @@ open class Puntainer: Container {
         }
     }
 
+    override fun toString(): String {
+        return "puntainer $id"
+    }
+
 }
 
 

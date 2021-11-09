@@ -6,10 +6,7 @@ import com.soywiz.korau.sound.PlaybackTimes
 import com.soywiz.korau.sound.readMusic
 import com.soywiz.korev.Key
 import com.soywiz.korge.internal.KorgeInternal
-import com.soywiz.korge.view.Container
-import com.soywiz.korge.view.Image
-import com.soywiz.korge.view.addUpdater
-import com.soywiz.korge.view.text
+import com.soywiz.korge.view.*
 import com.soywiz.korim.font.TtfFont
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korim.text.TextAlignment
@@ -34,13 +31,29 @@ class GameScene : PunScene() {
 
     var scoreKeeper = ScoreKeeper()
 
-    override suspend fun Container.sceneInit() {
-        scoreKeeper.load()
+
+
+    override suspend fun Container.sceneInit(){
+        println("game scene starts")
         GlobalAccess.fingers = 2
+        val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
+        outsiders.add(punImage("o1",bmp,Rectangle(0.0, 960.0, 0.0, 1080.0)))
+        outsiders.add(punImage("o2",bmp,Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
+        outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
 
 
+
+    }
+
+
+
+    override suspend fun Container.sceneMain() {
+        scoreKeeper.load()
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
+
+
+
 
 
         /////////
@@ -63,17 +76,9 @@ class GameScene : PunScene() {
             engineLoop.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
         }
 
-        floor = puntainer("floor", Rectangle(0.0, 1.0, 0.0, FloorData.getHeight()), relative = true) { puntainer ->
-            puntainer.singleColour(Colour.GREEN.korgeColor).also {
-                it.alpha = 0.1
-            }
-        }
 
 
-        val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
-        outsiders.add(punImage("o1",bmp.clone(),Rectangle(0.0, 960.0, 0.0, 1080.0)))
-        outsiders.add(punImage("o2",bmp.clone(),Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
-        outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
+
 
 
 
@@ -177,7 +182,7 @@ class GameScene : PunScene() {
                         it.visible = false
                     }
 
-                    PunImage("bird-$i$goreText", resourcesVfs["obs/$folder/bird-$i.png"].readBitmap()).also {
+                    PunImage("low-bird-$i$goreText", resourcesVfs["obs/$folder/bird-$i.png"].readBitmap()).also {
                         obstacles.add(it)
                         this.addChild(it)
                         it.visible = false
@@ -237,7 +242,14 @@ class GameScene : PunScene() {
 
         //1594, 1894, 26, 106
 
-        adjustHand()
+        ////////////////////////////////////////// HEEEEREEEE
+        println("enter")
+        hand = Hand("hand", oneRectangle())
+        println("middle")
+        hand.suspendInit()
+        //adjustHand()
+        println("out")
+        //////////////////////////////////////////
         this.addChild(hand)
 
 
@@ -273,8 +285,34 @@ class GameScene : PunScene() {
 
         ////////////////////////////////////////////////////////////////
 
+        val fixedTime = TimeSpan(1000.0/60.0)
+        this.addFixedUpdater(time=fixedTime){
+            //backgroundRoll(TimeSpan(1000.0/60.0))
+            if (views.input.keys.justPressed(Key.UP)) {
+                playfield.jump()
+            }
+
+            if (views.input.keys.justPressed(Key.DOWN)) {
+                playfield.duck()
+            }
+
+            if (views.input.keys.pressing(Key.DOWN).not()) {
+                playfield.stopDuck()
+            }
+
+            score += fixedTime.seconds * 10
+            scoreText.text = score.toInt().toString()
+            val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
+            hand.update(fixedTime, r)
+
+            playfield.update(fixedTime)
+        }
+
+
+
 
         this.addUpdater { dt ->
+
             if (firstRun) {
                 firstRun = false
                 t1.visible = true
@@ -282,25 +320,12 @@ class GameScene : PunScene() {
                 t3.visible = true
             }
 
-
+            backgroundRoll(dt)
 
             if (gameActive) {
-
-
-                backgroundRoll(dt)
                 obstacles.forEach {
                     it.visible = false
                 }
-
-                score += dt.seconds * 10
-                scoreText.text = score.toInt().toString()
-
-
-                val obshit = children.filterIsInstance<Puntainer>().filter { it.id == "obshit" }
-                obshit.forEach {
-                    it.visible = false
-                }
-
 
                 val goreText = if (GlobalAccess.fingers == 2) {
                     ""
@@ -332,19 +357,9 @@ class GameScene : PunScene() {
                     }
                 }
 
-                if (views.input.keys.justPressed(Key.UP)) {
-                    playfield.jump()
-                }
 
-                if (views.input.keys.justPressed(Key.DOWN)) {
-                    playfield.duck()
-                }
 
-                if (views.input.keys.pressing(Key.DOWN).not()) {
-                    playfield.stopDuck()
-                }
 
-                val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
 
 
                 var collided = playfield.collisionCheck()
@@ -361,7 +376,7 @@ class GameScene : PunScene() {
                     fadein = true
                     if (GlobalAccess.fingers == 1) {
                         death()
-                        GlobalScope.launchImmediately { sceneContainer.changeTo<GameOverScene>() }
+                        launchImmediately { sceneContainer.changeTo<GameOverScene>() }
                     } else {
                         GlobalAccess.fingers -= 1
                         playfield.sliced()
@@ -377,22 +392,21 @@ class GameScene : PunScene() {
                     hand.onGround()
                 }
 
-                hand.update(dt, r)
-                playfield.update(dt)
+                //val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
+                //hand.update(dt, r)
+                //playfield.update(dt)
 
 
-                floor.visible = hand.activeAnimationType == Hand.ActiveAnimationType.TWOFINGER_CUT
+                floor.visible = hand.activeAnimationType == Hand.ActiveAnimationType.CUT
                 floor.alpha = -1 * hand.animIndex * hand.animIndex * 8.0 / 605.0 + hand.animIndex * 8.0 / 55.0
 
                 if (fadein) {
                     if (l2.volume < 0.6) l2.volume += 0.1
                     else fadein = false
                 }
-            } else {
-
             }
         }
-
+        println("game scene called")
     }
 
     // WINDOW SCENE VARIABLES
@@ -410,19 +424,13 @@ class GameScene : PunScene() {
     lateinit var sh3Type: ObstacleTypes
 
     var score = 0.0
-
     var gameActive = true
-
-    val hand = Hand("hand", oneRectangle())
+    lateinit var hand: Hand //= Hand("hand", oneRectangle())
     var playfield = Playfield("playfield", oneRectangle())
-    var floor = Puntainer()
+    lateinit var floor:Puntainer
     var obstacles = mutableListOf<Puntainer>()
-
-
-    var outside1: Puntainer = Puntainer()
-    var outside2: Puntainer = Puntainer()
-
     val outsiders = mutableListOf<Puntainer>()
+    var firstRun = true
 
     fun backgroundRoll(dt: TimeSpan) {
         outsiders.forEach {
@@ -433,7 +441,9 @@ class GameScene : PunScene() {
         }
     }
 
+    /*
     suspend fun adjustHand() {
+        println("hand adjusting")
         Hand.ActiveAnimationType.values().forEach { animType ->
             animType.puntainerOneFingers.children.clear()
 
@@ -458,12 +468,22 @@ class GameScene : PunScene() {
 
     }
 
-    var firstRun = true
+     */
+
+
 
 
     fun death() {
         gameActive = false
-        hand.activeAnimationType = Hand.ActiveAnimationType.TWOFINGER_RUN
+        hand.activeAnimationType = Hand.ActiveAnimationType.RUN
+        /*
+        Hand.ActiveAnimationType.values().forEach {
+            it.puntainerTwoFingers.children.fastForEach { it.visible=false }
+            it.puntainerOneFingers.children.fastForEach { it.visible=false }
+        }
+
+         */
+
     }
 
 

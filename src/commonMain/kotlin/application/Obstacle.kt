@@ -91,7 +91,7 @@ enum class ObstacleTypes {
     },
     LOWBIRD {
         override fun relevantID(rarity: Int): String {
-            return "bird-$rarity"
+            return "low-bird-$rarity"
         }
 
         override fun ratedRect(): Rectangle {

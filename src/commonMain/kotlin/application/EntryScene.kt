@@ -27,7 +27,7 @@ import pungine.geometry2D.Rectangle
 class EntryScene : PunScene() {
     override fun createSceneView(): Container = Puntainer()
 
-    override suspend fun Container.sceneInit(){
+    override suspend fun Container.sceneMain(){
         //openingCrawl()
         SfxPlayer.loadSounds()
 
@@ -211,6 +211,7 @@ class EntryScene : PunScene() {
 
 
         super.sceneAfterInit()
+        println("entry called")
     }
 
     var window: Puntainer = Puntainer()

@@ -9,14 +9,17 @@ import com.soywiz.korge.input.onClick
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.scene.SceneContainer
 import com.soywiz.korge.view.Container
+import com.soywiz.korge.view.addFixedUpdater
 import com.soywiz.korge.view.addUpdater
 import com.soywiz.korim.color.RGBA
 import com.soywiz.korim.format.readBitmap
+import com.soywiz.korio.async.async
 import com.soywiz.korio.async.launch
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import modules.basic.Colour
 import pungine.PunScene
 import pungine.Puntainer
@@ -32,7 +35,7 @@ class WindowScene  : PunScene() {
 
     @OptIn(KorgeInternal::class)
 
-    override suspend fun Container.sceneInit(){
+    override suspend fun Container.sceneMain(){
         //openingCrawl()
         val engineLoop = resourcesVfs["SFX/engine_heavy_loop-20.mp3"].readMusic()
 
@@ -65,52 +68,61 @@ class WindowScene  : PunScene() {
         //SceneContainer
 
         addUpdater {dt->
+            if(freeze.not()){
+                outsiders.forEach {
+                    it.x -= dt.seconds*0.3*1920
+                    if(it.x + it.width< -20.0){
+                        it.x += it.width * 3
+                    }
+                }
 
-            outsiders.forEach {
-                it.x -= dt.seconds*0.3*1920
-                if(it.x + it.width< -20.0){
-                    it.x += it.width * 3
+                if (views.input.keys.justPressed((Key.DOWN))){
+                    SfxPlayer.playSfx("windowDown-4.mp3")
+                }
+
+                if (views.input.keys.pressing(Key.DOWN)) {
+                    window.yConv-=(dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtLeast(0.0)
+                }else if(views.input.keys.pressing(Key.UP)){
+                    window.yConv+= (dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
+                }
+
+
+
+                if (views.input.keys.justPressed(Key.DOWN)) {
+                    windowUp = false
+                    windowDown = true
+                } else if (views.input.keys.justPressed(Key.UP)) {
+                    windowDown = false
+                    windowUp = true
+                } else if (views.input.keys.justPressed(Key.SPACE)) {
+                    windowDown = false
+                    windowUp = false
+                }
+                if (windowDown) {
+                    window.yConv=( window.yConv-dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtLeast(-10.0)
+                }else if (windowUp) {
+                    window.yConv= (window.yConv+dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
+                }
+                //println(window.yConv)
+                if(window.yConv<100.0){
+                    println("out coming")
+                    launchImmediately {sceneContainer.changeTo<GameScene>( )   }
+
+
+                    println("out came")
                 }
             }
 
-            if (views.input.keys.justPressed((Key.DOWN))){
-                SfxPlayer.playSfx("windowDown-4.mp3")
-            }
 
-            if (views.input.keys.pressing(Key.DOWN)) {
-                window.yConv-=(dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtLeast(0.0)
-            }else if(views.input.keys.pressing(Key.UP)){
-                window.yConv+= (dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
-            }
-
-
-
-            if (views.input.keys.justPressed(Key.DOWN)) {
-                windowUp = false
-                windowDown = true
-            } else if (views.input.keys.justPressed(Key.UP)) {
-                windowDown = false
-                windowUp = true
-            } else if (views.input.keys.justPressed(Key.SPACE)) {
-                windowDown = false
-                windowUp = false
-            }
-            if (windowDown) {
-                window.yConv=( window.yConv-dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtLeast(-10.0)
-            }else if (windowUp) {
-                window.yConv= (window.yConv+dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
-            }
-
-            if(window.yConv<0.0){
-                launchImmediately{ sceneContainer.changeTo<GameScene>( ) }
-            }
         }
+
         engineLoop.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
         super.sceneAfterInit()
+        println("window called")
     }
 
-    var outside1: Puntainer = Puntainer()
-    var outside2: Puntainer = Puntainer()
+    var freeze = false
+
     val outsiders = mutableListOf<Puntainer>()
     var window: Puntainer = Puntainer()
 
@@ -118,7 +130,7 @@ class WindowScene  : PunScene() {
     //var gameScene = GameScene()
 
     // delete from all under here for a new scene
-
+/*
     suspend fun openingCrawl() {
         val bg = solidRect("id", Rectangle(0.0, 1.0, 0.0, 1.0), RGBA.float(0.04f, 0.02f, 0.04f, 1f), relative = true)
 
@@ -129,12 +141,21 @@ class WindowScene  : PunScene() {
         ).also {
             it.visible = false
             it.onClick {
+                /*
                 GlobalScope.launch {
                     //sceneContainer.changeTo<GameScene>(gameScene)
                     //sceneContainer = gameScene.sceneContainer
                     //sceneContainer.changeTo<GameScene>()
-                    launchImmediately{sceneContainer.changeTo<GameScene>()}
+                    //launchImmediately{sceneContainer.changeTo<GameScene>()}
+
                 }
+async {
+                    println("out calling")
+                    sceneContainer.changeTo<GameScene>()
+                    println("out called")
+                }
+                 */
+
             }
         }
 
@@ -160,4 +181,6 @@ class WindowScene  : PunScene() {
             }
         }
     }
+
+ */
 }
