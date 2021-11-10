@@ -5,6 +5,7 @@ import com.soywiz.korau.sound.PlaybackParameters
 import com.soywiz.korau.sound.PlaybackTimes
 import com.soywiz.korau.sound.readMusic
 import com.soywiz.korev.Key
+import com.soywiz.korge.input.onClick
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
 import com.soywiz.korim.font.TtfFont
@@ -226,18 +227,7 @@ class GameScene : PunScene() {
                 it.visible = false
             }
 
-        val scoreText = text(
-            "11111",
-            font = font,
-            textSize = 42.0,
-            color = Colour.byHex("131A14").korgeColor,
-            alignment = TextAlignment.TOP_CENTER
-        ).also {
-            it.x = (1594.0 + 1894.0) * 0.5
-            it.y = 26.0 + 12.0
 
-        }
-        scoreText.text = "0"
 
 
         //1594, 1894, 26, 106
@@ -267,7 +257,7 @@ class GameScene : PunScene() {
 
         floor = puntainer("floor", Rectangle(0.0, 1.0, 0.0, 1.0), relative = true) {
             it.singleColour(Colour.RED.korgeColor).also {
-                it.alpha = 0.1
+                it.alpha = 0.0
             }
         }
 
@@ -277,6 +267,52 @@ class GameScene : PunScene() {
 
 
         //108, 350, 117, 267
+
+        val scoreText = text(
+            "11111",
+            font = font,
+            textSize = 42.0,
+            color = Colour.byHex("131A14").korgeColor,
+            alignment = TextAlignment.TOP_CENTER
+        ).also {
+            it.x = (1594.0 + 1894.0) * 0.5
+            it.y = 26.0 + 12.0
+
+        }
+        scoreText.text = "0"
+
+
+
+        val gameOver = Puntainer("gameover", Rectangle(0.0,1.0,0.0,1.0)).also { pt->
+            this.addChild(pt)
+            for(i in 1..7){
+                Image(resourcesVfs["VFX/game_over-$i.png"].readBitmap()).also {
+                    it.visible = false
+                    pt.addChild(it)
+                }
+            }
+
+        }
+
+        val finalScoreBand  = punImage("finalBand", resourcesVfs["UI/bandaid.png"].readBitmap(), oneRectangle(), true).also {
+            it.visible=false
+        }
+
+
+
+        val finalScoreText = text(
+            "11111",
+            font = font,
+            textSize = 42.0,
+            color = Colour.byHex("131A14").korgeColor,
+            alignment = TextAlignment.TOP_CENTER
+        ).also {
+            it.x = (1594.0 + 1894.0) * 0.5
+            it.y = 26.0 + 12.0
+            it.visible=false
+        }
+
+
 
 
         ////////////////////////////////////////////////////////////////
@@ -288,20 +324,23 @@ class GameScene : PunScene() {
         val fixedTime = TimeSpan(1000.0/60.0)
         this.addFixedUpdater(time=fixedTime){
             //backgroundRoll(TimeSpan(1000.0/60.0))
-            if (views.input.keys.justPressed(Key.UP)) {
-                playfield.jump()
+
+            if(GlobalAccess.fingers>0){
+                if (views.input.keys.justPressed(Key.UP)) {
+                    playfield.jump()
+                }
+
+                if (views.input.keys.justPressed(Key.DOWN)) {
+                    playfield.duck()
+                }
+
+                if (views.input.keys.pressing(Key.DOWN).not()) {
+                    playfield.stopDuck()
+                }
+                score += fixedTime.seconds * 10
+                scoreText.text = score.toInt().toString()
             }
 
-            if (views.input.keys.justPressed(Key.DOWN)) {
-                playfield.duck()
-            }
-
-            if (views.input.keys.pressing(Key.DOWN).not()) {
-                playfield.stopDuck()
-            }
-
-            score += fixedTime.seconds * 10
-            scoreText.text = score.toInt().toString()
             val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
             hand.update(fixedTime, r)
 
@@ -408,8 +447,35 @@ class GameScene : PunScene() {
                 val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
                 hand.update(dt,r)
                 if(hand.isDead){
-                    launchImmediately { sceneContainer.changeTo<GameOverScene>() }
+                    gameOverIndex += dt.seconds*2
+                    if(gameOverIndex>=gameOver.size){
+                        finalScoreText.x = GlobalAccess.virtualSize.width*0.5
+                        finalScoreText.y = GlobalAccess.virtualSize.height*0.7
+                        finalScoreText.visible=true
+                        finalScoreText.text = "Score: ${score.toInt()}"
+
+                        finalScoreBand.scaledWidth = 300.0
+                        finalScoreBand.scaledHeight = 80.0
+                        finalScoreBand.x = GlobalAccess.virtualSize.width*0.5-150.0
+                        finalScoreBand.y = GlobalAccess.virtualSize.height*0.7-10.0
+                        finalScoreBand.visible=true
+
+                    }else{
+                        gameOver.children.fastForEach { it.visible=false }
+                        gameOver.children[gameOverIndex.toInt()].visible=true
+                    }
+                    //launchImmediately { sceneContainer.changeTo<GameOverScene>() }
                 }
+
+
+
+
+            }
+        }
+
+        onClick {
+            if(gameOverIndex>=gameOver.size){
+                launchImmediately { sceneContainer.changeTo<EntryScene>( ) }
             }
         }
         println("game scene called")
@@ -437,6 +503,7 @@ class GameScene : PunScene() {
     var obstacles = mutableListOf<Puntainer>()
     val outsiders = mutableListOf<Puntainer>()
     var firstRun = true
+    var gameOverIndex = 0.0
 
     fun backgroundRoll(dt: TimeSpan) {
         if(GlobalAccess.fingers>0){
