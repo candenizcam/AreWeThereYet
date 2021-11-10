@@ -402,13 +402,19 @@ class GameScene : PunScene() {
 
 
                 var collided = playfield.collisionCheck()
-                if (collided == sh1Type.ordinal) {
+                val collidedObstacleRarity = if(playfield.level.obstacles.isNotEmpty()){
+                     playfield.level.obstacles.first().obstacleRarity.ordinal
+                }else{
+                    5
+                }
+
+                if ((collided == sh1Type.ordinal)&&(collidedObstacleRarity==0)) {
                     score += 100
                     playfield.sliced()
-                } else if (collided == sh2Type.ordinal) {
+                } else if ((collided == sh2Type.ordinal)&&(collidedObstacleRarity==1)) {
                     score += 250
                     playfield.sliced()
-                } else if (collided == sh3Type.ordinal) {
+                } else if ((collided == sh3Type.ordinal)&&(collidedObstacleRarity==2)) {
                     score += 500
                     playfield.sliced()
                 } else if (collided != -1) {

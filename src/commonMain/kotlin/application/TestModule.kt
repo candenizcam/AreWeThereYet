@@ -16,6 +16,5 @@ object TestModule: Module() {
         mapPrototype { GameScene() }
         mapPrototype { EntryScene() }
         mapPrototype { WindowScene() }
-        mapPrototype { GameOverScene() }
     }
 }
