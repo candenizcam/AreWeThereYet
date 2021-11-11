@@ -13,6 +13,7 @@ import com.soywiz.korim.format.readBitmap
 import com.soywiz.korim.text.TextAlignment
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import modules.basic.Colour
 import pungine.PunImage
@@ -41,13 +42,11 @@ class GameScene : PunScene() {
         outsiders.add(punImage("o1",bmp,Rectangle(0.0, 960.0, 0.0, 1080.0)))
         outsiders.add(punImage("o2",bmp,Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
         outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
-
-
-
     }
 
 
 
+    @OptIn(DelicateCoroutinesApi::class)
     override suspend fun Container.sceneMain() {
         scoreKeeper.load()
         val h = GlobalAccess.virtualSize.height.toDouble()
@@ -76,8 +75,6 @@ class GameScene : PunScene() {
             l3.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
             engineLoop.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
         }
-
-
 
 
 
@@ -348,8 +345,6 @@ class GameScene : PunScene() {
         }
 
 
-
-
         this.addUpdater { dt ->
 
             if (firstRun) {
@@ -410,12 +405,15 @@ class GameScene : PunScene() {
 
                 if ((collided == sh1Type.ordinal)&&(collidedObstacleRarity==0)) {
                     score += 100
+                    SfxPlayer.playSfx("diDing.mp3")
                     playfield.sliced()
                 } else if ((collided == sh2Type.ordinal)&&(collidedObstacleRarity==1)) {
                     score += 250
+                    SfxPlayer.playSfx("diDing.mp3")
                     playfield.sliced()
                 } else if ((collided == sh3Type.ordinal)&&(collidedObstacleRarity==2)) {
                     score += 500
+                    SfxPlayer.playSfx("diDing.mp3")
                     playfield.sliced()
                 } else if (collided != -1) {
                     fadein = true
@@ -555,8 +553,11 @@ class GameScene : PunScene() {
 
 
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun death() {
+        SfxPlayer.playSfx("cut.mp3")
         gameActive = false
+
         hand.activeAnimationType = Hand.ActiveAnimationType.CUT
         GlobalAccess.fingers=0
         /*
