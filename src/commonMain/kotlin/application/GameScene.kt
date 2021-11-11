@@ -336,17 +336,17 @@ class GameScene : PunScene() {
 
         this.addUpdater { dt ->
 
+            println("Updater Test 1")
             if (firstRun) {
                 firstRun = false
                 t1.visible = true
                 t2.visible = true
                 t3.visible = true
             }
-
             backgroundRoll(dt)
 
             if (gameActive) {
-
+                println("Updater Test 2")
                 score += fixedTime.seconds * 10
                 scoreText.text = score.toInt().toString()
 
@@ -365,6 +365,7 @@ class GameScene : PunScene() {
                     }
 
                 }
+                println("Updater Test 3")
                 playfield.update(dt)
                 obstacles.forEach {
                     it.visible = false
@@ -374,6 +375,7 @@ class GameScene : PunScene() {
                 } else {
                     "-gore"
                 }
+                println("Updater Test 4")
                 ObstacleTypes.values().forEach { thisType ->
                     playfield.level.obstacles.filter { it.type == thisType }.also { list ->
                         ObstacleRarity.values().forEach { rarity ->
@@ -399,7 +401,7 @@ class GameScene : PunScene() {
                     }
                 }
 
-
+                println("Updater Test 5")
 
 
 
@@ -443,7 +445,7 @@ class GameScene : PunScene() {
                 } else {
                     hand.onGround()
                 }
-
+                println("Updater Test 6")
                 //val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
                 //hand.update(dt, r)
                 //playfield.update(dt)
@@ -456,6 +458,7 @@ class GameScene : PunScene() {
                     if (l2.volume < 0.6) l2.volume += 0.1
                     else fadein = false
                 }
+                println("Updater Test 7")
             }else{
                 val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
                 hand.update(dt,r)
@@ -482,8 +485,9 @@ class GameScene : PunScene() {
 
 
 
-
+                println("Updater Test 8")
             }
+            println("Updater Test 9")
         }
 
         onClick {
