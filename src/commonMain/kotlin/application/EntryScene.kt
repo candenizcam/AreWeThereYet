@@ -28,7 +28,8 @@ class EntryScene : PunScene() {
     override fun createSceneView(): Container = Puntainer()
 
     override suspend fun Container.sceneMain(){
-        //openingCrawl()
+
+
         SfxPlayer.loadSounds()
 
 
@@ -172,7 +173,17 @@ class EntryScene : PunScene() {
             }
 
 
+
+
         }
+
+        /*
+        if(GlobalAccess.firstEntry){
+            openingCrawl()
+            GlobalAccess.firstEntry=false
+        }
+
+         */
 
 
 
