@@ -36,10 +36,18 @@ class EntryScene : PunScene() {
 
 
 
-        val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
-        outsiders.add(punImage("o1",bmp.clone(),Rectangle(0.0, 960.0, 0.0, 1080.0)))
-        outsiders.add(punImage("o2",bmp.clone(),Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
-        outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
+
+        val outsiders = Outside()
+        outsiders.deploy(addFunction = {l: List<Puntainer>->
+            l.forEach {
+                this.addChild(it)
+            }
+        })
+
+        //val bmp = resourcesVfs["environment/Bg_Small-3.png"].readBitmap()
+        //outsiders.add(punImage("o1",bmp.clone(),Rectangle(0.0, 960.0, 0.0, 1080.0)))
+        //outsiders.add(punImage("o2",bmp.clone(),Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
+        //outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
 
 
 
@@ -206,12 +214,16 @@ class EntryScene : PunScene() {
          */
 
         addUpdater {dt->
+            outsiders.update(dt.seconds*0.3*1920)
+            /*
             outsiders.forEach {
                 it.x -= dt.seconds*0.3*1920
                 if(it.x + it.width< -20.0){
                     it.x += it.width * 3
                 }
             }
+
+             */
 
         }
 
@@ -227,7 +239,7 @@ class EntryScene : PunScene() {
 
     var window: Puntainer = Puntainer()
     var credits: Puntainer= Puntainer()
-    val outsiders = mutableListOf<Puntainer>()
+    //val outsiders = mutableListOf<Puntainer>()
 
 
 
