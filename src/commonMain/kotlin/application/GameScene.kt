@@ -88,26 +88,26 @@ class GameScene : PunScene() {
 
         val rareScavengerList = listOf(
             "Red Bird",
-            "Red Traffic Sign",
+            "Red Numbered Sign",
             "Yellow Tractor",
-            "Green Road Sign",
-            "Large Blue Sign",
+            "Green Overhead Sign",
+            "Ginormous Blue Sign",
             "Small Blue Sign"
         )
         val rarerScavengerList = listOf(
             "Green Bird",
-            "Green Traffic Sign",
+            "Green Numbered  Sign",
             "Red Tractor",
-            "Yellow Road Sign",
-            "Large Green Sign",
+            "Yellow Overhead Sign",
+            "Ginormous Green Sign",
             "Small Green Sign"
         )
         val rarestScavengerList = listOf(
             "Blue Bird",
-            "Yellow Traffic Sign",
+            "Yellow Numbered Sign",
             "Blue Tractor",
-            "Blue Road Sign",
-            "Large Yellow Sign",
+            "Blue Overhead Sign",
+            "Ginormous Yellow Sign",
             "Small Yellow Sign"
         )
 
