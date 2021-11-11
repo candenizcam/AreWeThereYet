@@ -43,6 +43,12 @@ class WindowScene  : PunScene() {
         outsiders.add(punImage("o1",bmp.clone(),Rectangle(0.0, 960.0, 0.0, 1080.0)))
         outsiders.add(punImage("o2",bmp.clone(),Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
         outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
+        val outside = Outside()
+        outside.deploy(addFunction = {l: List<Puntainer>->
+            l.forEach {
+                this.addChild(it)
+            }
+        })
 
         window = punImage(
             "id",
@@ -69,12 +75,8 @@ class WindowScene  : PunScene() {
 
         addUpdater {dt->
             if(freeze.not()){
-                outsiders.forEach {
-                    it.x -= dt.seconds*0.3*1920
-                    if(it.x + it.width< -20.0){
-                        it.x += it.width * 3
-                    }
-                }
+
+                outside.update(dt.seconds*0.3*1920)
 
                 if (views.input.keys.justPressed((Key.DOWN))){
                     SfxPlayer.playSfx("windowDown-4.mp3")

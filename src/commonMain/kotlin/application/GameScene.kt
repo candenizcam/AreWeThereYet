@@ -39,9 +39,20 @@ class GameScene : PunScene() {
         println("game scene starts")
         GlobalAccess.fingers = 2
         val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
+        /*
         outsiders.add(punImage("o1",bmp,Rectangle(0.0, 960.0, 0.0, 1080.0)))
         outsiders.add(punImage("o2",bmp,Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
         outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
+
+         */
+        outside.deploy(addFunction = {l: List<Puntainer>->
+            l.forEach {
+                this.addChild(it)
+            }
+        })
+
+
+
     }
 
 
@@ -521,15 +532,20 @@ class GameScene : PunScene() {
     val outsiders = mutableListOf<Puntainer>()
     var firstRun = true
     var gameOverIndex = 0.0
+    var outside: Outside = Outside()
 
     fun backgroundRoll(dt: TimeSpan) {
         if(GlobalAccess.fingers>0){
+            outside.update(dt.seconds *playfield.level.speed * 1920)
+            /*
             outsiders.forEach {
                 it.x -= dt.seconds *playfield.level.speed * 1920
                 if(it.x + it.width< -20.0){
                     it.x += it.width * 3
                 }
             }
+
+             */
         }
 
     }

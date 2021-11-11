@@ -67,12 +67,13 @@ enum class ObstacleTypes {
         }
 
         override fun ratedRect(): Rectangle {
-            return Rectangle(
-                284.0 / 636.0,
-                568.0 / 636.0,
+            val b2 = Rectangle(
+                (284.0 / 636.0),
+                (568.0 / 636.0),
                 0.0 / 1080.0 + 240.0 / 1080.0,
-                200.0 / 1080.0 + 240.0 / 1080.0
+                (200.0 / 1080.0 + 240.0 / 1080.0)
             )
+            return b2.resized(1.0,0.5,fromCorner = Rectangle.Corners.BOTTOM_RIGHT).resized(0.5,1.0).moved(x=0.0,y=0.5*0.5*240.0/1080.0)
         }
     },
     DONTJUMP {
