@@ -325,26 +325,15 @@ class GameScene : PunScene() {
         this.addFixedUpdater(time=fixedTime){
             //backgroundRoll(TimeSpan(1000.0/60.0))
 
-            if(GlobalAccess.fingers>0){
-                if (views.input.keys.justPressed(Key.UP)) {
-                    playfield.jump()
-                }
 
-                if (views.input.keys.justPressed(Key.DOWN)) {
-                    playfield.duck()
-                }
-
-                if (views.input.keys.pressing(Key.DOWN).not()) {
-                    playfield.stopDuck()
-                }
-                score += fixedTime.seconds * 10
-                scoreText.text = score.toInt().toString()
-            }
 
             val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
             hand.update(fixedTime, r)
 
-            playfield.update(fixedTime)
+
+
+
+
         }
 
 
@@ -362,10 +351,29 @@ class GameScene : PunScene() {
             backgroundRoll(dt)
 
             if (gameActive) {
+
+                score += fixedTime.seconds * 10
+                scoreText.text = score.toInt().toString()
+
+
+                if(GlobalAccess.fingers>0){
+                    if (views.input.keys.justPressed(Key.UP)) {
+                        playfield.jump()
+                    }
+
+                    if (views.input.keys.justPressed(Key.DOWN)) {
+                        playfield.duck()
+                    }
+
+                    if (views.input.keys.pressing(Key.DOWN).not()) {
+                        playfield.stopDuck()
+                    }
+
+                }
+                playfield.update(dt)
                 obstacles.forEach {
                     it.visible = false
                 }
-
                 val goreText = if (GlobalAccess.fingers == 2) {
                     ""
                 } else {
@@ -395,6 +403,7 @@ class GameScene : PunScene() {
                         }
                     }
                 }
+
 
 
 
