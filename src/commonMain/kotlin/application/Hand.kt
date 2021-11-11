@@ -288,8 +288,8 @@ class Hand: Puntainer {
                     Rectangle(287.0/500.0,(287.0+124.0)/500.0,22.0/500.0,142.0/500.0)
                 }
             }
-            override fun sourceList(): List<String> { return List(8) {"hands/duck-${it+1}.png"} }
-            override fun sourceListOne(): List<String> { return List(8) {"hands/duck_one_finger-${it+1}.png"} }
+            override fun sourceList(): List<String> { return List(3) {"hands/duck-${it+4}.png"} }
+            override fun sourceListOne(): List<String> { return List(3) {"hands/duck_one_finger-${it+4}.png"} }
             override fun animationType(): String { return "duck" }
             override fun animationID(): String { return "duck" }
         },

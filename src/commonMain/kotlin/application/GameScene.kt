@@ -85,26 +85,26 @@ class GameScene : PunScene() {
 
         val rareScavengerList = listOf(
             "Red Bird",
-            "Red Traffic Sign",
+            "Red Numbered Sign",
             "Yellow Tractor",
-            "Green Road Sign",
-            "Large Blue Sign",
+            "Green Overhead Sign",
+            "Ginormous Blue Sign",
             "Small Blue Sign"
         )
         val rarerScavengerList = listOf(
             "Green Bird",
-            "Green Traffic Sign",
+            "Green Numbered  Sign",
             "Red Tractor",
-            "Yellow Road Sign",
-            "Large Green Sign",
+            "Yellow Overhead Sign",
+            "Ginormous Green Sign",
             "Small Green Sign"
         )
         val rarestScavengerList = listOf(
             "Blue Bird",
-            "Yellow Traffic Sign",
+            "Yellow Numbered Sign",
             "Blue Tractor",
-            "Blue Road Sign",
-            "Large Yellow Sign",
+            "Blue Overhead Sign",
+            "Ginormous Yellow Sign",
             "Small Yellow Sign"
         )
 
@@ -322,26 +322,15 @@ class GameScene : PunScene() {
         this.addFixedUpdater(time=fixedTime){
             //backgroundRoll(TimeSpan(1000.0/60.0))
 
-            if(GlobalAccess.fingers>0){
-                if (views.input.keys.justPressed(Key.UP)) {
-                    playfield.jump()
-                }
 
-                if (views.input.keys.justPressed(Key.DOWN)) {
-                    playfield.duck()
-                }
-
-                if (views.input.keys.pressing(Key.DOWN).not()) {
-                    playfield.stopDuck()
-                }
-                score += fixedTime.seconds * 10
-                scoreText.text = score.toInt().toString()
-            }
 
             val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
             hand.update(fixedTime, r)
 
-            playfield.update(fixedTime)
+
+
+
+
         }
 
 
@@ -357,10 +346,29 @@ class GameScene : PunScene() {
             backgroundRoll(dt)
 
             if (gameActive) {
+
+                score += fixedTime.seconds * 10
+                scoreText.text = score.toInt().toString()
+
+
+                if(GlobalAccess.fingers>0){
+                    if (views.input.keys.justPressed(Key.UP)) {
+                        playfield.jump()
+                    }
+
+                    if (views.input.keys.justPressed(Key.DOWN)) {
+                        playfield.duck()
+                    }
+
+                    if (views.input.keys.pressing(Key.DOWN).not()) {
+                        playfield.stopDuck()
+                    }
+
+                }
+                playfield.update(dt)
                 obstacles.forEach {
                     it.visible = false
                 }
-
                 val goreText = if (GlobalAccess.fingers == 2) {
                     ""
                 } else {
@@ -390,6 +398,7 @@ class GameScene : PunScene() {
                         }
                     }
                 }
+
 
 
 
