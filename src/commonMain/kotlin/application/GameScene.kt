@@ -314,7 +314,7 @@ class GameScene : PunScene() {
             it.visible = false
         }
 
-        val menuButton = Button("menu",resourcesVfs["UI/bandaid.png"].readBitmap()).also {
+        val menuButton = Button("menu",resourcesVfs["UI/main-normal.png"].readBitmap(),resourcesVfs["UI/main-pushed.png"].readBitmap()).also {
             it.clickFunction = {
                 launchImmediately { sceneContainer.changeTo<EntryScene>() }
             }
@@ -322,6 +322,15 @@ class GameScene : PunScene() {
             it.inactive=true
         }
         scenePuntainer.addPuntainer(menuButton)
+
+        val playAgainButton = Button("play again",resourcesVfs["UI/play-again-normal.png"].readBitmap(),resourcesVfs["UI/play-again-pushed.png"].readBitmap()).also {
+            it.clickFunction = {
+                launchImmediately { sceneContainer.changeTo<GameScene>() }
+            }
+            it.visible=false
+            it.inactive=true
+        }
+        scenePuntainer.addPuntainer(playAgainButton)
 
 
         ////////////////////////////////////////////////////////////////
@@ -476,9 +485,13 @@ class GameScene : PunScene() {
                         finalScoreBand.y = GlobalAccess.virtualSize.height * 0.7 - 10.0
                         finalScoreBand.visible = true
 
-                        menuButton.reshape(Rectangle(Vector( GlobalAccess.virtualSize.width * 0.5 - 150.0,GlobalAccess.virtualSize.height * 0.5 - 10.0),300.0,80.0,Rectangle.Corners.TOP_LEFT))
+                        menuButton.reshape(Rectangle(Vector( GlobalAccess.virtualSize.width * 0.6 - 160.0,GlobalAccess.virtualSize.height * 0.2 - 10.0),320.0,107.0,Rectangle.Corners.TOP_LEFT))
                         menuButton.inactive=false
                         menuButton.visible=true
+
+                        playAgainButton.reshape(Rectangle(Vector( GlobalAccess.virtualSize.width * 0.4 - 160.0,GlobalAccess.virtualSize.height * 0.2 - 10.0),320.0,107.0,Rectangle.Corners.TOP_LEFT))
+                        playAgainButton.inactive=false
+                        playAgainButton.visible=true
 
                     } else {
                         gameOver.children.fastForEach { it.visible = false }
