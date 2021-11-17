@@ -39,8 +39,9 @@ class WindowScene  : PunScene() {
         //openingCrawl()
         //val engineLoop = resourcesVfs["SFX/engine_heavy_loop-20.mp3"].readMusic()
         //val t = resourcesVfs["music/musicbox.mp3"].readMusic()
-
-        MusicPlayer.play("musicbox.mp3")
+        if(GlobalAccess.soundsAreOn){
+            MusicPlayer.play("musicbox.mp3")
+        }
 
         val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
         outsiders.add(punImage("o1",bmp.clone(),Rectangle(0.0, 960.0, 0.0, 1080.0)))

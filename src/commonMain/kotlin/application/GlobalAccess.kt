@@ -29,6 +29,7 @@ object GlobalAccess {
 
     var fingers = 2
     var firstEntry = true
+    val soundsAreOn = false // change this before publishing
 
 
 }

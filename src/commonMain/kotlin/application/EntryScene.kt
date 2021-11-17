@@ -32,7 +32,10 @@ class EntryScene : PunScene() {
     override fun createSceneView(): Container = Puntainer()
 
     override suspend fun Container.sceneMain(){
-        MusicPlayer.play("musicbox.mp3")
+        if(GlobalAccess.soundsAreOn){
+            MusicPlayer.play("musicbox.mp3")
+        }
+
 
 
         val outsiders = Outside()
