@@ -67,7 +67,42 @@ class Hand(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, rel
 
 
             if(isDying.not()){
+                var a = activeAnimation()
 
+                if (animIndex>=activeSize()){
+                    if(activeAnimationType==ActiveAnimationType.JUMP){
+                        activeAnimationType = ActiveAnimationType.FLY
+                        a = activeAnimation()
+                    }else if(activeAnimationType==ActiveAnimationType.FALL){
+                        activeAnimationType = ActiveAnimationType.RUN
+                        a = activeAnimation()
+                    }else if(activeAnimationType==ActiveAnimationType.CUT){
+                        if(GlobalAccess.fingers==0){
+                            isDying = true
+                            animIndex=0.0
+                            return
+                        }else{
+                            activeAnimationType = ActiveAnimationType.RUN
+                        }
+
+                        a = activeAnimation()
+                    }
+                    else{
+                        animIndex %= activeSize()
+                    }
+
+                }
+                val hitboxRect = hitboxRectOnScreen.decodeRated(activeAnimationType.relativeRect())
+
+
+                if(activeAnimationType==ActiveAnimationType.DUCK){
+                    val vss = a.children.map { it.visible }
+                }
+                //greenBlock.scaledWidth = hitboxRectOnScreen.width
+                //greenBlock.scaledHeight = hitboxRectOnScreen.height
+                //greenBlock.x = hitboxRectOnScreen.left
+                //greenBlock.y = GlobalAccess.virtualSize.height-hitboxRectOnScreen.top
+                //greenBlock.visible = true
             }else{
                 if(animIndex>=animationSpeed*0.5){
                     isDead=true
