@@ -6,6 +6,7 @@ import com.soywiz.korau.sound.PlaybackTimes
 import com.soywiz.korau.sound.readMusic
 import com.soywiz.korev.Key
 import com.soywiz.korge.input.onClick
+import com.soywiz.korge.input.onDown
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
 import com.soywiz.korim.font.TtfFont
@@ -15,6 +16,7 @@ import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
 import kotlinx.coroutines.DelicateCoroutinesApi
 import modules.basic.Colour
+import pungine.Button
 import pungine.PunImage
 import pungine.PunScene
 import pungine.Puntainer
@@ -29,7 +31,7 @@ import pungine.geometry2D.oneRectangle
 @DelicateCoroutinesApi
 @KorgeInternal
 class GameScene : PunScene() {
-    override fun createSceneView(): Container = Puntainer()
+    //override fun createSceneView(): Container = Puntainer()
 
     var scoreKeeper = ScoreKeeper()
 
@@ -44,10 +46,8 @@ class GameScene : PunScene() {
         outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
 
          */
-        outside.deploy(addFunction = { l: List<Puntainer> ->
-            l.forEach {
-                this.addChild(it)
-            }
+        outside.deploy(addFunction = {p: Puntainer, r: Rectangle->
+            scenePuntainer.addPuntainer(p,r)
         })
 
 
@@ -89,8 +89,9 @@ class GameScene : PunScene() {
 
 
 
-        playfield.fitToFrame(Rectangle(0.0, w, FloorData.getHeight() * h, h))
+        //playfield.fitToFrame(Rectangle(0.0, w, FloorData.getHeight() * h, h))
         this.addChild(playfield)
+        playfield.reshape(Rectangle(0.0, w, FloorData.getHeight() * h, h))
 
         val rareScavengerList = listOf(
             "Red Bird",
@@ -204,9 +205,9 @@ class GameScene : PunScene() {
 
             }
         }
-        punImage("window", resourcesVfs["environment/window.png"].readBitmap(), oneRectangle(), true)
+        scenePuntainer.punImage("window", oneRectangle(),resourcesVfs["environment/window.png"].readBitmap())
 
-        punImage("hud", resourcesVfs["UI/hunt-score.png"].readBitmap())
+        scenePuntainer.punImage("hud", oneRectangle(),resourcesVfs["UI/hunt-score.png"].readBitmap())
         val font = TtfFont(resourcesVfs["MPLUSRounded1c-Medium.ttf"].readAll())
 
 
@@ -253,21 +254,19 @@ class GameScene : PunScene() {
             //    this.addChild(it)
             //    it.visible=false
             //}
-            solidRect("obshit", Rectangle(0.0, 1.0, 0.0, 1.0), relative = true, colour = Colour.RED.korgeColor).also {
+            scenePuntainer.solidRect("obshit", Rectangle(0.0, 1.0, 0.0, 1.0),  colour = Colour.RED).also {
                 it.visible = false
                 it.alpha = 0.2
             }
         }
 
-        floor = puntainer("floor", Rectangle(0.0, 1.0, 0.0, 1.0), relative = true) {
+        floor = scenePuntainer.relativePuntainer("floor", Rectangle(0.0, 1.0, 0.0, 1.0)) {
             it.singleColour(Colour.RED.korgeColor).also {
                 it.alpha = 0.0
             }
         }
 
-        puntainer("floor", Rectangle(0.0, 1.0, 0.0, 1.0), relative = true) {}.also {
-
-        }
+        scenePuntainer.relativePuntainer("floor", Rectangle(0.0, 1.0, 0.0, 1.0)) {}
 
 
         //108, 350, 117, 267
@@ -298,7 +297,7 @@ class GameScene : PunScene() {
         }
 
         val finalScoreBand =
-            punImage("finalBand", resourcesVfs["UI/bandaid.png"].readBitmap(), oneRectangle(), true).also {
+            scenePuntainer.punImage("finalBand", oneRectangle(),resourcesVfs["UI/bandaid.png"].readBitmap()).also {
                 it.visible = false
             }
 
@@ -314,6 +313,15 @@ class GameScene : PunScene() {
             it.y = 26.0 + 12.0
             it.visible = false
         }
+
+        val menuButton = Button("menu",resourcesVfs["UI/bandaid.png"].readBitmap()).also {
+            it.clickFunction = {
+                launchImmediately { sceneContainer.changeTo<EntryScene>() }
+            }
+            it.visible=false
+            it.inactive=true
+        }
+        scenePuntainer.addPuntainer(menuButton)
 
 
         ////////////////////////////////////////////////////////////////
@@ -468,6 +476,10 @@ class GameScene : PunScene() {
                         finalScoreBand.y = GlobalAccess.virtualSize.height * 0.7 - 10.0
                         finalScoreBand.visible = true
 
+                        menuButton.reshape(Rectangle(Vector( GlobalAccess.virtualSize.width * 0.5 - 150.0,GlobalAccess.virtualSize.height * 0.5 - 10.0),300.0,80.0,Rectangle.Corners.TOP_LEFT))
+                        menuButton.inactive=false
+                        menuButton.visible=true
+
                     } else {
                         gameOver.children.fastForEach { it.visible = false }
                         gameOver.children[gameOverIndex.toInt()].visible = true
@@ -479,12 +491,20 @@ class GameScene : PunScene() {
             }
         }
 
+
+
+        /*
         onClick {
+            println("game over clicked")
+            println(gameOverIndex)
+            println(gameOver.size)
             if (gameOverIndex >= gameOver.size) {
                 launchImmediately { sceneContainer.changeTo<EntryScene>() }
             }
         }
-        println("game scene called")
+
+         */
+
     }
 
     // WINDOW SCENE VARIABLES

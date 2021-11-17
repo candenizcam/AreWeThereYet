@@ -29,8 +29,6 @@ import pungine.geometry2D.Rectangle
 @KorgeInternal
 @DelicateCoroutinesApi
 class EntryScene : PunScene() {
-    override fun createSceneView(): Container = Puntainer()
-
     override suspend fun Container.sceneMain(){
         if(GlobalAccess.soundsAreOn){
             MusicPlayer.play("musicbox.mp3")
@@ -39,11 +37,17 @@ class EntryScene : PunScene() {
 
 
         val outsiders = Outside()
+        outsiders.deploy(addFunction = {p: Puntainer, r: Rectangle->
+            scenePuntainer.addPuntainer(p,r)
+        })
+        /*
         outsiders.deploy(addFunction = {l: List<Puntainer>->
             l.forEach {
                 this.addChild(it)
             }
         })
+
+         */
 
         //val bmp = resourcesVfs["environment/Bg_Small-3.png"].readBitmap()
         //outsiders.add(punImage("o1",bmp.clone(),Rectangle(0.0, 960.0, 0.0, 1080.0)))
@@ -53,67 +57,68 @@ class EntryScene : PunScene() {
 
 
 
-        window = punImage(
+        window = scenePuntainer.punImage(
             "id",
-            resourcesVfs["UI/glass-up.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
+            Rectangle(0.0,1.0,0.0,1.0),
+            resourcesVfs["UI/glass-up.png"].readBitmap()
         ).also {
             it.alpha=0.8
         }
 
-        window = punImage(
+        window = scenePuntainer.punImage(
             "id",
-            resourcesVfs["UI/name.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
+            Rectangle(0.0,1.0,0.0,1.0),
+            resourcesVfs["UI/name.png"].readBitmap()
+
         ).also {
             it.alpha=0.8
         }
 
-        credits = punImage(
+        credits =  scenePuntainer.punImage(
             "credits_scene",
-            resourcesVfs["UI/glass-credits.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
+            Rectangle(0.0,1.0,0.0,1.0),
+            resourcesVfs["UI/glass-credits.png"].readBitmap()
 
         ).also {
             it.visible=false
         }
 
-        punImage(
+        scenePuntainer.punImage(
             "id",
-            resourcesVfs["UI/Wintop.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
+            Rectangle(0.0,1.0,0.0,1.0),
+            resourcesVfs["UI/Wintop.png"].readBitmap()
         )
 
-        punImage(
+        scenePuntainer.punImage(
             "id",
-            resourcesVfs["UI/Windown.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
+            Rectangle(0.0,1.0,0.0,1.0),
+            resourcesVfs["UI/Windown.png"].readBitmap()
         )
 
-        val playDown = punImage("play_down",resourcesVfs["UI/play-pushed.png"].readBitmap(),Rectangle(232.0/1920.0,557.0/1920.0,1-864.0/1080.0,1-971.0/1080.0),relative = true).also {
+        val playDown = scenePuntainer.punImage("play_down",Rectangle(232.0/1920.0,557.0/1920.0,1-864.0/1080.0,1-971.0/1080.0),resourcesVfs["UI/play-pushed.png"].readBitmap()).also {
             it.visible = false
         }
-        val playUp = punImage("play_up",resourcesVfs["UI/play-normal.png"].readBitmap(),Rectangle(232.0/1920.0,557.0/1920.0,1-864.0/1080.0,1-971.0/1080.0),relative = true).also { exit->
+        val playUp = scenePuntainer.punImage("play_up",Rectangle(232.0/1920.0,557.0/1920.0,1-864.0/1080.0,1-971.0/1080.0),resourcesVfs["UI/play-normal.png"].readBitmap()).also { exit->
             exit.onDown {
                 exit.visible = false
                 playDown.visible=true
             }
         }
 
-        val scoreDown = punImage("score_down",resourcesVfs["UI/score-pushed.png"].readBitmap(),Rectangle(556.0/1920.0,876.0/1920.0,1-854.0/1080.0,1-961.0/1080.0),relative = true).also {
+        val scoreDown = scenePuntainer.punImage("score_down",Rectangle(556.0/1920.0,876.0/1920.0,1-854.0/1080.0,1-961.0/1080.0),resourcesVfs["UI/score-pushed.png"].readBitmap()).also {
             it.visible = false
         }
-        val scoreUp = punImage("score_up",resourcesVfs["UI/score-normal.png"].readBitmap(),Rectangle(556.0/1920.0,876.0/1920.0,1-854.0/1080.0,1-961.0/1080.0),relative = true).also { exit->
+        val scoreUp = scenePuntainer.punImage("score_up",Rectangle(556.0/1920.0,876.0/1920.0,1-854.0/1080.0,1-961.0/1080.0),resourcesVfs["UI/score-normal.png"].readBitmap()).also { exit->
             exit.onDown {
                 exit.visible = false
                 scoreDown.visible=true
             }
         }
 
-        val settingsDown = punImage("settings_down",resourcesVfs["UI/credits-pushed.png"].readBitmap(),Rectangle(880.0/1920.0,1200.0/1920.0,1-844.0/1080.0,1-951.0/1080.0),relative = true).also {
+        val settingsDown = scenePuntainer.punImage("settings_down",Rectangle(880.0/1920.0,1200.0/1920.0,1-844.0/1080.0,1-951.0/1080.0),resourcesVfs["UI/credits-pushed.png"].readBitmap()).also {
             it.visible = false
         }
-        val settingsUp = punImage("settings_up",resourcesVfs["UI/credits-normal.png"].readBitmap(),Rectangle(880.0/1920.0,1200.0/1920.0,1-844.0/1080.0,1-951.0/1080.0),relative = true).also { exit->
+        val settingsUp = scenePuntainer.punImage("settings_up",Rectangle(880.0/1920.0,1200.0/1920.0,1-844.0/1080.0,1-951.0/1080.0),resourcesVfs["UI/credits-normal.png"].readBitmap()).also { exit->
             exit.onDown {
                 exit.visible = false
                 settingsDown.visible=true
@@ -121,11 +126,11 @@ class EntryScene : PunScene() {
         }
 
 
-        val exitDown = punImage("exit_down",resourcesVfs["UI/exit-pushed.png"].readBitmap(),Rectangle(1204.0/1920.0,1524.0/1920.0,1-834.0/1080.0,1-941.0/1080.0),relative = true).also {
+        val exitDown = scenePuntainer.punImage("exit_down",Rectangle(1204.0/1920.0,1524.0/1920.0,1-834.0/1080.0,1-941.0/1080.0),resourcesVfs["UI/exit-pushed.png"].readBitmap()).also {
             it.visible = false
 
         }
-        val exitUp = punImage("exit_up",resourcesVfs["UI/exit-normal.png"].readBitmap(),Rectangle(1204.0/1920.0,1524.0/1920.0,1-834.0/1080.0,1-941.0/1080.0),relative = true).also { exit->
+        val exitUp = scenePuntainer.punImage("exit_up",Rectangle(1204.0/1920.0,1524.0/1920.0,1-834.0/1080.0,1-941.0/1080.0),resourcesVfs["UI/exit-normal.png"].readBitmap()).also { exit->
             exit.onDown {
                 exit.visible = false
                 exitDown.visible=true
@@ -230,7 +235,8 @@ class EntryScene : PunScene() {
     // delete from all under here for a new scene
 
     suspend fun openingCrawl() {
-        val bg = solidRect("id", Rectangle(0.0, 1.0, 0.0, 1.0), RGBA.float(0.04f, 0.02f, 0.04f, 1f), relative = true)
+
+        val bg = scenePuntainer.solidRect("id", Rectangle(0.0, 1.0, 0.0, 1.0),Colour.rgba(0.04, 0.02, 0.04, 1.0))
 
         /*
         val img = punImage(
@@ -248,7 +254,7 @@ class EntryScene : PunScene() {
 
 
         val resource = resourcesVfs["PunGine.png"].readBitmap()
-        punImage("id", resource, Rectangle(0.0, 1.0, 0.0, 1.0), true).also {
+        scenePuntainer.punImage("id", Rectangle(0.0, 1.0, 0.0, 1.0),resource).also {
             it.alpha = 0.0
             var counter = 0.0
             it.addUpdater { dt: TimeSpan ->

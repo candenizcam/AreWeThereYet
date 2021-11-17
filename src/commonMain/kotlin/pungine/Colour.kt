@@ -7,32 +7,32 @@ import kotlin.math.abs
  * it is initialized using companion functions of various colour entry types
  * base type is always 0f-1f, but various other input types are supported
  */
-class Colour private constructor(r: Float, g: Float, b: Float, a: Float) {
+class Colour private constructor(r: Double, g: Double, b: Double, a: Double) {
     companion object{
         fun rgba256(r: Int, g: Int, b: Int, a: Int=255): Colour {
-            return rgba(r/255f,g/255f,b/255f,a/255f)
+            return rgba(r/255.0,g/255.0,b/255.0,a/255.0)
         }
 
-        fun rgba(r: Float, g: Float, b: Float, a: Float=1f): Colour {
-            return Colour(r.coerceIn(0f,1f),g.coerceIn(0f,1f),b.coerceIn(0f,1f),a.coerceIn(0f,1f)).also {
+        fun rgba(r: Double, g: Double, b: Double, a: Double=1.0): Colour {
+            return Colour(r.coerceIn(0.0,1.0),g.coerceIn(0.0,1.0),b.coerceIn(0.0,1.0),a.coerceIn(0.0,1.0)).also {
                 it.setHex()
                 it.setHsv()
             }
         }
 
         fun hsva256(h: Int, s: Int, v: Int, a: Int=255): Colour {
-            return hsva(h/255f,s/255f,v/255f,a/255f)
+            return hsva(h/255.0,s/255.0,v/255.0,a/255.0)
         }
 
-        fun hsva(h: Float, s: Float, v: Float, a: Float=1f): Colour{
-            val h = h.coerceIn(0f,1f)
-            val s = s.coerceIn(0f,1f)
-            val v = v.coerceIn(0f,1f)
-            val a = a.coerceIn(0f,1f)
+        fun hsva(h: Double, s: Double, v: Double, a: Double=1.0): Colour{
+            val h = h.coerceIn(0.0,1.0)
+            val s = s.coerceIn(0.0,1.0)
+            val v = v.coerceIn(0.0,1.0)
+            val a = a.coerceIn(0.0,1.0)
             val hCirc = (h*360).toInt()
             val c = v*s
-            val m: Float = v-c
-            val x: Float = c*(1f - abs((hCirc/60f)%2-1f))
+            val m: Double = v-c
+            val x: Double = c*(1f - abs((hCirc/60.0)%2-1.0))
             return when(hCirc){
                 in 0..60 ->{
                     Colour(c+m,x+m,m,a)
@@ -57,33 +57,33 @@ class Colour private constructor(r: Float, g: Float, b: Float, a: Float) {
                 }
             }.also {
                 it.setHex()
-                it.h = h
-                it.s = s
-                it.v = v
+                it.hue = h
+                it.saturation = s
+                it.value = v
             }
         }
 
         fun byHex(hexCode: String): Colour {
             return when(hexCode.length){
                 3->{
-                    hexCode.map { decodeHex(it)*17/255f }.let {
-                        Colour(it[0],it[1],it[2],1f)
+                    hexCode.map { decodeHex(it)*17/255.0 }.let {
+                        Colour(it[0],it[1],it[2],1.0)
                     }
                 }
                 4->{
-                    hexCode.map { decodeHex(it)*17/255f }.let {
+                    hexCode.map { decodeHex(it)*17/255.0 }.let {
                         Colour(it[0],it[1],it[2],it[3])
                     }
                 }
                 6->{
                     (0..2).map { decodeHex(hexCode[2*it])*16 + decodeHex(hexCode[2*it+1])  }.let{
-                        Colour(it[0]/255f,it[1]/255f,it[2]/255f,1f)
+                        Colour(it[0]/255.0,it[1]/255.0,it[2]/255.0,1.0)
                     }
 
                 }
                 8->{
                     (0..3).map { decodeHex(hexCode[2*it])*16 + decodeHex(hexCode[2*it+1])  }.let{
-                        Colour(it[0]/255f,it[1]/255f,it[2]/255f,it[3]/255f)
+                        Colour(it[0]/255.0,it[1]/255.0,it[2]/255.0,it[3]/255.0)
                     }
                 }
                 else -> {
@@ -96,7 +96,7 @@ class Colour private constructor(r: Float, g: Float, b: Float, a: Float) {
         }
 
         fun byKorgeRGBA(r: RGBA): Colour {
-            return rgba(r.rf,r.gf,r.bf,r.af)
+            return rgba(r.rd,r.gd,r.bd,r.ad)
         }
 
         private fun decodeHex(c: Char): Int {
@@ -131,36 +131,36 @@ class Colour private constructor(r: Float, g: Float, b: Float, a: Float) {
 
 
 
-    var r= r
+    var red= r
         private set
-    var g= g
+    var green= g
         private set
-    var b= b
+    var blue= b
         private set
-    var a= a
+    var alpha= a
         private set
     var hex = ""
         private set
-    var h=0f
+    var hue=0.0
         private set
-    var s=0f
+    var saturation=0.0
         private set
-    var v=0f
+    var value=0.0
         private set
     val korgeColor: RGBA
         get() {
-            return RGBA.float(r,g,b,a)
+            return RGBA.float(red,green,blue,alpha)
         }
 
 
 
     fun copy(): Colour {
-        return rgba(r,g,b,a)
+        return rgba(red,green,blue,alpha)
     }
 
     private fun setHex() {
         var h = ""
-        listOf(r,g,b,a).forEach {
+        listOf(red,green,blue,alpha).forEach {
             (it*255).toInt().also {it2->
                 h += toHexDigit(it2/16)
                 h += toHexDigit(it2%16)
@@ -179,29 +179,29 @@ class Colour private constructor(r: Float, g: Float, b: Float, a: Float) {
     }
 
     private fun setHsv(){
-        val cMax = listOf(r,g,b).maxOrNull()?:0f
-        val cMin = listOf(r,g,b).minOrNull()?:0f
+        val cMax = listOf(red,green,blue).maxOrNull()?:0.0
+        val cMin = listOf(red,green,blue).minOrNull()?:0.0
         val delta = cMax-cMin
-        h = when (cMax) {
-            r -> {
-                60f*((g-b)/delta%6)
+        hue = when (cMax) {
+            red -> {
+                60.0*((green-blue)/delta%6)
             }
-            g -> {
-                60f*((b-r)/delta+2)
+            green -> {
+                60.0*((blue-red)/delta+2)
             }
-            b -> {
-                60f*((r-g)/delta+4)
+            blue -> {
+                60.0*((red-green)/delta+4)
             }
             else -> {
-                0f
+                0.0
             }
         }/360f
-        s = if(cMax>0){
+        saturation = if(cMax>0.0){
             delta/cMax
         }else{
-            0f
+            0.0
         }
-        v = cMax
+        value = cMax
     }
 
 

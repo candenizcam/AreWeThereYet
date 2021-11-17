@@ -1,7 +1,9 @@
 package pungine
 
 import application.GlobalAccess
+import pungine.geometry2D.Rectangle
 import com.soywiz.korma.geom.SizeInt
+import pungine.geometry2D.Vector
 
 /** This is the internal global access for variables that are used in pungine globally
  * right now it depends on the GlobalAccess file which while a part of pungine is not in the box
@@ -15,5 +17,9 @@ object InternalGlobalAccess {
     val windowSize: SizeInt
     get() {
         return GlobalAccess.windowSize
+    }
+    val virtualRect: Rectangle
+    get() {
+        return Rectangle(0.0,GlobalAccess.virtualSize.width.toDouble(),0.0,GlobalAccess.virtualSize.height.toDouble())
     }
 }

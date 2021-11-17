@@ -1,9 +1,13 @@
 package pungine
 
+import application.GlobalAccess
 import com.soywiz.korge.view.*
+import com.soywiz.korim.bitmap.Bitmap
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.color.RGBA
+import modules.basic.Colour
 import pungine.geometry2D.Rectangle
+import pungine.geometry2D.Vector
 import pungine.geometry2D.oneRectangle
 
 /** This is the one size fits all container for pungine, any specialized views should be inherited from this first, and then implemented as view children
@@ -21,36 +25,37 @@ open class Puntainer: Container {
         this.id = id
         this.position(x,y)
         this.relativeRectangle = relativeRectangle
+
     }
 
     val id: String? //in this version, id is optional, it is null unless user wants to find it
 
     var relativeRectangle = oneRectangle()
-    private set
+        private set
 
-    var virtualRectangle: Rectangle = Rectangle(0.0,100.0,0.0,100.0)
+    var virtualRectangle: Rectangle = InternalGlobalAccess.virtualRect
+
+
 
     fun sizeRectangle(frameRectangle: Rectangle):Rectangle = frameRectangle.fromRated(relativeRectangle)
 
-
-    /** This method should be called with the frame rectangle (that it should fit) and it handles all of its children
-     *
+    /** This method takes a rectangle (of pixels) as input and sets the size of this puntainer
      */
-    fun fitToFrame(frameRectangle: Rectangle){
-        val s = sizeRectangle(frameRectangle)
-        this.virtualRectangle = sizeRectangle(frameRectangle)
-        var childrenThatMatters = 0
-        forEachChild {
-            if(it is Puntainer){
-                it.fitToFrame(s)
-                childrenThatMatters+=1
+    open fun reshape(r: Rectangle, withChildren: Boolean=true){
+        virtualRectangle = r
+        scaleX = scaleX*r.width/globalBounds.width
+        scaleY = scaleY*r.height/globalBounds.height
+        x = x-globalBounds.x+r.left
+        y = y - globalBounds.y + (InternalGlobalAccess.virtualSize.height - r.top)
+        if(withChildren){
+            puntainers.forEach {
+                it.reshape(r.fromRated(it.relativeRectangle),withChildren)
             }
         }
-        if(childrenThatMatters==0){
-            this.size(s.width,s.height)
-            this.position(s.left, InternalGlobalAccess.virtualSize.height - s.top)
-            //this.position(s.left,0.0 - s.top)
-        }
+    }
+
+    fun reshape(width: Double?=null, height: Double?=null, centreX: Double?=null, centreY:Double?=null){
+        reshape(Rectangle(Vector(centreX?:this.centre.x,centreY?:this.centre.y),width?:this.width,height?:this.height))
     }
 
 
@@ -63,24 +68,74 @@ open class Puntainer: Container {
             super.y = InternalGlobalAccess.virtualSize.height.toDouble()-value
         }
 
+    val centre: Vector
+        get() {
+            return Vector(this.x+this.width*0.5,this.yConv-this.height*0.5)
+        }
+
+    val puntainers= mutableListOf<Puntainer>()
+
 
     fun singleColour(colour: RGBA =Colors.WHITE): Puntainer {
         solidRect(virtualRectangle.width,virtualRectangle.height,colour)
         return this
     }
 
-    fun relativePuntainer(id: String?=null,relativeRectangle: Rectangle, callFunc: (it: Puntainer)->Any){
-        Puntainer(id, relativeRectangle).also {
-            callFunc(it)
-            this.addChild(it)
+
+
+    /** Rect in add Puntainer
+     *
+     */
+    fun addPuntainer(p: Puntainer, rect: Rectangle? = null, relative: Boolean = false){
+        puntainers.add(p)
+        this.addChild(p)
+        val r = if(this.parent is Puntainer){
+            this.virtualRectangle
+        }else{
+            InternalGlobalAccess.virtualRect
+        }
+        if(rect==null){
+            r.fromRated(p.relativeRectangle)
+        }else{
+            if(relative){
+                r.fromRated(rect)
+            }else{
+                rect
+            }
+
+        }.also {
+            p.reshape(it)
         }
     }
 
-    override fun toString(): String {
-        return "puntainer $id"
+
+    // Rest is for putting containers in containers
+    fun relativePuntainer(id: String?=null,relativeRectangle: Rectangle, callFunc: (it: Puntainer)->Any): Puntainer {
+        return Puntainer(id, relativeRectangle).also {
+            callFunc(it)
+            addPuntainer(it)
+        }
     }
+
+    fun solidRect(id: String?=null,relativeRectangle: Rectangle, colour: Colour =Colour.WHITE): Puntainer {
+        return relativePuntainer(id,relativeRectangle){
+            it.addChild(SolidRect(10.0, 10.0, colour.korgeColor))
+        }
+    }
+
+    fun roundRect(id: String?=null, relativeRectangle: Rectangle, rX: Double, rY: Double, colour: Colour =Colour.WHITE): Puntainer{
+        return relativePuntainer(id,relativeRectangle){
+            it.addChild(RoundRect(10.0, 10.0,rX, rY, colour.korgeColor))
+        }
+    }
+
+    fun punImage(id: String?=null, relativeRectangle: Rectangle, bitmap: Bitmap): Puntainer{
+        return PunImage(id,bitmap).also {
+            this.addPuntainer(it,relativeRectangle,relative = true)
+        }
+    }
+
+
 
 }
 
-
-fun singleColour(id: String?=null, relativeRectangle: Rectangle, colour: RGBA=Colors.WHITE): Puntainer = Puntainer(id,relativeRectangle).singleColour(colour)

@@ -28,7 +28,6 @@ import pungine.geometry2D.Rectangle
 @KorgeInternal
 @DelicateCoroutinesApi
 class WindowScene  : PunScene() {
-    override fun createSceneView(): Container = Puntainer()
 
     var windowDown = false
     var windowUp = false
@@ -43,35 +42,33 @@ class WindowScene  : PunScene() {
             MusicPlayer.play("musicbox.mp3")
         }
 
-        val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
-        outsiders.add(punImage("o1",bmp.clone(),Rectangle(0.0, 960.0, 0.0, 1080.0)))
-        outsiders.add(punImage("o2",bmp.clone(),Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
-        outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
+        //val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
+        //outsiders.add(punImage("o1",bmp.clone(),Rectangle(0.0, 960.0, 0.0, 1080.0)))
+        //outsiders.add(punImage("o2",bmp.clone(),Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
+        //outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
         val outside = Outside()
-        outside.deploy(addFunction = {l: List<Puntainer>->
-            l.forEach {
-                this.addChild(it)
-            }
+        outside.deploy(addFunction = {p: Puntainer, r: Rectangle->
+            scenePuntainer.addPuntainer(p,r)
         })
 
-        window = punImage(
+        window = scenePuntainer.punImage(
             "id",
-            resourcesVfs["UI/Glass-tutorial.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
+            Rectangle(0.0,1.0,0.0,1.0),
+            resourcesVfs["UI/Glass-tutorial.png"].readBitmap()
         ).also {
             it.alpha=1.0
         }
 
-        punImage(
+        scenePuntainer.punImage(
             "id",
-            resourcesVfs["UI/Wintop.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
+            Rectangle(0.0,1.0,0.0,1.0),
+            resourcesVfs["UI/Wintop.png"].readBitmap()
         )
 
-        punImage(
+        scenePuntainer.punImage(
             "id",
-            resourcesVfs["UI/Windown.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
+            Rectangle(0.0,1.0,0.0,1.0),
+            resourcesVfs["UI/Windown.png"].readBitmap()
         )
 
         //launchImmediately { gameScene.load() }
