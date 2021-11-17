@@ -62,7 +62,17 @@ class Hand(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, rel
             greenBlock.setSize(hitboxRectOnScreen.width,hitboxRectOnScreen.height)
         }else{
 
+            animIndex += dt.seconds*animationSpeed
 
+
+
+            if(isDying.not()){
+
+            }else{
+                if(animIndex>=animationSpeed*0.5){
+                    isDead=true
+                }
+            }
 
         }
 
