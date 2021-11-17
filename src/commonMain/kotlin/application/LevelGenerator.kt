@@ -11,6 +11,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 import kotlin.random.Random
 
+@DelicateCoroutinesApi
 class LevelGenerator() {
 
     var obstacles = mutableListOf<Obstacle>()
@@ -38,7 +39,7 @@ class LevelGenerator() {
     }
 
     @DelicateCoroutinesApi
-    fun generate() {
+    suspend fun generate() {
         nowGenerated = generateType()
         rarity = when ((0..5).random()) {
             5 -> {
@@ -112,7 +113,7 @@ class LevelGenerator() {
     }
 
 
-    fun update(dt: TimeSpan) {
+    suspend fun update(dt: TimeSpan) {
         if (speed < maxSpeed) {
             speed *= (acceleration)
         }

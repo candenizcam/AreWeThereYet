@@ -6,10 +6,12 @@ import com.soywiz.korge.input.mouse
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.input.onDown
 import com.soywiz.korge.input.onUp
+import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.RGBA
 import com.soywiz.korim.font.TtfFont
 import com.soywiz.korim.format.readBitmap
+import com.soywiz.korio.async.launch
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -23,26 +25,18 @@ import pungine.geometry2D.Rectangle
  *
  */
 
+@KorgeInternal
 @DelicateCoroutinesApi
 class EntryScene : PunScene() {
     override fun createSceneView(): Container = Puntainer()
 
     override suspend fun Container.sceneMain(){
-        //openingCrawl()
-        SfxPlayer.loadSounds()
-
-
-
-
+        MusicPlayer.play("musicbox.mp3")
 
         val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
-        outsiders.add(punImage("o1",bmp.clone(),Rectangle(0.0, 960.0, 0.0, 1080.0)))
-        outsiders.add(punImage("o2",bmp.clone(),Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
-        outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
-
-
-
-
+        outsiders.add(punImage("o1",bmp.clone(), Rectangle(0.0, 960.0, 0.0, 1080.0)))
+        outsiders.add(punImage("o2",bmp.clone(), Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
+        outsiders.add(punImage("o3",bmp, Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
         window = punImage(
             "id",
             resourcesVfs["UI/glass-up.png"].readBitmap(),
@@ -79,8 +73,6 @@ class EntryScene : PunScene() {
             resourcesVfs["UI/Windown.png"].readBitmap(),
             Rectangle(0.0,1.0,0.0,1.0),relative = true
         )
-
-
 
         val playDown = punImage("play_down",resourcesVfs["UI/play-pushed.png"].readBitmap(),Rectangle(232.0/1920.0,557.0/1920.0,1-864.0/1080.0,1-971.0/1080.0),relative = true).also {
             it.visible = false
@@ -128,7 +120,7 @@ class EntryScene : PunScene() {
         }
 
 
-        this.onClick {
+        sceneContainer.onClick {
             settingsUp.visible=true
             exitUp.visible=true
             scoreUp.visible=true
@@ -136,12 +128,11 @@ class EntryScene : PunScene() {
             credits.visible=false
         }
 
-
-        this.onUp {
+        sceneContainer.onUp {
             if(exitDown.visible){
                 exitUp.visible=true
                 exitDown.visible=false
-                views.gameWindow.close()
+                sceneContainer.views.gameWindow.close()
             }
 
             if(settingsDown.visible){
@@ -170,15 +161,7 @@ class EntryScene : PunScene() {
                 SfxPlayer.playSfx("carDoorStartUp-16.mp3")
                 launchImmediately{sceneContainer.changeTo<WindowScene>()}
             }
-
-
         }
-
-
-
-
-
-
 
         /**
          * play
@@ -206,16 +189,12 @@ class EntryScene : PunScene() {
 
 
 
-
-
-
-
         super.sceneAfterInit()
         println("entry called")
     }
 
     var window: Puntainer = Puntainer()
-    var credits: Puntainer= Puntainer()
+    var credits: Puntainer = Puntainer()
     val outsiders = mutableListOf<Puntainer>()
 
 

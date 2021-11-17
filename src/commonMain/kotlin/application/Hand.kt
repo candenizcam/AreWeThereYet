@@ -12,6 +12,7 @@ import com.soywiz.korio.async.launch
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 
+@DelicateCoroutinesApi
 @KorgeInternal
 class Hand: Puntainer {
     constructor(id: String?=null, relativeRectangle: Rectangle) : super(id,relativeRectangle)
@@ -29,7 +30,7 @@ class Hand: Puntainer {
 
     }
 
-    lateinit var fingerCut: Puntainer
+    var fingerCut: Puntainer
 
     suspend fun suspendInit(){
         ActiveAnimationType.values().forEach {
@@ -152,7 +153,7 @@ class Hand: Puntainer {
     }
 
 
-    fun cutFinger(){
+    suspend fun cutFinger(){
         if(activeAnimationType!=ActiveAnimationType.CUT) {
             //activeAnimation().forEachChild { it.visible=false }
             SfxPlayer.playSfx("cut.mp3")

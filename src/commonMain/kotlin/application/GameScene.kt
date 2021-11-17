@@ -13,6 +13,7 @@ import com.soywiz.korim.format.readBitmap
 import com.soywiz.korim.text.TextAlignment
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import modules.basic.Colour
 import pungine.PunImage
@@ -26,6 +27,7 @@ import pungine.geometry2D.oneRectangle
  *
  */
 
+@DelicateCoroutinesApi
 @KorgeInternal
 class GameScene : PunScene() {
     override fun createSceneView(): Container = Puntainer()
@@ -41,20 +43,15 @@ class GameScene : PunScene() {
         outsiders.add(punImage("o1",bmp,Rectangle(0.0, 960.0, 0.0, 1080.0)))
         outsiders.add(punImage("o2",bmp,Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
         outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
-
-
-
     }
 
 
 
     override suspend fun Container.sceneMain() {
+        MusicPlayer.play("musicbox.mp3")
         scoreKeeper.load()
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
-
-
-
 
 
         /////////
@@ -65,9 +62,9 @@ class GameScene : PunScene() {
         val playMusic = true
         var fadein = false
 
-        val l1 = resourcesVfs["musicbox.mp3"].readMusic()
-        val l2 = resourcesVfs["altlayer.mp3"].readMusic()
-        val l3 = resourcesVfs["ominous.mp3"].readMusic()
+        val l1 = resourcesVfs["music/musicbox.mp3"].readMusic()
+        val l2 = resourcesVfs["music/altlayer.mp3"].readMusic()
+        val l3 = resourcesVfs["music/ominous.mp3"].readMusic()
         val engineLoop = resourcesVfs["SFX/engine_heavy_loop-20.mp3"].readMusic()
 
         if (playMusic) {
@@ -344,7 +341,7 @@ class GameScene : PunScene() {
             val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
             hand.update(fixedTime, r)
 
-            playfield.update(fixedTime)
+            launchImmediately { playfield.update(fixedTime) }
         }
 
 
@@ -425,7 +422,7 @@ class GameScene : PunScene() {
                     } else {
                         GlobalAccess.fingers -= 1
                         playfield.sliced()
-                        hand.cutFinger()
+                        launchImmediately { hand.cutFinger() }
                         scoreKeeper.addScore(score)
                         scoreKeeper.save()
                     }
