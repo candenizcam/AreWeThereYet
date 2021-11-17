@@ -1,22 +1,21 @@
 package application
 
 import com.soywiz.klock.TimeSpan
-import com.soywiz.korge.internal.KorgeInternal
-import com.soywiz.korge.view.*
+import com.soywiz.korge.view.Image
+import com.soywiz.korge.view.View
+import com.soywiz.korge.view.position
+import com.soywiz.korge.view.solidRect
+import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
 import modules.basic.Colour
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
-import com.soywiz.korim.format.readBitmap
-import com.soywiz.korio.async.launch
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 
 @DelicateCoroutinesApi
 @KorgeInternal
 class Hand: Puntainer {
     constructor(id: String?=null, relativeRectangle: Rectangle) : super(id,relativeRectangle)
-     {
+    {
         this.position(x,y)
 
         greenBlock = solidRect(100.0,100.0, Colour.GREEN.korgeColor).also {
@@ -25,21 +24,18 @@ class Hand: Puntainer {
         }
         fingerCut = Puntainer()
         this.addChild(fingerCut)
-
-
-
     }
 
     var fingerCut: Puntainer
 
     suspend fun suspendInit(){
-        ActiveAnimationType.values().forEach {
+        ActiveAnimationType.values().forEach { it ->
             val punt= Puntainer("two_${it.animationID()}")
             this.addChild(punt)
             it.sourceList().forEach {s->
-                Image(resourcesVfs[s].readBitmap()).also {
-                    it.visible = false
-                    punt.addChild(it)
+                Image(resourcesVfs[s].readBitmap()).also { it2->
+                    it2.visible = false
+                    punt.addChild(it2)
                 }
             }
 
@@ -56,7 +52,7 @@ class Hand: Puntainer {
     }
 
 
-    val animationSpeed = 15 //12 frames per second
+    private val animationSpeed = 15 //12 frames per second
 
     fun update(dt: TimeSpan, hitboxRectOnScreen: Rectangle){
 
@@ -97,7 +93,21 @@ class Hand: Puntainer {
                 val hitboxRect = hitboxRectOnScreen.decodeRated(activeAnimationType.relativeRect())
 
                 a.children.forEachIndexed { index, image ->
-                    image.visible = index==animIndex.toInt()
+                    //image.visible = index==animIndex.toInt()
+                    if(activeSize()==1){
+                        image.visible=true
+                    }else{
+                        if(index==animIndex.toInt()){
+                            image.alpha=(animIndex%0.25)*4.0
+                            image.visible=true
+                        }else if((index==animIndex.toInt()-1)||((0==animIndex.toInt()))&&(index==activeSize()-1)){
+                            image.alpha=1-(animIndex%0.25)*4.0
+                            image.visible=true
+                        }else{
+                            image.visible=false
+                        }
+                    }
+
                     //image.visible = true
                     image.scaledWidth= hitboxRect.width
                     image.scaledHeight = hitboxRect.height
@@ -123,7 +133,7 @@ class Hand: Puntainer {
     }
 
     var blockMode = false
-    val greenBlock: View
+    private val greenBlock: View
     var isDead = false
     var isDying = false
 
@@ -158,7 +168,7 @@ class Hand: Puntainer {
             //activeAnimation().forEachChild { it.visible=false }
             SfxPlayer.playSfx("cut.mp3")
             activeAnimationType = ActiveAnimationType.CUT
-            //hideEverything()
+
             /*
             ActiveAnimationType.values().forEach {
 
@@ -190,14 +200,14 @@ class Hand: Puntainer {
 
     var animIndex = 0.0
     var activeAnimationType = ActiveAnimationType.RUN
-    set(value) {
-        if(value!=field){
-            hideEverything()
-            animIndex=0.0
-            field=value
-            jumpLocker=false
+        set(value) {
+            if(value!=field){
+                hideEverything()
+                animIndex=0.0
+                field=value
+                jumpLocker=false
+            }
         }
-    }
 
     var jumpLocker=false
 
@@ -289,8 +299,8 @@ class Hand: Puntainer {
                     Rectangle(287.0/500.0,(287.0+124.0)/500.0,22.0/500.0,142.0/500.0)
                 }
             }
-            override fun sourceList(): List<String> { return List(8) {"hands/duck-${it+1}.png"} }
-            override fun sourceListOne(): List<String> { return List(8) {"hands/duck_one_finger-${it+1}.png"} }
+            override fun sourceList(): List<String> { return List(3) {"hands/duck-${it+4}.png"} }
+            override fun sourceListOne(): List<String> { return List(3) {"hands/duck_one_finger-${it+4}.png"} }
             override fun animationType(): String { return "duck" }
             override fun animationID(): String { return "duck" }
         },

@@ -28,4 +28,7 @@ object GlobalAccess {
     var windowSize = SizeInt(1920, 1080) // Window Size, this is the actual size of the window in pixels
 
     var fingers = 2
+    var firstEntry = true
+
+
 }

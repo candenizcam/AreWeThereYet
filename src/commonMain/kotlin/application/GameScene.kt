@@ -40,13 +40,25 @@ class GameScene : PunScene() {
         println("game scene starts")
         GlobalAccess.fingers = 2
         val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
+        /*
         outsiders.add(punImage("o1",bmp,Rectangle(0.0, 960.0, 0.0, 1080.0)))
         outsiders.add(punImage("o2",bmp,Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
         outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
+
+         */
+        outside.deploy(addFunction = {l: List<Puntainer>->
+            l.forEach {
+                this.addChild(it)
+            }
+        })
+
+
+
     }
 
 
 
+    @OptIn(DelicateCoroutinesApi::class)
     override suspend fun Container.sceneMain() {
         MusicPlayer.play("musicbox.mp3")
         scoreKeeper.load()
@@ -78,33 +90,31 @@ class GameScene : PunScene() {
 
 
 
-
-
         playfield.fitToFrame(Rectangle(0.0, w, FloorData.getHeight() * h, h))
         this.addChild(playfield)
 
         val rareScavengerList = listOf(
             "Red Bird",
-            "Red Traffic Sign",
+            "Red Numbered Sign",
             "Yellow Tractor",
-            "Green Road Sign",
-            "Large Blue Sign",
+            "Green Overhead Sign",
+            "Ginormous Blue Sign",
             "Small Blue Sign"
         )
         val rarerScavengerList = listOf(
             "Green Bird",
-            "Green Traffic Sign",
+            "Green Numbered  Sign",
             "Red Tractor",
-            "Yellow Road Sign",
-            "Large Green Sign",
+            "Yellow Overhead Sign",
+            "Ginormous Green Sign",
             "Small Green Sign"
         )
         val rarestScavengerList = listOf(
             "Blue Bird",
-            "Yellow Traffic Sign",
+            "Yellow Numbered Sign",
             "Blue Tractor",
-            "Blue Road Sign",
-            "Large Yellow Sign",
+            "Blue Overhead Sign",
+            "Ginormous Yellow Sign",
             "Small Yellow Sign"
         )
 
@@ -322,29 +332,16 @@ class GameScene : PunScene() {
         this.addFixedUpdater(time=fixedTime){
             //backgroundRoll(TimeSpan(1000.0/60.0))
 
-            if(GlobalAccess.fingers>0){
-                if (views.input.keys.justPressed(Key.UP)) {
-                    playfield.jump()
-                }
 
-                if (views.input.keys.justPressed(Key.DOWN)) {
-                    playfield.duck()
-                }
-
-                if (views.input.keys.pressing(Key.DOWN).not()) {
-                    playfield.stopDuck()
-                }
-                score += fixedTime.seconds * 10
-                scoreText.text = score.toInt().toString()
-            }
 
             val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
             hand.update(fixedTime, r)
 
-            launchImmediately { playfield.update(fixedTime) }
+
+
+
+
         }
-
-
 
 
         this.addUpdater { dt ->
@@ -359,10 +356,29 @@ class GameScene : PunScene() {
             backgroundRoll(dt)
 
             if (gameActive) {
+
+                score += fixedTime.seconds * 10
+                scoreText.text = score.toInt().toString()
+
+
+                if(GlobalAccess.fingers>0){
+                    if (views.input.keys.justPressed(Key.UP)) {
+                        playfield.jump()
+                    }
+
+                    if (views.input.keys.justPressed(Key.DOWN)) {
+                        playfield.duck()
+                    }
+
+                    if (views.input.keys.pressing(Key.DOWN).not()) {
+                        playfield.stopDuck()
+                    }
+
+                }
+                playfield.update(dt)
                 obstacles.forEach {
                     it.visible = false
                 }
-
                 val goreText = if (GlobalAccess.fingers == 2) {
                     ""
                 } else {
@@ -398,6 +414,7 @@ class GameScene : PunScene() {
 
 
 
+
                 var collided = playfield.collisionCheck()
                 val collidedObstacleRarity = if(playfield.level.obstacles.isNotEmpty()){
                      playfield.level.obstacles.first().obstacleRarity.ordinal
@@ -407,12 +424,15 @@ class GameScene : PunScene() {
 
                 if ((collided == sh1Type.ordinal)&&(collidedObstacleRarity==0)) {
                     score += 100
+                    SfxPlayer.playSfx("diDing.mp3")
                     playfield.sliced()
                 } else if ((collided == sh2Type.ordinal)&&(collidedObstacleRarity==1)) {
                     score += 250
+                    SfxPlayer.playSfx("diDing.mp3")
                     playfield.sliced()
                 } else if ((collided == sh3Type.ordinal)&&(collidedObstacleRarity==2)) {
                     score += 500
+                    SfxPlayer.playSfx("diDing.mp3")
                     playfield.sliced()
                 } else if (collided != -1) {
                     fadein = true
@@ -507,15 +527,20 @@ class GameScene : PunScene() {
     val outsiders = mutableListOf<Puntainer>()
     var firstRun = true
     var gameOverIndex = 0.0
+    var outside: Outside = Outside()
 
     fun backgroundRoll(dt: TimeSpan) {
         if(GlobalAccess.fingers>0){
+            outside.update(dt.seconds *playfield.level.speed * 1920)
+            /*
             outsiders.forEach {
                 it.x -= dt.seconds *playfield.level.speed * 1920
                 if(it.x + it.width< -20.0){
                     it.x += it.width * 3
                 }
             }
+
+             */
         }
 
     }
@@ -552,8 +577,11 @@ class GameScene : PunScene() {
 
 
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun death() {
+        SfxPlayer.playSfx("cut.mp3")
         gameActive = false
+
         hand.activeAnimationType = Hand.ActiveAnimationType.CUT
         GlobalAccess.fingers=0
         /*
