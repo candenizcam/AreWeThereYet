@@ -102,6 +102,9 @@ class Hand(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, rel
                         if(index==animIndex.toInt()){
                             image.alpha=(animIndex%0.25)*4.0
                             image.visible=true
+                        }else if((index==animIndex.toInt()-1)){
+                            image.alpha=1-(animIndex%0.25)*4.0
+                            image.visible=true
                         }else{
                             image.visible=false
                         }
