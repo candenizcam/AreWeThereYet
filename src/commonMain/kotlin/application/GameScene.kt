@@ -207,7 +207,12 @@ class GameScene : PunScene() {
         }
         scenePuntainer.punImage("window", oneRectangle(),resourcesVfs["environment/window.png"].readBitmap())
 
-        scenePuntainer.punImage("hud", oneRectangle(),resourcesVfs["UI/hunt-score.png"].readBitmap())
+
+        scenePuntainer.punImage("hud1",thisRectangle.toRated(Rectangle(0.0,554.0,1080.0,648.0)),resourcesVfs["UI/postit.png"].readBitmap())
+        scenePuntainer.punImage("hud2",thisRectangle.toRated(Rectangle(1594.0,1894.0,1054.0,974.0)),resourcesVfs["UI/bandaid.png"].readBitmap())
+
+
+
         val font = TtfFont(resourcesVfs["MPLUSRounded1c-Medium.ttf"].readAll())
 
 
