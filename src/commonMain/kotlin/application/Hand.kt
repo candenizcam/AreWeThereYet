@@ -96,7 +96,11 @@ class Hand(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, rel
 
                 a.children.forEachIndexed { index, image ->
                     //image.visible = index==animIndex.toInt()
-
+                    if(activeSize()==1){
+                        image.visible=true
+                    }else{
+                        
+                    }
 
                     //image.visible = true
                     image.scaledWidth= hitboxRect.width
