@@ -37,7 +37,11 @@ class WindowScene  : PunScene() {
 
     override suspend fun Container.sceneMain(){
         //openingCrawl()
-        val engineLoop = resourcesVfs["SFX/engine_heavy_loop-20.mp3"].readMusic()
+        //val engineLoop = resourcesVfs["SFX/engine_heavy_loop-20.mp3"].readMusic()
+        //val t = resourcesVfs["music/musicbox.mp3"].readMusic()
+        if(GlobalAccess.soundsAreOn){
+            MusicPlayer.play("musicbox.mp3")
+        }
 
         val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
         outsiders.add(punImage("o1",bmp.clone(),Rectangle(0.0, 960.0, 0.0, 1080.0)))
@@ -73,13 +77,16 @@ class WindowScene  : PunScene() {
         //launchImmediately { gameScene.load() }
         //SceneContainer
 
+        //val gameScene = GameScene()
+      //  this.addChild(gameScene.sceneView)
+      //  sceneContainer.
         addUpdater {dt->
             if(freeze.not()){
 
                 outside.update(dt.seconds*0.3*1920)
 
                 if (views.input.keys.justPressed((Key.DOWN))){
-                    SfxPlayer.playSfx("windowDown-4.mp3")
+                    launchImmediately { SfxPlayer.playSfx("windowDown-4.mp3") }
                 }
 
                 if (views.input.keys.pressing(Key.DOWN)) {
@@ -106,12 +113,15 @@ class WindowScene  : PunScene() {
                     window.yConv= (window.yConv+dt.seconds*0.3*GlobalAccess.virtualSize.height).coerceAtMost(GlobalAccess.virtualSize.height.toDouble())
                 }
                 if(window.yConv<100.0){
-                    launchImmediately {sceneContainer.changeTo<GameScene>( )   }
+                    launchImmediately {sceneContainer.changeTo<GameScene>()   }
                 }
             }
         }
 
-        engineLoop.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
+
+       // engineLoop.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
+       // t.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
+       // launchImmediately { MusicPlayer.play("musicbox.mp3") }
         super.sceneAfterInit()
         println("window called")
     }

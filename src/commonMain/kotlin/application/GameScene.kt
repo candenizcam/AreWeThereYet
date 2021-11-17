@@ -14,7 +14,6 @@ import com.soywiz.korim.text.TextAlignment
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import modules.basic.Colour
 import pungine.PunImage
 import pungine.PunScene
@@ -27,6 +26,7 @@ import pungine.geometry2D.oneRectangle
  *
  */
 
+@DelicateCoroutinesApi
 @KorgeInternal
 class GameScene : PunScene() {
     override fun createSceneView(): Container = Puntainer()
@@ -34,8 +34,7 @@ class GameScene : PunScene() {
     var scoreKeeper = ScoreKeeper()
 
 
-
-    override suspend fun Container.sceneInit(){
+    override suspend fun Container.sceneInit() {
         println("game scene starts")
         GlobalAccess.fingers = 2
         val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
@@ -45,26 +44,25 @@ class GameScene : PunScene() {
         outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
 
          */
-        outside.deploy(addFunction = {l: List<Puntainer>->
+        outside.deploy(addFunction = { l: List<Puntainer> ->
             l.forEach {
                 this.addChild(it)
             }
         })
 
 
-
     }
-
 
 
     @OptIn(DelicateCoroutinesApi::class)
     override suspend fun Container.sceneMain() {
+        if(GlobalAccess.soundsAreOn){
+            MusicPlayer.play("musicbox.mp3")
+        }
+        //MusicPlayer.play("musicbox.mp3")
         scoreKeeper.load()
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
-
-
-
 
 
         /////////
@@ -75,9 +73,9 @@ class GameScene : PunScene() {
         val playMusic = true
         var fadein = false
 
-        val l1 = resourcesVfs["musicbox.mp3"].readMusic()
-        val l2 = resourcesVfs["altlayer.mp3"].readMusic()
-        val l3 = resourcesVfs["ominous.mp3"].readMusic()
+        val l1 = resourcesVfs["music/musicbox.mp3"].readMusic()
+        val l2 = resourcesVfs["music/altlayer.mp3"].readMusic()
+        val l3 = resourcesVfs["music/ominous.mp3"].readMusic()
         val engineLoop = resourcesVfs["SFX/engine_heavy_loop-20.mp3"].readMusic()
 
         if (playMusic) {
@@ -236,8 +234,6 @@ class GameScene : PunScene() {
             }
 
 
-
-
         //1594, 1894, 26, 106
 
         ////////////////////////////////////////// HEEEEREEEE
@@ -290,10 +286,9 @@ class GameScene : PunScene() {
         scoreText.text = "0"
 
 
-
-        val gameOver = Puntainer("gameover", Rectangle(0.0,1.0,0.0,1.0)).also { pt->
+        val gameOver = Puntainer("gameover", Rectangle(0.0, 1.0, 0.0, 1.0)).also { pt ->
             this.addChild(pt)
-            for(i in 1..7){
+            for (i in 1..7) {
                 Image(resourcesVfs["VFX/game_over-$i.png"].readBitmap()).also {
                     it.visible = false
                     pt.addChild(it)
@@ -302,10 +297,10 @@ class GameScene : PunScene() {
 
         }
 
-        val finalScoreBand  = punImage("finalBand", resourcesVfs["UI/bandaid.png"].readBitmap(), oneRectangle(), true).also {
-            it.visible=false
-        }
-
+        val finalScoreBand =
+            punImage("finalBand", resourcesVfs["UI/bandaid.png"].readBitmap(), oneRectangle(), true).also {
+                it.visible = false
+            }
 
 
         val finalScoreText = text(
@@ -317,10 +312,8 @@ class GameScene : PunScene() {
         ).also {
             it.x = (1594.0 + 1894.0) * 0.5
             it.y = 26.0 + 12.0
-            it.visible=false
+            it.visible = false
         }
-
-
 
 
         ////////////////////////////////////////////////////////////////
@@ -329,17 +322,13 @@ class GameScene : PunScene() {
 
         ////////////////////////////////////////////////////////////////
 
-        val fixedTime = TimeSpan(1000.0/60.0)
-        this.addFixedUpdater(time=fixedTime){
+        val fixedTime = TimeSpan(1000.0 / 60.0)
+        this.addFixedUpdater(time = fixedTime) {
             //backgroundRoll(TimeSpan(1000.0/60.0))
-
 
 
             val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
             hand.update(fixedTime, r)
-
-
-
 
 
         }
@@ -347,22 +336,22 @@ class GameScene : PunScene() {
 
         this.addUpdater { dt ->
 
-            println("Updater Test 1")
             if (firstRun) {
                 firstRun = false
                 t1.visible = true
                 t2.visible = true
                 t3.visible = true
             }
+
             backgroundRoll(dt)
 
             if (gameActive) {
-                println("Updater Test 2")
+
                 score += fixedTime.seconds * 10
                 scoreText.text = score.toInt().toString()
 
 
-                if(GlobalAccess.fingers>0){
+                if (GlobalAccess.fingers > 0) {
                     if (views.input.keys.justPressed(Key.UP)) {
                         playfield.jump()
                     }
@@ -376,8 +365,7 @@ class GameScene : PunScene() {
                     }
 
                 }
-                println("Updater Test 3")
-                playfield.update(dt)
+                launchImmediately { playfield.update(dt) }
                 obstacles.forEach {
                     it.visible = false
                 }
@@ -386,7 +374,6 @@ class GameScene : PunScene() {
                 } else {
                     "-gore"
                 }
-                println("Updater Test 4")
                 ObstacleTypes.values().forEach { thisType ->
                     playfield.level.obstacles.filter { it.type == thisType }.also { list ->
                         ObstacleRarity.values().forEach { rarity ->
@@ -412,30 +399,25 @@ class GameScene : PunScene() {
                     }
                 }
 
-                println("Updater Test 5")
-
-
-
-
 
                 var collided = playfield.collisionCheck()
-                val collidedObstacleRarity = if(playfield.level.obstacles.isNotEmpty()){
-                     playfield.level.obstacles.first().obstacleRarity.ordinal
-                }else{
+                val collidedObstacleRarity = if (playfield.level.obstacles.isNotEmpty()) {
+                    playfield.level.obstacles.first().obstacleRarity.ordinal
+                } else {
                     5
                 }
 
-                if ((collided == sh1Type.ordinal)&&(collidedObstacleRarity==0)) {
+                if ((collided == sh1Type.ordinal) && (collidedObstacleRarity == 0)) {
                     score += 100
-                    SfxPlayer.playSfx("diDing.mp3")
+                    launchImmediately { SfxPlayer.playSfx("diDing.mp3") }
                     playfield.sliced()
-                } else if ((collided == sh2Type.ordinal)&&(collidedObstacleRarity==1)) {
+                } else if ((collided == sh2Type.ordinal) && (collidedObstacleRarity == 1)) {
                     score += 250
-                    SfxPlayer.playSfx("diDing.mp3")
+                    launchImmediately { SfxPlayer.playSfx("diDing.mp3") }
                     playfield.sliced()
-                } else if ((collided == sh3Type.ordinal)&&(collidedObstacleRarity==2)) {
+                } else if ((collided == sh3Type.ordinal) && (collidedObstacleRarity == 2)) {
                     score += 500
-                    SfxPlayer.playSfx("diDing.mp3")
+                    launchImmediately { SfxPlayer.playSfx("diDing.mp3") }
                     playfield.sliced()
                 } else if (collided != -1) {
                     fadein = true
@@ -445,7 +427,7 @@ class GameScene : PunScene() {
                     } else {
                         GlobalAccess.fingers -= 1
                         playfield.sliced()
-                        hand.cutFinger()
+                        launchImmediately { hand.cutFinger() }
                         scoreKeeper.addScore(score)
                         scoreKeeper.save()
                     }
@@ -456,7 +438,7 @@ class GameScene : PunScene() {
                 } else {
                     hand.onGround()
                 }
-                println("Updater Test 6")
+
                 //val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
                 //hand.update(dt, r)
                 //playfield.update(dt)
@@ -469,41 +451,37 @@ class GameScene : PunScene() {
                     if (l2.volume < 0.6) l2.volume += 0.1
                     else fadein = false
                 }
-                println("Updater Test 7")
-            }else{
+            } else {
                 val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
-                hand.update(dt,r)
-                if(hand.isDead){
-                    gameOverIndex += dt.seconds*2
-                    if(gameOverIndex>=gameOver.size){
-                        finalScoreText.x = GlobalAccess.virtualSize.width*0.5
-                        finalScoreText.y = GlobalAccess.virtualSize.height*0.7
-                        finalScoreText.visible=true
+                hand.update(dt, r)
+                if (hand.isDead) {
+                    gameOverIndex += dt.seconds * 2
+                    if (gameOverIndex >= gameOver.size) {
+                        finalScoreText.x = GlobalAccess.virtualSize.width * 0.5
+                        finalScoreText.y = GlobalAccess.virtualSize.height * 0.7
+                        finalScoreText.visible = true
                         finalScoreText.text = "Score: ${score.toInt()}"
 
                         finalScoreBand.scaledWidth = 300.0
                         finalScoreBand.scaledHeight = 80.0
-                        finalScoreBand.x = GlobalAccess.virtualSize.width*0.5-150.0
-                        finalScoreBand.y = GlobalAccess.virtualSize.height*0.7-10.0
-                        finalScoreBand.visible=true
+                        finalScoreBand.x = GlobalAccess.virtualSize.width * 0.5 - 150.0
+                        finalScoreBand.y = GlobalAccess.virtualSize.height * 0.7 - 10.0
+                        finalScoreBand.visible = true
 
-                    }else{
-                        gameOver.children.fastForEach { it.visible=false }
-                        gameOver.children[gameOverIndex.toInt()].visible=true
+                    } else {
+                        gameOver.children.fastForEach { it.visible = false }
+                        gameOver.children[gameOverIndex.toInt()].visible = true
                     }
                     //launchImmediately { sceneContainer.changeTo<GameOverScene>() }
                 }
 
 
-
-                println("Updater Test 8")
             }
-            println("Updater Test 9")
         }
 
         onClick {
-            if(gameOverIndex>=gameOver.size){
-                launchImmediately { sceneContainer.changeTo<EntryScene>( ) }
+            if (gameOverIndex >= gameOver.size) {
+                launchImmediately { sceneContainer.changeTo<EntryScene>() }
             }
         }
         println("game scene called")
@@ -527,7 +505,7 @@ class GameScene : PunScene() {
     var gameActive = true
     lateinit var hand: Hand //= Hand("hand", oneRectangle())
     var playfield = Playfield("playfield", oneRectangle())
-    lateinit var floor:Puntainer
+    lateinit var floor: Puntainer
     var obstacles = mutableListOf<Puntainer>()
     val outsiders = mutableListOf<Puntainer>()
     var firstRun = true
@@ -535,8 +513,8 @@ class GameScene : PunScene() {
     var outside: Outside = Outside()
 
     fun backgroundRoll(dt: TimeSpan) {
-        if(GlobalAccess.fingers>0){
-            outside.update(dt.seconds *playfield.level.speed * 1920)
+        if (GlobalAccess.fingers > 0) {
+            outside.update(dt.seconds * playfield.level.speed * 1920)
             /*
             outsiders.forEach {
                 it.x -= dt.seconds *playfield.level.speed * 1920
@@ -580,15 +558,13 @@ class GameScene : PunScene() {
      */
 
 
-
-
     @OptIn(DelicateCoroutinesApi::class)
     fun death() {
-        SfxPlayer.playSfx("cut.mp3")
+        launchImmediately { SfxPlayer.playSfx("cut.mp3") }
         gameActive = false
 
         hand.activeAnimationType = Hand.ActiveAnimationType.CUT
-        GlobalAccess.fingers=0
+        GlobalAccess.fingers = 0
         /*
         Hand.ActiveAnimationType.values().forEach {
             it.puntainerTwoFingers.children.fastForEach { it.visible=false }

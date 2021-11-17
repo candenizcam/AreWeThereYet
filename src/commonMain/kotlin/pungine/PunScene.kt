@@ -55,7 +55,7 @@ open class PunScene(var width: Double = InternalGlobalAccess.virtualSize.width.t
 
     /** This is a puntainer for holding images, it is a child of regular puntainer with an input for bitmap
      */
-    protected suspend fun punImage(id: String?=null, bitmap: Bitmap, rectangle: Rectangle?=null,relative: Boolean=false,callFunc: (it: PunImage)->Any={}): PunImage{
+    suspend fun punImage(id: String?=null, bitmap: Bitmap, rectangle: Rectangle?=null,relative: Boolean=false,callFunc: (it: PunImage)->Any={}): PunImage{
         val relative = if (relative){
             rectangle?: oneRectangle()
         }else{

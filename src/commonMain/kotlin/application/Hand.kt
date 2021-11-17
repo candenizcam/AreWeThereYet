@@ -1,17 +1,20 @@
 package application
 
 import com.soywiz.klock.TimeSpan
+import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.Image
 import com.soywiz.korge.view.View
 import com.soywiz.korge.view.position
 import com.soywiz.korge.view.solidRect
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
+import kotlinx.coroutines.DelicateCoroutinesApi
 import modules.basic.Colour
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
 
-
+@DelicateCoroutinesApi
+@KorgeInternal
 class Hand: Puntainer {
     constructor(id: String?=null, relativeRectangle: Rectangle) : super(id,relativeRectangle)
     {
@@ -25,7 +28,7 @@ class Hand: Puntainer {
         this.addChild(fingerCut)
     }
 
-    lateinit var fingerCut: Puntainer
+    var fingerCut: Puntainer
 
     suspend fun suspendInit(){
         ActiveAnimationType.values().forEach { it ->
@@ -162,7 +165,7 @@ class Hand: Puntainer {
     }
 
 
-    fun cutFinger(){
+    suspend fun cutFinger(){
         if(activeAnimationType!=ActiveAnimationType.CUT) {
             //activeAnimation().forEachChild { it.visible=false }
             SfxPlayer.playSfx("cut.mp3")

@@ -4,8 +4,10 @@ import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.scene.Module
 import com.soywiz.korinject.AsyncInjector
 import com.soywiz.korinject.injector
+import kotlinx.coroutines.DelicateCoroutinesApi
 import pungine.InternalGlobalAccess
 
+@DelicateCoroutinesApi
 @KorgeInternal
 object TestModule: Module() {
     override val mainScene = EntryScene::class

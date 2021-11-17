@@ -6,13 +6,16 @@ import com.soywiz.korge.input.mouse
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.input.onDown
 import com.soywiz.korge.input.onUp
+import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.RGBA
 import com.soywiz.korim.font.TtfFont
 import com.soywiz.korim.format.readBitmap
+import com.soywiz.korio.async.launch
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import modules.basic.Colour
 import pungine.PunImage
 import pungine.PunScene
@@ -23,17 +26,15 @@ import pungine.geometry2D.Rectangle
  *
  */
 
+@KorgeInternal
 @DelicateCoroutinesApi
 class EntryScene : PunScene() {
     override fun createSceneView(): Container = Puntainer()
 
     override suspend fun Container.sceneMain(){
-
-
-        SfxPlayer.loadSounds()
-
-
-
+        if(GlobalAccess.soundsAreOn){
+            MusicPlayer.play("musicbox.mp3")
+        }
 
 
 
@@ -89,8 +90,6 @@ class EntryScene : PunScene() {
             Rectangle(0.0,1.0,0.0,1.0),relative = true
         )
 
-
-
         val playDown = punImage("play_down",resourcesVfs["UI/play-pushed.png"].readBitmap(),Rectangle(232.0/1920.0,557.0/1920.0,1-864.0/1080.0,1-971.0/1080.0),relative = true).also {
             it.visible = false
         }
@@ -137,7 +136,7 @@ class EntryScene : PunScene() {
         }
 
 
-        this.onClick {
+        sceneContainer.onClick {
             settingsUp.visible=true
             exitUp.visible=true
             scoreUp.visible=true
@@ -145,12 +144,11 @@ class EntryScene : PunScene() {
             credits.visible=false
         }
 
-
-        this.onUp {
+        sceneContainer.onUp {
             if(exitDown.visible){
                 exitUp.visible=true
                 exitDown.visible=false
-                views.gameWindow.close()
+                sceneContainer.views.gameWindow.close()
             }
 
             if(settingsDown.visible){
@@ -181,17 +179,7 @@ class EntryScene : PunScene() {
             }
 
 
-
-
         }
-
-        /*
-        if(GlobalAccess.firstEntry){
-            openingCrawl()
-            GlobalAccess.firstEntry=false
-        }
-
-         */
 
 
 
@@ -226,10 +214,6 @@ class EntryScene : PunScene() {
              */
 
         }
-
-
-
-
 
 
 

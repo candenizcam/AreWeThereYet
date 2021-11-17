@@ -8,7 +8,7 @@ import kotlin.coroutines.CoroutineContext
 
 class Playfield(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, relativeRectangle) {
 
-    fun update(dt: TimeSpan) {
+    suspend fun update(dt: TimeSpan) {
         if (jumpDelay > 0) {
             jumpDelay -= dt.seconds
             if (jumpDelay < 0) {
