@@ -94,7 +94,16 @@ class Hand(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, rel
                 }
                 val hitboxRect = hitboxRectOnScreen.decodeRated(activeAnimationType.relativeRect())
 
+                a.children.forEachIndexed { index, image ->
+                    //image.visible = index==animIndex.toInt()
 
+
+                    //image.visible = true
+                    image.scaledWidth= hitboxRect.width
+                    image.scaledHeight = hitboxRect.height
+                    image.x = hitboxRect.left
+                    image.y = GlobalAccess.virtualSize.height - (hitboxRect.top)
+                }
                 if(activeAnimationType==ActiveAnimationType.DUCK){
                     val vss = a.children.map { it.visible }
                 }
