@@ -15,6 +15,7 @@ import com.soywiz.korio.async.launch
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import modules.basic.Colour
 import pungine.PunImage
 import pungine.PunScene
