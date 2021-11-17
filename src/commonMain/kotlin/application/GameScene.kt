@@ -13,6 +13,7 @@ import com.soywiz.korim.font.TtfFont
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korim.text.TextAlignment
 import com.soywiz.korio.async.launchImmediately
+import com.soywiz.korio.async.launchUnscoped
 import com.soywiz.korio.file.std.resourcesVfs
 import kotlinx.coroutines.DelicateCoroutinesApi
 import modules.basic.Colour
@@ -39,18 +40,9 @@ class GameScene : PunScene() {
     override suspend fun Container.sceneInit() {
         println("game scene starts")
         GlobalAccess.fingers = 2
-        val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
-        /*
-        outsiders.add(punImage("o1",bmp,Rectangle(0.0, 960.0, 0.0, 1080.0)))
-        outsiders.add(punImage("o2",bmp,Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
-        outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
-
-         */
         outside.deploy(addFunction = {p: Puntainer, r: Rectangle->
             scenePuntainer.addPuntainer(p,r)
         })
-
-
     }
 
 
@@ -149,62 +141,16 @@ class GameScene : PunScene() {
         }
 
         // obstacles
-        val rarityList = listOf("rare", "rarer", "rarest")
-        for (j in 0..0) {
-            for (i in 1..3) {
-                listOf("", "-gore").forEach { goreText ->
-                    val folder = rarityList[i - 1] + goreText
-                    PunImage("dont-jump-$i$goreText", resourcesVfs["obs/$folder/dont-jump-$i.png"].readBitmap()).also {
-                        obstacles.add(it)
-                        this.addChild(it)
-                        it.visible = false
-                    }
 
-                    PunImage("duck-$i$goreText", resourcesVfs["obs/$folder/duck-$i.png"].readBitmap()).also {
-                        obstacles.add(it)
-                        this.addChild(it)
-                        it.visible = false
-                    }
-
-                    PunImage("high-jump-$i$goreText", resourcesVfs["obs/$folder/high-jump-$i.png"].readBitmap()).also {
-                        obstacles.add(it)
-                        this.addChild(it)
-                        it.visible = false
-                    }
-
-                    PunImage("jump-duck-$i$goreText", resourcesVfs["obs/$folder/jump-duck-$i.png"].readBitmap()).also {
-                        obstacles.add(it)
-                        this.addChild(it)
-                        it.visible = false
-                    }
-
-                    PunImage("long-jump-$i$goreText", resourcesVfs["obs/$folder/long-jump-$i.png"].readBitmap()).also {
-                        obstacles.add(it)
-                        this.addChild(it)
-                        it.visible = false
-                    }
-
-                    PunImage("low-jump-$i$goreText", resourcesVfs["obs/$folder/low-jump-$i.png"].readBitmap()).also {
-                        obstacles.add(it)
-                        this.addChild(it)
-                        it.visible = false
-                    }
-
-                    PunImage("low-bird-$i$goreText", resourcesVfs["obs/$folder/bird-$i.png"].readBitmap()).also {
-                        obstacles.add(it)
-                        this.addChild(it)
-                        it.visible = false
-                    }
-
-                    PunImage("bird-$i$goreText", resourcesVfs["obs/$folder/bird-$i.png"].readBitmap()).also {
-                        obstacles.add(it)
-                        this.addChild(it)
-                        it.visible = false
-                    }
-                }
-
-            }
+        /*
+        listOf("", "-gore").forEach { goreText ->
+            obstacleLoader(goreText)
         }
+
+         */
+        obstacleLoader("")
+        obstacleLoader("-gore")
+
         scenePuntainer.punImage("window", oneRectangle(),resourcesVfs["environment/window.png"].readBitmap())
 
 
@@ -246,9 +192,11 @@ class GameScene : PunScene() {
         println("enter")
         hand = Hand("hand", oneRectangle())
         println("middle")
-        hand.suspendInit()
-        //adjustHand()
         println("out")
+        hand.suspendInitAlternative("two")
+        hand.suspendInitAlternative("one")
+        //adjustHand()
+
         //////////////////////////////////////////
         this.addChild(hand)
 
@@ -290,6 +238,7 @@ class GameScene : PunScene() {
         scoreText.text = "0"
 
 
+        // game over stuff from here
         val gameOver = Puntainer("gameover", Rectangle(0.0, 1.0, 0.0, 1.0)).also { pt ->
             this.addChild(pt)
             for (i in 1..7) {
@@ -300,6 +249,7 @@ class GameScene : PunScene() {
             }
 
         }
+
 
         val finalScoreBand =
             scenePuntainer.punImage("finalBand", oneRectangle(),resourcesVfs["UI/bandaid.png"].readBitmap()).also {
@@ -363,6 +313,9 @@ class GameScene : PunScene() {
                 t1.visible = true
                 t2.visible = true
                 t3.visible = true
+                launchImmediately {
+                    // this can be used as an afterloader
+                }
             }
 
             backgroundRoll(dt)
@@ -545,55 +498,42 @@ class GameScene : PunScene() {
     var playfield = Playfield("playfield", oneRectangle())
     lateinit var floor: Puntainer
     var obstacles = mutableListOf<Puntainer>()
-    val outsiders = mutableListOf<Puntainer>()
+    //val outsiders = mutableListOf<Puntainer>()
     var firstRun = true
     var gameOverIndex = 0.0
     var outside: Outside = Outside()
 
+
+    private suspend fun obstacleLoader(goreText: String){
+        val rarityList = listOf("rare", "rarer", "rarest")
+        val otherList = listOf("dont-jump","duck","high-jump","jump-duck","long-jump","low-jump","bird","low-bird")
+        for (i in 1..3) {
+            val folder = rarityList[i - 1] + goreText
+
+            otherList.forEach { otherString->
+                val os = if(otherString=="low-bird"){
+                    "bird"
+                }else{
+                    otherString
+                }
+                PunImage("$otherString-$i$goreText", resourcesVfs["obs/$folder/$os-$i.png"].readBitmap()).also {
+                    obstacles.add(it)
+                    scenePuntainer.addChild(it)
+                    it.visible = false
+                }
+            }
+        }
+
+    }
+
+
     fun backgroundRoll(dt: TimeSpan) {
         if (GlobalAccess.fingers > 0) {
             outside.update(dt.seconds * playfield.level.speed * 1920)
-            /*
-            outsiders.forEach {
-                it.x -= dt.seconds *playfield.level.speed * 1920
-                if(it.x + it.width< -20.0){
-                    it.x += it.width * 3
-                }
-            }
-
-             */
         }
 
     }
 
-    /*
-    suspend fun adjustHand() {
-        println("hand adjusting")
-        Hand.ActiveAnimationType.values().forEach { animType ->
-            animType.puntainerOneFingers.children.clear()
-
-            animType.sourceList().forEach { s ->
-                Image(resourcesVfs[s].readBitmap()).also {
-                    it.visible = false
-                    animType.puntainerTwoFingers.addChild(it)
-                }
-
-
-            }
-            animType.puntainerOneFingers.children.clear()
-            animType.sourceListOne().forEach {
-
-
-                Image(resourcesVfs[it].readBitmap()).also {
-                    it.visible = false
-                    animType.puntainerOneFingers.addChild(it)
-                }
-            }
-        }
-
-    }
-
-     */
 
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -603,13 +543,6 @@ class GameScene : PunScene() {
 
         hand.activeAnimationType = Hand.ActiveAnimationType.CUT
         GlobalAccess.fingers = 0
-        /*
-        Hand.ActiveAnimationType.values().forEach {
-            it.puntainerTwoFingers.children.fastForEach { it.visible=false }
-            it.puntainerOneFingers.children.fastForEach { it.visible=false }
-        }
-
-         */
 
     }
 
