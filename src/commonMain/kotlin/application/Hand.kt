@@ -56,7 +56,17 @@ class Hand(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, rel
 
     private val animationSpeed = 15 //12 frames per second
 
+    fun update(dt: TimeSpan, hitboxRectOnScreen: Rectangle){
 
+        if(blockMode){
+            greenBlock.setSize(hitboxRectOnScreen.width,hitboxRectOnScreen.height)
+        }else{
+
+
+
+        }
+
+    }
 
     var blockMode = false
 
