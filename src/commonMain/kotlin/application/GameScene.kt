@@ -316,15 +316,15 @@ class GameScene : PunScene() {
 
 
                 if (GlobalAccess.fingers > 0) {
-                    if (views.input.keys.justPressed(Key.UP)) {
+                    if (views.input.keys.justPressed(Key.UP) || views.input.keys.justPressed(Key.W)) {
                         playfield.jump()
                     }
 
-                    if (views.input.keys.justPressed(Key.DOWN)) {
+                    if (views.input.keys.justPressed(Key.DOWN) || views.input.keys.justPressed(Key.S)) {
                         playfield.duck()
                     }
 
-                    if (views.input.keys.pressing(Key.DOWN).not()) {
+                    if (views.input.keys.pressing(Key.DOWN).not() || views.input.keys.justPressed(Key.S)) {
                         playfield.stopDuck()
                     }
 

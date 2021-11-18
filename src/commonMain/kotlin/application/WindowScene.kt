@@ -94,10 +94,10 @@ class WindowScene  : PunScene() {
 
 
 
-                if (views.input.keys.justPressed(Key.DOWN)) {
+                if (views.input.keys.justPressed(Key.DOWN) || views.input.keys.justPressed(Key.S)) {
                     windowUp = false
                     windowDown = true
-                } else if (views.input.keys.justPressed(Key.UP)) {
+                } else if (views.input.keys.justPressed(Key.UP) || views.input.keys.justPressed(Key.W)) {
                     windowDown = false
                     windowUp = true
                 } else if (views.input.keys.justPressed(Key.SPACE)) {
