@@ -1,19 +1,13 @@
 package application
 
 import com.soywiz.klock.TimeSpan
-import com.soywiz.korau.sound.PlaybackParameters
-import com.soywiz.korau.sound.PlaybackTimes
-import com.soywiz.korau.sound.readMusic
 import com.soywiz.korev.Key
-import com.soywiz.korge.input.onClick
-import com.soywiz.korge.input.onDown
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
 import com.soywiz.korim.font.TtfFont
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korim.text.TextAlignment
 import com.soywiz.korio.async.launchImmediately
-import com.soywiz.korio.async.launchUnscoped
 import com.soywiz.korio.file.std.resourcesVfs
 import kotlinx.coroutines.DelicateCoroutinesApi
 import modules.basic.Colour
@@ -40,18 +34,17 @@ class GameScene : PunScene() {
     override suspend fun Container.sceneInit() {
         println("game scene starts")
         GlobalAccess.fingers = 2
-        outside.deploy(addFunction = {p: Puntainer, r: Rectangle->
-            scenePuntainer.addPuntainer(p,r)
+        outside.deploy(addFunction = { p: Puntainer, r: Rectangle ->
+            scenePuntainer.addPuntainer(p, r)
         })
     }
 
 
     @OptIn(DelicateCoroutinesApi::class)
     override suspend fun Container.sceneMain() {
-        if(GlobalAccess.soundsAreOn){
+        if (GlobalAccess.soundsAreOn) {
             MusicPlayer.play("musicbox.mp3")
         }
-        //MusicPlayer.play("musicbox.mp3")
         scoreKeeper.load()
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
@@ -60,25 +53,6 @@ class GameScene : PunScene() {
         /////////
         //GAME SCENE
         /////////
-
-
-        val playMusic = true
-        var fadein = false
-
-        val l1 = resourcesVfs["music/musicbox.mp3"].readMusic()
-        val l2 = resourcesVfs["music/altlayer.mp3"].readMusic()
-        val l3 = resourcesVfs["music/ominous.mp3"].readMusic()
-        val engineLoop = resourcesVfs["SFX/engine_heavy_loop-20.mp3"].readMusic()
-
-        if (playMusic) {
-            l1.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.3))
-            l2.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
-            l3.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
-            engineLoop.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
-        }
-
-
-
 
 
         //playfield.fitToFrame(Rectangle(0.0, w, FloorData.getHeight() * h, h))
@@ -151,12 +125,19 @@ class GameScene : PunScene() {
         obstacleLoader("")
         obstacleLoader("-gore")
 
-        scenePuntainer.punImage("window", oneRectangle(),resourcesVfs["environment/window.png"].readBitmap())
+        scenePuntainer.punImage("window", oneRectangle(), resourcesVfs["environment/window.png"].readBitmap())
 
 
-        scenePuntainer.punImage("hud1",thisRectangle.toRated(Rectangle(0.0,554.0,1080.0,648.0)),resourcesVfs["UI/postit.png"].readBitmap())
-        scenePuntainer.punImage("hud2",thisRectangle.toRated(Rectangle(1594.0,1894.0,1054.0,974.0)),resourcesVfs["UI/bandaid.png"].readBitmap())
-
+        scenePuntainer.punImage(
+            "hud1",
+            thisRectangle.toRated(Rectangle(0.0, 554.0, 1080.0, 648.0)),
+            resourcesVfs["UI/postit.png"].readBitmap()
+        )
+        scenePuntainer.punImage(
+            "hud2",
+            thisRectangle.toRated(Rectangle(1594.0, 1894.0, 1054.0, 974.0)),
+            resourcesVfs["UI/bandaid.png"].readBitmap()
+        )
 
 
         val font = TtfFont(resourcesVfs["MPLUSRounded1c-Medium.ttf"].readAll())
@@ -207,7 +188,7 @@ class GameScene : PunScene() {
             //    this.addChild(it)
             //    it.visible=false
             //}
-            scenePuntainer.solidRect("obshit", Rectangle(0.0, 1.0, 0.0, 1.0),  colour = Colour.RED).also {
+            scenePuntainer.solidRect("obshit", Rectangle(0.0, 1.0, 0.0, 1.0), colour = Colour.RED).also {
                 it.visible = false
                 it.alpha = 0.2
             }
@@ -252,7 +233,7 @@ class GameScene : PunScene() {
 
 
         val finalScoreBand =
-            scenePuntainer.punImage("finalBand", oneRectangle(),resourcesVfs["UI/bandaid.png"].readBitmap()).also {
+            scenePuntainer.punImage("finalBand", oneRectangle(), resourcesVfs["UI/bandaid.png"].readBitmap()).also {
                 it.visible = false
             }
 
@@ -269,21 +250,29 @@ class GameScene : PunScene() {
             it.visible = false
         }
 
-        val menuButton = Button("menu",resourcesVfs["UI/main-normal.png"].readBitmap(),resourcesVfs["UI/main-pushed.png"].readBitmap()).also {
+        val menuButton = Button(
+            "menu",
+            resourcesVfs["UI/main-normal.png"].readBitmap(),
+            resourcesVfs["UI/main-pushed.png"].readBitmap()
+        ).also {
             it.clickFunction = {
                 launchImmediately { sceneContainer.changeTo<EntryScene>() }
             }
-            it.visible=false
-            it.inactive=true
+            it.visible = false
+            it.inactive = true
         }
         scenePuntainer.addPuntainer(menuButton)
 
-        val playAgainButton = Button("play again",resourcesVfs["UI/play-again-normal.png"].readBitmap(),resourcesVfs["UI/play-again-pushed.png"].readBitmap()).also {
+        val playAgainButton = Button(
+            "play again",
+            resourcesVfs["UI/play-again-normal.png"].readBitmap(),
+            resourcesVfs["UI/play-again-pushed.png"].readBitmap()
+        ).also {
             it.clickFunction = {
                 launchImmediately { sceneContainer.changeTo<GameScene>() }
             }
-            it.visible=false
-            it.inactive=true
+            it.visible = false
+            it.inactive = true
         }
         scenePuntainer.addPuntainer(playAgainButton)
 
@@ -395,7 +384,7 @@ class GameScene : PunScene() {
                     launchImmediately { SfxPlayer.playSfx("diDing.mp3") }
                     playfield.sliced()
                 } else if (collided != -1) {
-                    fadein = true
+                    //   fadein = true
                     if (GlobalAccess.fingers == 1) {
                         death()
 
@@ -421,11 +410,6 @@ class GameScene : PunScene() {
 
                 floor.visible = hand.activeAnimationType == Hand.ActiveAnimationType.CUT
                 floor.alpha = -1 * hand.animIndex * hand.animIndex * 8.0 / 605.0 + hand.animIndex * 8.0 / 55.0
-
-                if (fadein) {
-                    if (l2.volume < 0.6) l2.volume += 0.1
-                    else fadein = false
-                }
             } else {
                 val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
                 hand.update(dt, r)
@@ -443,13 +427,27 @@ class GameScene : PunScene() {
                         finalScoreBand.y = GlobalAccess.virtualSize.height * 0.7 - 10.0
                         finalScoreBand.visible = true
 
-                        menuButton.reshape(Rectangle(Vector( GlobalAccess.virtualSize.width * 0.6 - 160.0,GlobalAccess.virtualSize.height * 0.2 - 10.0),320.0,107.0,Rectangle.Corners.TOP_LEFT))
-                        menuButton.inactive=false
-                        menuButton.visible=true
+                        menuButton.reshape(
+                            Rectangle(
+                                Vector(
+                                    GlobalAccess.virtualSize.width * 0.6 - 160.0,
+                                    GlobalAccess.virtualSize.height * 0.2 - 10.0
+                                ), 320.0, 107.0, Rectangle.Corners.TOP_LEFT
+                            )
+                        )
+                        menuButton.inactive = false
+                        menuButton.visible = true
 
-                        playAgainButton.reshape(Rectangle(Vector( GlobalAccess.virtualSize.width * 0.4 - 160.0,GlobalAccess.virtualSize.height * 0.2 - 10.0),320.0,107.0,Rectangle.Corners.TOP_LEFT))
-                        playAgainButton.inactive=false
-                        playAgainButton.visible=true
+                        playAgainButton.reshape(
+                            Rectangle(
+                                Vector(
+                                    GlobalAccess.virtualSize.width * 0.4 - 160.0,
+                                    GlobalAccess.virtualSize.height * 0.2 - 10.0
+                                ), 320.0, 107.0, Rectangle.Corners.TOP_LEFT
+                            )
+                        )
+                        playAgainButton.inactive = false
+                        playAgainButton.visible = true
 
                     } else {
                         gameOver.children.fastForEach { it.visible = false }
@@ -461,7 +459,6 @@ class GameScene : PunScene() {
 
             }
         }
-
 
 
         /*
@@ -498,22 +495,24 @@ class GameScene : PunScene() {
     var playfield = Playfield("playfield", oneRectangle())
     lateinit var floor: Puntainer
     var obstacles = mutableListOf<Puntainer>()
+
     //val outsiders = mutableListOf<Puntainer>()
     var firstRun = true
     var gameOverIndex = 0.0
     var outside: Outside = Outside()
 
 
-    private suspend fun obstacleLoader(goreText: String){
+    private suspend fun obstacleLoader(goreText: String) {
         val rarityList = listOf("rare", "rarer", "rarest")
-        val otherList = listOf("dont-jump","duck","high-jump","jump-duck","long-jump","low-jump","bird","low-bird")
+        val otherList =
+            listOf("dont-jump", "duck", "high-jump", "jump-duck", "long-jump", "low-jump", "bird", "low-bird")
         for (i in 1..3) {
             val folder = rarityList[i - 1] + goreText
 
-            otherList.forEach { otherString->
-                val os = if(otherString=="low-bird"){
+            otherList.forEach { otherString ->
+                val os = if (otherString == "low-bird") {
                     "bird"
-                }else{
+                } else {
                     otherString
                 }
                 PunImage("$otherString-$i$goreText", resourcesVfs["obs/$folder/$os-$i.png"].readBitmap()).also {
@@ -533,7 +532,6 @@ class GameScene : PunScene() {
         }
 
     }
-
 
 
     @OptIn(DelicateCoroutinesApi::class)
