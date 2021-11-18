@@ -372,190 +372,190 @@ class GameScene : PunScene() {
                 }
 
                 if ((collided == sh1Type.ordinal) && (collidedObstacleRarity == 0)) {
-                    score += 100
-                    launchImmediately { SfxPlayer.playSfx("diDing.mp3") }
-                    playfield.sliced()
-                } else if ((collided == sh2Type.ordinal) && (collidedObstacleRarity == 1)) {
-                    score += 250
-                    launchImmediately { SfxPlayer.playSfx("diDing.mp3") }
-                    playfield.sliced()
-                } else if ((collided == sh3Type.ordinal) && (collidedObstacleRarity == 2)) {
-                    score += 500
-                    launchImmediately { SfxPlayer.playSfx("diDing.mp3") }
-                    playfield.sliced()
-                } else if (collided != -1) {
-                    //   fadein = true
-                    if (GlobalAccess.fingers == 1) {
-                        death()
-
-                    } else {
-                        GlobalAccess.fingers -= 1
+                    if ((collided == sh1Type.ordinal) && (collidedObstacleRarity == 0)  || ((sh1Type == ObstacleTypes.LOWBIRD) && (collided == 6) && (collidedObstacleRarity == 0)) ) {
+                        score += 100
+                        launchImmediately { SfxPlayer.playSfx("diDing.mp3") }
                         playfield.sliced()
-                        launchImmediately { hand.cutFinger() }
-                        scoreKeeper.addScore(score)
-                        scoreKeeper.save()
-                    }
-                } else if (playfield.ducking > 0.0) {
-                    hand.onDuck()
-                } else if (playfield.jumping) {
-                    hand.onAir()
-                } else {
-                    hand.onGround()
-                }
+                    } else if ((collided == sh2Type.ordinal) && (collidedObstacleRarity == 1) || ((sh2Type == ObstacleTypes.LOWBIRD) && (collided == 6) && (collidedObstacleRarity == 1))) {
+                        score += 250
+                        launchImmediately { SfxPlayer.playSfx("diDing.mp3") }
+                        playfield.sliced()
+                    } else if ((collided == sh3Type.ordinal) && (collidedObstacleRarity == 2) || ((sh3Type == ObstacleTypes.LOWBIRD) && (collided == 6) && (collidedObstacleRarity == 2))) {
+                        score += 500
+                        launchImmediately { SfxPlayer.playSfx("diDing.mp3") }
+                        playfield.sliced()
+                    } else if (collided != -1) {
+                        //   fadein = true
+                        if (GlobalAccess.fingers == 1) {
+                            death()
 
-                //val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
-                //hand.update(dt, r)
-                //playfield.update(dt)
-
-
-                floor.visible = hand.activeAnimationType == Hand.ActiveAnimationType.CUT
-                floor.alpha = -1 * hand.animIndex * hand.animIndex * 8.0 / 605.0 + hand.animIndex * 8.0 / 55.0
-            } else {
-                val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
-                hand.update(dt, r)
-                if (hand.isDead) {
-                    gameOverIndex += dt.seconds * 2
-                    if (gameOverIndex >= gameOver.size) {
-                        finalScoreText.x = GlobalAccess.virtualSize.width * 0.5
-                        finalScoreText.y = GlobalAccess.virtualSize.height * 0.7
-                        finalScoreText.visible = true
-                        finalScoreText.text = "Score: ${score.toInt()}"
-
-                        finalScoreBand.scaledWidth = 300.0
-                        finalScoreBand.scaledHeight = 80.0
-                        finalScoreBand.x = GlobalAccess.virtualSize.width * 0.5 - 150.0
-                        finalScoreBand.y = GlobalAccess.virtualSize.height * 0.7 - 10.0
-                        finalScoreBand.visible = true
-
-                        menuButton.reshape(
-                            Rectangle(
-                                Vector(
-                                    GlobalAccess.virtualSize.width * 0.6 - 160.0,
-                                    GlobalAccess.virtualSize.height * 0.2 - 10.0
-                                ), 320.0, 107.0, Rectangle.Corners.TOP_LEFT
-                            )
-                        )
-                        menuButton.inactive = false
-                        menuButton.visible = true
-
-                        playAgainButton.reshape(
-                            Rectangle(
-                                Vector(
-                                    GlobalAccess.virtualSize.width * 0.4 - 160.0,
-                                    GlobalAccess.virtualSize.height * 0.2 - 10.0
-                                ), 320.0, 107.0, Rectangle.Corners.TOP_LEFT
-                            )
-                        )
-                        playAgainButton.inactive = false
-                        playAgainButton.visible = true
-
+                        } else {
+                            GlobalAccess.fingers -= 1
+                            playfield.sliced()
+                            launchImmediately { hand.cutFinger() }
+                            scoreKeeper.addScore(score)
+                            scoreKeeper.save()
+                        }
+                    } else if (playfield.ducking > 0.0) {
+                        hand.onDuck()
+                    } else if (playfield.jumping) {
+                        hand.onAir()
                     } else {
-                        gameOver.children.fastForEach { it.visible = false }
-                        gameOver.children[gameOverIndex.toInt()].visible = true
+                        hand.onGround()
                     }
-                    //launchImmediately { sceneContainer.changeTo<GameOverScene>() }
-                }
+
+                    //val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
+                    //hand.update(dt, r)
+                    //playfield.update(dt)
 
 
-            }
-        }
-
-
-        /*
-        onClick {
-            println("game over clicked")
-            println(gameOverIndex)
-            println(gameOver.size)
-            if (gameOverIndex >= gameOver.size) {
-                launchImmediately { sceneContainer.changeTo<EntryScene>() }
-            }
-        }
-
-         */
-
-    }
-
-    // WINDOW SCENE VARIABLES
-
-    //var windowDown = false
-    //var windowUp = false
-    //var window: Puntainer = Puntainer()
-    //var gameScene = GameScene()
-
-
-    // GAME SCENE VARIABLES
-
-    lateinit var sh1Type: ObstacleTypes
-    lateinit var sh2Type: ObstacleTypes
-    lateinit var sh3Type: ObstacleTypes
-
-    var score = 0.0
-    var gameActive = true
-    lateinit var hand: Hand //= Hand("hand", oneRectangle())
-    var playfield = Playfield("playfield", oneRectangle())
-    lateinit var floor: Puntainer
-    var obstacles = mutableListOf<Puntainer>()
-
-    //val outsiders = mutableListOf<Puntainer>()
-    var firstRun = true
-    var gameOverIndex = 0.0
-    var outside: Outside = Outside()
-
-
-    private suspend fun obstacleLoader(goreText: String) {
-        val rarityList = listOf("rare", "rarer", "rarest")
-        val otherList =
-            listOf("dont-jump", "duck", "high-jump", "jump-duck", "long-jump", "low-jump", "bird", "low-bird")
-        for (i in 1..3) {
-            val folder = rarityList[i - 1] + goreText
-
-            otherList.forEach { otherString ->
-                val os = if (otherString == "low-bird") {
-                    "bird"
+                    floor.visible = hand.activeAnimationType == Hand.ActiveAnimationType.CUT
+                    floor.alpha = -1 * hand.animIndex * hand.animIndex * 8.0 / 605.0 + hand.animIndex * 8.0 / 55.0
                 } else {
-                    otherString
+                    val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
+                    hand.update(dt, r)
+                    if (hand.isDead) {
+                        gameOverIndex += dt.seconds * 2
+                        if (gameOverIndex >= gameOver.size) {
+                            finalScoreText.x = GlobalAccess.virtualSize.width * 0.5
+                            finalScoreText.y = GlobalAccess.virtualSize.height * 0.7
+                            finalScoreText.visible = true
+                            finalScoreText.text = "Score: ${score.toInt()}"
+
+                            finalScoreBand.scaledWidth = 300.0
+                            finalScoreBand.scaledHeight = 80.0
+                            finalScoreBand.x = GlobalAccess.virtualSize.width * 0.5 - 150.0
+                            finalScoreBand.y = GlobalAccess.virtualSize.height * 0.7 - 10.0
+                            finalScoreBand.visible = true
+
+                            menuButton.reshape(
+                                Rectangle(
+                                    Vector(
+                                        GlobalAccess.virtualSize.width * 0.6 - 160.0,
+                                        GlobalAccess.virtualSize.height * 0.2 - 10.0
+                                    ), 320.0, 107.0, Rectangle.Corners.TOP_LEFT
+                                )
+                            )
+                            menuButton.inactive = false
+                            menuButton.visible = true
+
+                            playAgainButton.reshape(
+                                Rectangle(
+                                    Vector(
+                                        GlobalAccess.virtualSize.width * 0.4 - 160.0,
+                                        GlobalAccess.virtualSize.height * 0.2 - 10.0
+                                    ), 320.0, 107.0, Rectangle.Corners.TOP_LEFT
+                                )
+                            )
+                            playAgainButton.inactive = false
+                            playAgainButton.visible = true
+
+                        } else {
+                            gameOver.children.fastForEach { it.visible = false }
+                            gameOver.children[gameOverIndex.toInt()].visible = true
+                        }
+                        //launchImmediately { sceneContainer.changeTo<GameOverScene>() }
+                    }
+
+
                 }
-                PunImage("$otherString-$i$goreText", resourcesVfs["obs/$folder/$os-$i.png"].readBitmap()).also {
-                    obstacles.add(it)
-                    scenePuntainer.addChild(it)
-                    it.visible = false
+            }
+
+
+            /*
+            onClick {
+                println("game over clicked")
+                println(gameOverIndex)
+                println(gameOver.size)
+                if (gameOverIndex >= gameOver.size) {
+                    launchImmediately { sceneContainer.changeTo<EntryScene>() }
+                }
+            }
+
+             */
+
+        }}
+
+        // WINDOW SCENE VARIABLES
+
+        //var windowDown = false
+        //var windowUp = false
+        //var window: Puntainer = Puntainer()
+        //var gameScene = GameScene()
+
+
+        // GAME SCENE VARIABLES
+
+        lateinit var sh1Type: ObstacleTypes
+        lateinit var sh2Type: ObstacleTypes
+        lateinit var sh3Type: ObstacleTypes
+
+        var score = 0.0
+        var gameActive = true
+        lateinit var hand: Hand //= Hand("hand", oneRectangle())
+        var playfield = Playfield("playfield", oneRectangle())
+        lateinit var floor: Puntainer
+        var obstacles = mutableListOf<Puntainer>()
+
+        //val outsiders = mutableListOf<Puntainer>()
+        var firstRun = true
+        var gameOverIndex = 0.0
+        var outside: Outside = Outside()
+
+
+        private suspend fun obstacleLoader(goreText: String) {
+            val rarityList = listOf("rare", "rarer", "rarest")
+            val otherList =
+                listOf("dont-jump", "duck", "high-jump", "jump-duck", "long-jump", "low-jump", "bird", "low-bird")
+            for (i in 1..3) {
+                val folder = rarityList[i - 1] + goreText
+
+                otherList.forEach { otherString ->
+                    val os = if (otherString == "low-bird") {
+                        "bird"
+                    } else {
+                        otherString
+                    }
+                    PunImage("$otherString-$i$goreText", resourcesVfs["obs/$folder/$os-$i.png"].readBitmap()).also {
+                        obstacles.add(it)
+                        scenePuntainer.addChild(it)
+                        it.visible = false
+                    }
+                }
+            }
+
+        }
+
+
+        fun backgroundRoll(dt: TimeSpan) {
+            if (GlobalAccess.fingers > 0) {
+                outside.update(dt.seconds * playfield.level.speed * 1920)
+            }
+
+        }
+
+
+        @OptIn(DelicateCoroutinesApi::class)
+        fun death() {
+            launchImmediately { SfxPlayer.playSfx("cut.mp3") }
+            gameActive = false
+
+            hand.activeAnimationType = Hand.ActiveAnimationType.CUT
+            GlobalAccess.fingers = 0
+
+        }
+
+
+        object FloorData {
+            const val ratedY = 240.0 / 1080.0
+
+            fun getHeight(x: Double? = null): Double {
+                return if (x != null) {
+                    ratedY
+                } else {
+                    ratedY
                 }
             }
         }
-
-    }
-
-
-    fun backgroundRoll(dt: TimeSpan) {
-        if (GlobalAccess.fingers > 0) {
-            outside.update(dt.seconds * playfield.level.speed * 1920)
-        }
-
-    }
-
-
-    @OptIn(DelicateCoroutinesApi::class)
-    fun death() {
-        launchImmediately { SfxPlayer.playSfx("cut.mp3") }
-        gameActive = false
-
-        hand.activeAnimationType = Hand.ActiveAnimationType.CUT
-        GlobalAccess.fingers = 0
-
-    }
-
-
-    object FloorData {
-        const val ratedY = 240.0 / 1080.0
-
-        fun getHeight(x: Double? = null): Double {
-            return if (x != null) {
-                ratedY
-            } else {
-                ratedY
-            }
-        }
-    }
-
 
 }
