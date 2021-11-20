@@ -7,7 +7,10 @@ import com.soywiz.korge.input.onUp
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.addUpdater
+import com.soywiz.korge.view.text
+import com.soywiz.korim.font.TtfFont
 import com.soywiz.korim.format.readBitmap
+import com.soywiz.korim.text.TextAlignment
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -38,7 +41,7 @@ class EntryScene : PunScene() {
 
 
 
-        scenePuntainer.punImage(
+        val glass = scenePuntainer.punImage(
             "id",
             Rectangle(0.0, 1.0, 0.0, 1.0),
             resourcesVfs["UI/glass-up.png"].readBitmap()
@@ -46,7 +49,7 @@ class EntryScene : PunScene() {
             it.alpha = 0.8
         }
 
-        scenePuntainer.punImage(
+        val name = scenePuntainer.punImage(
             "id",
             Rectangle(0.0, 1.0, 0.0, 1.0),
             resourcesVfs["UI/name.png"].readBitmap()
@@ -76,6 +79,30 @@ class EntryScene : PunScene() {
             resourcesVfs["UI/Windown.png"].readBitmap()
         )
 
+
+        val thereAreScores = GlobalAccess.scoreKeeper.scores.isNotEmpty()
+        val scoreTextText = if(thereAreScores){
+            "Top Score: "+GlobalAccess.scoreKeeper.scores.maxOrNull()!!.toInt().toString()
+        }else{
+            "place"
+        }
+
+        val font = TtfFont(resourcesVfs["MPLUSRounded1c-Medium.ttf"].readAll())
+        val scoreText = text(
+            scoreTextText,
+            font = font,
+            textSize = 48.0,
+            color = Colour.rgba(0.1,0.0,0.0).korgeColor,
+            alignment = TextAlignment.TOP_CENTER
+        ).also {
+            it.x = GlobalAccess.windowSize.width*0.5
+            it.y = GlobalAccess.windowSize.height*0.5
+            it.visible = false
+        }
+
+
+
+
         Button("play",resourcesVfs["UI/play-normal.png"].readBitmap(),resourcesVfs["UI/play-pushed.png"].readBitmap()).also {
             it.clickFunction = {
                 launchImmediately {
@@ -90,13 +117,27 @@ class EntryScene : PunScene() {
         Button("score",resourcesVfs["UI/score-normal.png"].readBitmap(),resourcesVfs["UI/score-pushed.png"].readBitmap()).also {
             it.clickFunction = {
                 //TODO score event
+                scenePuntainer.puntainers.filterIsInstance<Button>().forEach {
+                    it.visible=false
+                }
+                scoreText.visible=true
+
+                glass.tint = Colour.rgba(0.5,0.0,0.05).korgeColor
+                name.tint = Colour.rgba(0.5,0.0,0.05).korgeColor
             }
             scenePuntainer.addPuntainer(it,Rectangle(556.0 / 1920.0, 876.0 / 1920.0, 1 - 854.0 / 1080.0, 1 - 961.0 / 1080.0),relative = true)
         }
 
-        Button("score",resourcesVfs["UI/settings-normal.png"].readBitmap(),resourcesVfs["UI/settings-pushed.png"].readBitmap()).also {
+        Button("credits",resourcesVfs["UI/credits-normal.png"].readBitmap(),resourcesVfs["UI/credits-pushed.png"].readBitmap()).also {
             it.clickFunction = {
+                credits.visible=true
+                scenePuntainer.puntainers.filterIsInstance<Button>().forEach {
+                    it.visible=false
+                }
+
+
                 //TODO score event
+
             }
             scenePuntainer.addPuntainer(it,Rectangle(880.0 / 1920.0, 1200.0 / 1920.0, 1 - 844.0 / 1080.0, 1 - 951.0 / 1080.0),relative = true)
         }
@@ -106,6 +147,19 @@ class EntryScene : PunScene() {
                 sceneContainer.views.gameWindow.close()
             }
             scenePuntainer.addPuntainer(it,Rectangle(1204.0 / 1920.0, 1524.0 / 1920.0, 1 - 834.0 / 1080.0, 1 - 941.0 / 1080.0),relative = true)
+            it.inactive = thereAreScores.not()
+        }
+
+        onClick {
+            if(credits.visible || scoreText.visible){
+                credits.visible=false
+                scoreText.visible=false
+                scenePuntainer.puntainers.filterIsInstance<Button>().forEach {
+                    it.visible=true
+                }
+                glass.tint = Colour.WHITE.korgeColor
+                name.tint = Colour.WHITE.korgeColor
+            }
         }
 
 
@@ -119,6 +173,10 @@ class EntryScene : PunScene() {
             openingCrawl()
             GlobalAccess.entrySceneFirstCalled=true
         }
+
+
+
+
 
 
 
