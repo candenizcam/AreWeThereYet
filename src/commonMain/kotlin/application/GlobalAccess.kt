@@ -26,4 +26,7 @@ object GlobalAccess {
 
 
 
+    var entrySceneFirstCalled = false // this is so that opening crawl is only called once
+
+
 }
