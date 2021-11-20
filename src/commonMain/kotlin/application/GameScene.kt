@@ -272,11 +272,12 @@ class GameScene : PunScene() {
         ).also {
             it.clickFunction = {
                 //launchImmediately { sceneContainer.changeTo<GameScene>() }
-                GlobalAccess.fingers=2
+                resetGame()
+
                 gameOverItems.forEach {
                     it.visible=false
                 }
-                gameActive=true
+
             }
             it.visible = false
             it.inactive = true
@@ -418,7 +419,7 @@ class GameScene : PunScene() {
                 val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
                 hand.update(dt, r)
                 if (hand.isDead) {
-                    gameOverIndex += dt.seconds * 2
+                    gameOverIndex += dt.seconds * screenBleedSpeed
                     if (gameOverIndex >= gameOver.size) {
                         finalScoreText.x = GlobalAccess.virtualSize.width * 0.5
                         finalScoreText.y = GlobalAccess.virtualSize.height * 0.7
@@ -460,8 +461,10 @@ class GameScene : PunScene() {
                         playAgainButton.visible = true
 
                     } else {
-                        gameOver.children.fastForEach { it.visible = false }
+                        gameOver.visible=true
+                        gameOver.children.fastForEach { it.visible = false}
                         gameOver.children[gameOverIndex.toInt()].visible = true
+
                     }
                 }
             }
@@ -472,9 +475,21 @@ class GameScene : PunScene() {
     }
 
 
-    fun updateFunction(){
+    fun resetGame(){
+        GlobalAccess.fingers=2
+        hand.resetGame()
+        playfield.level.obstacles.clear()
+        score = 0.0
+        gameOverIndex = 0.0
+        screenBleedSpeed = 4.0
+        gameActive=true
+        //TODO game speed in reset
+        //TODO scavenge list reset
 
     }
+
+
+    var screenBleedSpeed = 2.0 // this is the coefficient for game over bleeding, it is faster on the second death
 
 
 
