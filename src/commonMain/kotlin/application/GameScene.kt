@@ -32,7 +32,6 @@ class GameScene : PunScene() {
 
 
     override suspend fun Container.sceneInit() {
-        println("game scene starts")
         GlobalAccess.fingers = 2
         outside.deploy(addFunction = { p: Puntainer, r: Rectangle ->
             scenePuntainer.addPuntainer(p, r)
@@ -170,10 +169,7 @@ class GameScene : PunScene() {
         //1594, 1894, 26, 106
 
         ////////////////////////////////////////// HEEEEREEEE
-        println("enter")
         hand = Hand("hand", oneRectangle())
-        println("middle")
-        println("out")
         hand.suspendInitAlternative("two")
         hand.suspendInitAlternative("one")
         //adjustHand()
@@ -219,6 +215,7 @@ class GameScene : PunScene() {
         scoreText.text = "0"
 
 
+        var gameOverItems = mutableListOf<Container>() //to set all invisible with a single move
         // game over stuff from here
         val gameOver = Puntainer("gameover", Rectangle(0.0, 1.0, 0.0, 1.0)).also { pt ->
             this.addChild(pt)
@@ -228,6 +225,7 @@ class GameScene : PunScene() {
                     pt.addChild(it)
                 }
             }
+            gameOverItems.add(pt)
 
         }
 
@@ -235,6 +233,7 @@ class GameScene : PunScene() {
         val finalScoreBand =
             scenePuntainer.punImage("finalBand", oneRectangle(), resourcesVfs["UI/bandaid.png"].readBitmap()).also {
                 it.visible = false
+                gameOverItems.add(it)
             }
 
 
@@ -248,6 +247,7 @@ class GameScene : PunScene() {
             it.x = (1594.0 + 1894.0) * 0.5
             it.y = 26.0 + 12.0
             it.visible = false
+            gameOverItems.add(it)
         }
 
         val menuButton = Button(
@@ -260,6 +260,7 @@ class GameScene : PunScene() {
             }
             it.visible = false
             it.inactive = true
+            gameOverItems.add(it)
         }
         scenePuntainer.addPuntainer(menuButton)
 
@@ -269,10 +270,16 @@ class GameScene : PunScene() {
             resourcesVfs["UI/play-again-pushed.png"].readBitmap()
         ).also {
             it.clickFunction = {
-                launchImmediately { sceneContainer.changeTo<GameScene>() }
+                //launchImmediately { sceneContainer.changeTo<GameScene>() }
+                GlobalAccess.fingers=2
+                gameOverItems.forEach {
+                    it.visible=false
+                }
+                gameActive=true
             }
             it.visible = false
             it.inactive = true
+            gameOverItems.add(it)
         }
         scenePuntainer.addPuntainer(playAgainButton)
 
@@ -353,10 +360,7 @@ class GameScene : PunScene() {
                                     )
                                 )
                                 val r = hit.decodeRated(thisType.ratedRect())
-                                o2[index].x = r.left
-                                o2[index].yConv = r.top
-                                o2[index].scaledHeight = r.height
-                                o2[index].scaledWidth = r.width
+                                o2[index].reshape(r)
                                 o2[index].visible = true
                             }
                         }
@@ -422,6 +426,8 @@ class GameScene : PunScene() {
                         finalScoreText.visible = true
                         finalScoreText.text = "Score: ${score.toInt()}"
 
+                        //finalScoreBand.reshape(Rectangle(Vector(GlobalAccess.virtualSize.width * 0.5 - 150.0,GlobalAccess.virtualSize.height * 0.7 - 10.0),300.0,80.0,cornerType = Rectangle.Corners.TOP_LEFT))
+
                         finalScoreBand.scaledWidth = 300.0
                         finalScoreBand.scaledHeight = 80.0
                         finalScoreBand.x = GlobalAccess.virtualSize.width * 0.5 - 150.0
@@ -454,25 +460,22 @@ class GameScene : PunScene() {
                         gameOver.children.fastForEach { it.visible = false }
                         gameOver.children[gameOverIndex.toInt()].visible = true
                     }
-                    //launchImmediately { sceneContainer.changeTo<GameOverScene>() }
                 }
             }
 
 
-            /*
-            onClick {
-                println("game over clicked")
-                println(gameOverIndex)
-                println(gameOver.size)
-                if (gameOverIndex >= gameOver.size) {
-                    launchImmediately { sceneContainer.changeTo<EntryScene>() }
-                }
-            }
-
-             */
 
         }
     }
+
+
+    fun updateFunction(){
+
+    }
+
+
+
+
 
     // WINDOW SCENE VARIABLES
 

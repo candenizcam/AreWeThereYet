@@ -42,10 +42,6 @@ class Outside {
             mediumList[i].x = 960.0*i
             farList[i].x = 960.0*i
         }
-
-
-
-        println("worked")
     }
 
     fun update(inc: Double){

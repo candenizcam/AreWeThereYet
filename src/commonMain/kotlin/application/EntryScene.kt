@@ -120,6 +120,8 @@ class EntryScene : PunScene() {
             GlobalAccess.entrySceneFirstCalled=true
         }
 
+
+
         super.sceneAfterInit()
     }
 

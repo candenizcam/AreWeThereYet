@@ -110,7 +110,6 @@ class WindowScene  : PunScene() {
        // t.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
        // launchImmediately { MusicPlayer.play("musicbox.mp3") }
         super.sceneAfterInit()
-        println("window called")
     }
 
     var freeze = false
