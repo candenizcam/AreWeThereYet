@@ -10,6 +10,7 @@ class Button: Puntainer {
         this.addPuntainer(PunImage("up",upBitmap))
         this.addPuntainer(PunImage("down",downBitmap))
         events()
+        adjustVisibility()
     }
 
 
@@ -42,6 +43,7 @@ class Button: Puntainer {
             hover.visible=false
         }
         events()
+        adjustVisibility()
     }
 
     private fun events(){
@@ -57,6 +59,7 @@ class Button: Puntainer {
 
         this.onOut {
             hovering=false
+            pushing=false
             adjustVisibility()
         }
 

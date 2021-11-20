@@ -12,6 +12,7 @@ import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
 import kotlinx.coroutines.DelicateCoroutinesApi
 import modules.basic.Colour
+import pungine.Button
 import pungine.PunScene
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
@@ -23,7 +24,7 @@ import pungine.geometry2D.Rectangle
 @KorgeInternal
 @DelicateCoroutinesApi
 class EntryScene : PunScene() {
-    override suspend fun Container.sceneMain() {
+    override suspend fun Container.sceneInit() {
         if (GlobalAccess.soundsAreOn) {
             MusicPlayer.play("musicbox.mp3")
         }
@@ -33,22 +34,11 @@ class EntryScene : PunScene() {
         outsiders.deploy(addFunction = { p: Puntainer, r: Rectangle ->
             scenePuntainer.addPuntainer(p, r)
         })
-        /*
-        outsiders.deploy(addFunction = {l: List<Puntainer>->
-            l.forEach {
-                this.addChild(it)
-            }
-        })
-
-         */
-
-        //val bmp = resourcesVfs["environment/Bg_Small-3.png"].readBitmap()
-        //outsiders.add(punImage("o1",bmp.clone(),Rectangle(0.0, 960.0, 0.0, 1080.0)))
-        //outsiders.add(punImage("o2",bmp.clone(),Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
-        //outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
 
 
-        window = scenePuntainer.punImage(
+
+
+        scenePuntainer.punImage(
             "id",
             Rectangle(0.0, 1.0, 0.0, 1.0),
             resourcesVfs["UI/glass-up.png"].readBitmap()
@@ -56,7 +46,7 @@ class EntryScene : PunScene() {
             it.alpha = 0.8
         }
 
-        window = scenePuntainer.punImage(
+        scenePuntainer.punImage(
             "id",
             Rectangle(0.0, 1.0, 0.0, 1.0),
             resourcesVfs["UI/name.png"].readBitmap()
@@ -86,128 +76,43 @@ class EntryScene : PunScene() {
             resourcesVfs["UI/Windown.png"].readBitmap()
         )
 
-        val playDown = scenePuntainer.punImage(
-            "play_down",
-            Rectangle(232.0 / 1920.0, 557.0 / 1920.0, 1 - 864.0 / 1080.0, 1 - 971.0 / 1080.0),
-            resourcesVfs["UI/play-pushed.png"].readBitmap()
-        ).also {
-            it.visible = false
-        }
-        val playUp = scenePuntainer.punImage(
-            "play_up",
-            Rectangle(232.0 / 1920.0, 557.0 / 1920.0, 1 - 864.0 / 1080.0, 1 - 971.0 / 1080.0),
-            resourcesVfs["UI/play-normal.png"].readBitmap()
-        ).also { exit ->
-            exit.onDown {
-                exit.visible = false
-                playDown.visible = true
+        Button("play",resourcesVfs["UI/play-normal.png"].readBitmap(),resourcesVfs["UI/play-pushed.png"].readBitmap()).also {
+            it.clickFunction = {
+                launchImmediately {
+                    SfxPlayer.playSfx("carDoorStartUp-16.mp3")
+                    sceneContainer.changeTo<WindowScene>()
+                }
             }
+            scenePuntainer.addPuntainer(it,Rectangle(232.0 / 1920.0, 557.0 / 1920.0, 1 - 864.0 / 1080.0, 1 - 971.0 / 1080.0),relative = true)
         }
 
-        val scoreDown = scenePuntainer.punImage(
-            "score_down",
-            Rectangle(556.0 / 1920.0, 876.0 / 1920.0, 1 - 854.0 / 1080.0, 1 - 961.0 / 1080.0),
-            resourcesVfs["UI/score-pushed.png"].readBitmap()
-        ).also {
-            it.visible = false
-        }
-        val scoreUp = scenePuntainer.punImage(
-            "score_up",
-            Rectangle(556.0 / 1920.0, 876.0 / 1920.0, 1 - 854.0 / 1080.0, 1 - 961.0 / 1080.0),
-            resourcesVfs["UI/score-normal.png"].readBitmap()
-        ).also { exit ->
-            exit.onDown {
-                exit.visible = false
-                scoreDown.visible = true
+
+        Button("score",resourcesVfs["UI/score-normal.png"].readBitmap(),resourcesVfs["UI/score-pushed.png"].readBitmap()).also {
+            it.clickFunction = {
+                //TODO score event
             }
+            scenePuntainer.addPuntainer(it,Rectangle(556.0 / 1920.0, 876.0 / 1920.0, 1 - 854.0 / 1080.0, 1 - 961.0 / 1080.0),relative = true)
         }
 
-        val settingsDown = scenePuntainer.punImage(
-            "settings_down",
-            Rectangle(880.0 / 1920.0, 1200.0 / 1920.0, 1 - 844.0 / 1080.0, 1 - 951.0 / 1080.0),
-            resourcesVfs["UI/credits-pushed.png"].readBitmap()
-        ).also {
-            it.visible = false
-        }
-        val settingsUp = scenePuntainer.punImage(
-            "settings_up",
-            Rectangle(880.0 / 1920.0, 1200.0 / 1920.0, 1 - 844.0 / 1080.0, 1 - 951.0 / 1080.0),
-            resourcesVfs["UI/credits-normal.png"].readBitmap()
-        ).also { exit ->
-            exit.onDown {
-                exit.visible = false
-                settingsDown.visible = true
+        Button("score",resourcesVfs["UI/settings-normal.png"].readBitmap(),resourcesVfs["UI/settings-pushed.png"].readBitmap()).also {
+            it.clickFunction = {
+                //TODO score event
             }
+            scenePuntainer.addPuntainer(it,Rectangle(880.0 / 1920.0, 1200.0 / 1920.0, 1 - 844.0 / 1080.0, 1 - 951.0 / 1080.0),relative = true)
         }
 
-
-        val exitDown = scenePuntainer.punImage(
-            "exit_down",
-            Rectangle(1204.0 / 1920.0, 1524.0 / 1920.0, 1 - 834.0 / 1080.0, 1 - 941.0 / 1080.0),
-            resourcesVfs["UI/exit-pushed.png"].readBitmap()
-        ).also {
-            it.visible = false
-
-        }
-        val exitUp = scenePuntainer.punImage(
-            "exit_up",
-            Rectangle(1204.0 / 1920.0, 1524.0 / 1920.0, 1 - 834.0 / 1080.0, 1 - 941.0 / 1080.0),
-            resourcesVfs["UI/exit-normal.png"].readBitmap()
-        ).also { exit ->
-            exit.onDown {
-                exit.visible = false
-                exitDown.visible = true
-            }
-
-            exit.onClick {
-            }
-        }
-
-
-        sceneContainer.onClick {
-            settingsUp.visible = true
-            exitUp.visible = true
-            scoreUp.visible = true
-            playUp.visible = true
-            credits.visible = false
-        }
-
-        sceneContainer.onUp {
-            if (exitDown.visible) {
-                exitUp.visible = true
-                exitDown.visible = false
+        Button("score",resourcesVfs["UI/exit-normal.png"].readBitmap(),resourcesVfs["UI/exit-pushed.png"].readBitmap()).also {
+            it.clickFunction = {
                 sceneContainer.views.gameWindow.close()
             }
-
-            if (settingsDown.visible) {
-                settingsUp.visible = false
-                settingsDown.visible = false
-                exitUp.visible = false
-                exitDown.visible = false
-                scoreUp.visible = false
-                scoreDown.visible = false
-                playUp.visible = false
-                playDown.visible = false
-                credits.visible = true
-
-                // settings event
-            }
-
-            if (scoreDown.visible) {
-                scoreUp.visible = true
-                scoreDown.visible = false
-                // score event
-            }
-
-            if (playDown.visible) {
-                playUp.visible = true
-                playDown.visible = false
-                SfxPlayer.playSfx("carDoorStartUp-16.mp3")
-                launchImmediately { sceneContainer.changeTo<WindowScene>() }
-            }
-
-
+            scenePuntainer.addPuntainer(it,Rectangle(1204.0 / 1920.0, 1524.0 / 1920.0, 1 - 834.0 / 1080.0, 1 - 941.0 / 1080.0),relative = true)
         }
+
+
+
+
+
+
 
 
         /**
@@ -226,25 +131,18 @@ class EntryScene : PunScene() {
 
         addUpdater { dt ->
             outsiders.update(dt.seconds * 0.3 * 1920)
-            /*
-            outsiders.forEach {
-                it.x -= dt.seconds*0.3*1920
-                if(it.x + it.width< -20.0){
-                    it.x += it.width * 3
-                }
-            }
-
-             */
 
         }
 
 
+        if(GlobalAccess.entrySceneFirstCalled.not()){
+            openingCrawl()
+            GlobalAccess.entrySceneFirstCalled=true
+        }
 
         super.sceneAfterInit()
-        println("entry called")
     }
 
-    var window: Puntainer = Puntainer()
     var credits: Puntainer = Puntainer()
     //val outsiders = mutableListOf<Puntainer>()
 

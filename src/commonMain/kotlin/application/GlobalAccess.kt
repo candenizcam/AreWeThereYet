@@ -21,4 +21,7 @@ object GlobalAccess {
     val soundsAreOn = false // change this before publishing
 
 
+    var entrySceneFirstCalled = false // this is so that opening crawl is only called once
+
+
 }
