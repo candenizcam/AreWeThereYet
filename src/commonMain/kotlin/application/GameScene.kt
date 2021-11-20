@@ -213,6 +213,7 @@ class GameScene : PunScene() {
 
         }
         scoreText.text = "0"
+        var scoreSaved = false
 
 
         var gameOverItems = mutableListOf<Container>() //to set all invisible with a single move
@@ -397,8 +398,6 @@ class GameScene : PunScene() {
                         GlobalAccess.fingers -= 1
                         playfield.sliced()
                         launchImmediately { hand.cutFinger() }
-                        GlobalAccess.scoreKeeper.addScore(score)
-                        GlobalAccess.scoreKeeper.save()
                     }
                 } else if (playfield.ducking > 0.0) {
                     hand.onDuck()
@@ -425,8 +424,12 @@ class GameScene : PunScene() {
                         finalScoreText.y = GlobalAccess.virtualSize.height * 0.7
                         finalScoreText.visible = true
                         finalScoreText.text = "Score: ${score.toInt()}"
+                        if(!scoreSaved) {
+                            scoreSaved = true
+                            GlobalAccess.scoreKeeper.addScore(score.toInt())
+                            launchImmediately { GlobalAccess.scoreKeeper.save() }
+                        }
 
-                        //finalScoreBand.reshape(Rectangle(Vector(GlobalAccess.virtualSize.width * 0.5 - 150.0,GlobalAccess.virtualSize.height * 0.7 - 10.0),300.0,80.0,cornerType = Rectangle.Corners.TOP_LEFT))
 
                         finalScoreBand.scaledWidth = 300.0
                         finalScoreBand.scaledHeight = 80.0

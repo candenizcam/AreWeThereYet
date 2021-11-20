@@ -1,13 +1,11 @@
 package application
 
-import com.soywiz.korio.async.launch
 import com.soywiz.korio.file.std.resourcesVfs
-import kotlinx.coroutines.GlobalScope
 
 class ScoreKeeper {
-    var scores = mutableListOf<Double>()
+    var scores = mutableListOf<Int>()
 
-    fun addScore(newScore: Double) {
+    fun addScore(newScore: Int) {
         scores.add(newScore)
         scores.sortDescending()
     }
@@ -16,21 +14,18 @@ class ScoreKeeper {
         scores.removeAll { true }
     }
 
-    fun save() {
-        GlobalScope.launch {
-            if(!resourcesVfs["scores/scores"].exists()) {
-                resourcesVfs["scores"].mkdir()
-            }
-            resourcesVfs["scores/scores"].writeString(scores.toString())
+    suspend fun save() {
+        if (!resourcesVfs["scores"].exists()) {
+            resourcesVfs["scores"].mkdir()
         }
+        resourcesVfs["scores/scores"].writeString(scores.toString())
+
     }
 
-    fun load() {
-        GlobalScope.launch {
-            if(resourcesVfs["scores/scores"].exists()) {
-                reset()
-                resourcesVfs["scores/scores"].readString().drop(1).dropLast(1).split(",").forEach { scores.add(it.toDouble()) }
-            }
+    suspend fun load() {
+        if (resourcesVfs["scores"].exists()) {
+            reset()
+            resourcesVfs["scores/scores"].readString().drop(1).dropLast(1).split(", ").forEach { scores.add(it.toInt()) }
         }
     }
 }

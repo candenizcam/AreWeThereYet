@@ -20,7 +20,9 @@ object GlobalAccess {
     var firstEntry = true
     val soundsAreOn = false // change this before publishing
     val scoreKeeper = ScoreKeeper()
-     init {
+
+
+    suspend fun init() {
          scoreKeeper.load()
      }
 

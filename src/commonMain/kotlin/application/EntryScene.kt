@@ -28,6 +28,7 @@ import pungine.geometry2D.Rectangle
 @DelicateCoroutinesApi
 class EntryScene : PunScene() {
     override suspend fun Container.sceneInit() {
+        GlobalAccess.init()
         if (GlobalAccess.soundsAreOn) {
             MusicPlayer.play("musicbox.mp3")
         }
