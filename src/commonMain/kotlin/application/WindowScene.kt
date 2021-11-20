@@ -33,7 +33,6 @@ class WindowScene  : PunScene() {
     var windowUp = false
 
     @OptIn(KorgeInternal::class)
-
     override suspend fun Container.sceneMain(){
         //openingCrawl()
         //val engineLoop = resourcesVfs["SFX/engine_heavy_loop-20.mp3"].readMusic()
@@ -43,9 +42,6 @@ class WindowScene  : PunScene() {
         }
 
         //val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
-        //outsiders.add(punImage("o1",bmp.clone(),Rectangle(0.0, 960.0, 0.0, 1080.0)))
-        //outsiders.add(punImage("o2",bmp.clone(),Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
-        //outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
         val outside = Outside()
         outside.deploy(addFunction = {p: Puntainer, r: Rectangle->
             scenePuntainer.addPuntainer(p,r)
@@ -71,12 +67,6 @@ class WindowScene  : PunScene() {
             resourcesVfs["UI/Windown.png"].readBitmap()
         )
 
-        //launchImmediately { gameScene.load() }
-        //SceneContainer
-
-        //val gameScene = GameScene()
-      //  this.addChild(gameScene.sceneView)
-      //  sceneContainer.
         addUpdater {dt->
             if(freeze.not()){
 
@@ -124,9 +114,5 @@ class WindowScene  : PunScene() {
     }
 
     var freeze = false
-
-    val outsiders = mutableListOf<Puntainer>()
     var window: Puntainer = Puntainer()
-
-
 }

@@ -109,26 +109,6 @@ class EntryScene : PunScene() {
         }
 
 
-
-
-
-
-
-
-        /**
-         * play
-        232, 557, 864, 971
-
-        top score
-        556, 876, 854, 961
-
-        settings
-        880, 1200, 844, 951
-
-        exit
-        1204, 1524, 834, 941
-         */
-
         addUpdater { dt ->
             outsiders.update(dt.seconds * 0.3 * 1920)
 
@@ -144,7 +124,6 @@ class EntryScene : PunScene() {
     }
 
     var credits: Puntainer = Puntainer()
-    //val outsiders = mutableListOf<Puntainer>()
 
 
     // delete from all under here for a new scene
@@ -152,20 +131,6 @@ class EntryScene : PunScene() {
     suspend fun openingCrawl() {
 
         val bg = scenePuntainer.solidRect("id", Rectangle(0.0, 1.0, 0.0, 1.0), Colour.rgba(0.04, 0.02, 0.04, 1.0))
-
-        /*
-        val img = punImage(
-            "id",
-            resourcesVfs["pungo_transparent.png"].readBitmap(),
-            Rectangle(390.0, 890.0, 110.0, 610.0)
-        ).also {
-            it.visible = false
-            it.onClick {
-                launchImmediately { sceneContainer.changeTo<GameScene>() }
-            }
-        }
-
-         */
 
 
         val resource = resourcesVfs["PunGine.png"].readBitmap()
@@ -184,7 +149,6 @@ class EntryScene : PunScene() {
                 } else {
                     it.alpha = 0.0
                     bg.alpha = 0.0
-                    //img.visible = true
                 }
             }
         }
