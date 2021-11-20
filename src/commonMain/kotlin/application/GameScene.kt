@@ -28,7 +28,7 @@ import pungine.geometry2D.oneRectangle
 class GameScene : PunScene() {
     //override fun createSceneView(): Container = Puntainer()
 
-    var scoreKeeper = ScoreKeeper()
+
 
 
     override suspend fun Container.sceneInit() {
@@ -45,7 +45,7 @@ class GameScene : PunScene() {
         if (GlobalAccess.soundsAreOn) {
             MusicPlayer.play("musicbox.mp3")
         }
-        scoreKeeper.load()
+
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
 
@@ -393,8 +393,8 @@ class GameScene : PunScene() {
                         GlobalAccess.fingers -= 1
                         playfield.sliced()
                         launchImmediately { hand.cutFinger() }
-                        scoreKeeper.addScore(score)
-                        scoreKeeper.save()
+                        GlobalAccess.scoreKeeper.addScore(score)
+                        GlobalAccess.scoreKeeper.save()
                     }
                 } else if (playfield.ducking > 0.0) {
                     hand.onDuck()
