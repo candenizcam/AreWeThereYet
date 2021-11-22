@@ -1,23 +1,21 @@
 package application
 
 import com.soywiz.klock.TimeSpan
-import com.soywiz.korev.Key
-import com.soywiz.korge.input.mouse
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.input.onDown
 import com.soywiz.korge.input.onUp
 import com.soywiz.korge.internal.KorgeInternal
-import com.soywiz.korge.view.*
-import com.soywiz.korim.color.RGBA
+import com.soywiz.korge.view.Container
+import com.soywiz.korge.view.addUpdater
+import com.soywiz.korge.view.text
 import com.soywiz.korim.font.TtfFont
 import com.soywiz.korim.format.readBitmap
-import com.soywiz.korio.async.launch
+import com.soywiz.korim.text.TextAlignment
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import modules.basic.Colour
-import pungine.PunImage
+import pungine.Button
 import pungine.PunScene
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
@@ -29,226 +27,180 @@ import pungine.geometry2D.Rectangle
 @KorgeInternal
 @DelicateCoroutinesApi
 class EntryScene : PunScene() {
-    override fun createSceneView(): Container = Puntainer()
-
-    override suspend fun Container.sceneMain(){
-        if(GlobalAccess.soundsAreOn){
-            MusicPlayer.play("musicbox.mp3")
+    override suspend fun Container.sceneInit() {
+        GlobalAccess.init()
+        if (GlobalAccess.soundsAreOn) {
+            GlobalAccess.musicPlayer.play("musicbox.mp3")
         }
-
 
 
         val outsiders = Outside()
-        outsiders.deploy(addFunction = {l: List<Puntainer>->
-            l.forEach {
-                this.addChild(it)
-            }
+        outsiders.deploy(addFunction = { p: Puntainer, r: Rectangle ->
+            scenePuntainer.addPuntainer(p, r)
         })
 
-        //val bmp = resourcesVfs["environment/Bg_Small-3.png"].readBitmap()
-        //outsiders.add(punImage("o1",bmp.clone(),Rectangle(0.0, 960.0, 0.0, 1080.0)))
-        //outsiders.add(punImage("o2",bmp.clone(),Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
-        //outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
 
 
 
-
-        window = punImage(
+        val glass = scenePuntainer.punImage(
             "id",
-            resourcesVfs["UI/glass-up.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
+            Rectangle(0.0, 1.0, 0.0, 1.0),
+            resourcesVfs["UI/glass-up.png"].readBitmap()
         ).also {
-            it.alpha=0.8
+            it.alpha = 0.8
         }
 
-        window = punImage(
+        val name = scenePuntainer.punImage(
             "id",
-            resourcesVfs["UI/name.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
+            Rectangle(0.0, 1.0, 0.0, 1.0),
+            resourcesVfs["UI/name.png"].readBitmap()
+
         ).also {
-            it.alpha=0.8
+            it.alpha = 0.8
         }
 
-        credits = punImage(
+        credits = scenePuntainer.punImage(
             "credits_scene",
-            resourcesVfs["UI/glass-credits.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
+            Rectangle(0.0, 1.0, 0.0, 1.0),
+            resourcesVfs["UI/glass-credits.png"].readBitmap()
 
         ).also {
-            it.visible=false
+            it.visible = false
         }
 
-        punImage(
+        scenePuntainer.punImage(
             "id",
-            resourcesVfs["UI/Wintop.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
+            Rectangle(0.0, 1.0, 0.0, 1.0),
+            resourcesVfs["UI/Wintop.png"].readBitmap()
         )
 
-        punImage(
+        scenePuntainer.punImage(
             "id",
-            resourcesVfs["UI/Windown.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
+            Rectangle(0.0, 1.0, 0.0, 1.0),
+            resourcesVfs["UI/Windown.png"].readBitmap()
         )
 
-        val playDown = punImage("play_down",resourcesVfs["UI/play-pushed.png"].readBitmap(),Rectangle(232.0/1920.0,557.0/1920.0,1-864.0/1080.0,1-971.0/1080.0),relative = true).also {
+
+        val thereAreScores = GlobalAccess.scoreKeeper.scores.isNotEmpty()
+        val scoreTextText = if(thereAreScores){
+            "Top Score: "+GlobalAccess.scoreKeeper.scores.maxOrNull()!!.toInt().toString()
+        }else{
+            "It's too sunny outside to care about scores."
+        }
+
+        val font = TtfFont(resourcesVfs["MPLUSRounded1c-Medium.ttf"].readAll())
+        val scoreText = text(
+            scoreTextText,
+            font = font,
+            textSize = 48.0,
+            color = Colour.rgba(0.1,0.0,0.0).korgeColor,
+            alignment = TextAlignment.TOP_CENTER
+        ).also {
+            it.x = GlobalAccess.windowSize.width*0.5
+            it.y = GlobalAccess.windowSize.height*0.5
             it.visible = false
         }
-        val playUp = punImage("play_up",resourcesVfs["UI/play-normal.png"].readBitmap(),Rectangle(232.0/1920.0,557.0/1920.0,1-864.0/1080.0,1-971.0/1080.0),relative = true).also { exit->
-            exit.onDown {
-                exit.visible = false
-                playDown.visible=true
-            }
-        }
-
-        val scoreDown = punImage("score_down",resourcesVfs["UI/score-pushed.png"].readBitmap(),Rectangle(556.0/1920.0,876.0/1920.0,1-854.0/1080.0,1-961.0/1080.0),relative = true).also {
-            it.visible = false
-        }
-        val scoreUp = punImage("score_up",resourcesVfs["UI/score-normal.png"].readBitmap(),Rectangle(556.0/1920.0,876.0/1920.0,1-854.0/1080.0,1-961.0/1080.0),relative = true).also { exit->
-            exit.onDown {
-                exit.visible = false
-                scoreDown.visible=true
-            }
-        }
-
-        val settingsDown = punImage("settings_down",resourcesVfs["UI/credits-pushed.png"].readBitmap(),Rectangle(880.0/1920.0,1200.0/1920.0,1-844.0/1080.0,1-951.0/1080.0),relative = true).also {
-            it.visible = false
-        }
-        val settingsUp = punImage("settings_up",resourcesVfs["UI/credits-normal.png"].readBitmap(),Rectangle(880.0/1920.0,1200.0/1920.0,1-844.0/1080.0,1-951.0/1080.0),relative = true).also { exit->
-            exit.onDown {
-                exit.visible = false
-                settingsDown.visible=true
-            }
-        }
-
-
-        val exitDown = punImage("exit_down",resourcesVfs["UI/exit-pushed.png"].readBitmap(),Rectangle(1204.0/1920.0,1524.0/1920.0,1-834.0/1080.0,1-941.0/1080.0),relative = true).also {
-            it.visible = false
-
-        }
-        val exitUp = punImage("exit_up",resourcesVfs["UI/exit-normal.png"].readBitmap(),Rectangle(1204.0/1920.0,1524.0/1920.0,1-834.0/1080.0,1-941.0/1080.0),relative = true).also { exit->
-            exit.onDown {
-                exit.visible = false
-                exitDown.visible=true
-            }
-
-            exit.onClick {
-            }
-        }
-
-
-        sceneContainer.onClick {
-            settingsUp.visible=true
-            exitUp.visible=true
-            scoreUp.visible=true
-            playUp.visible=true
-            credits.visible=false
-        }
-
-        sceneContainer.onUp {
-            if(exitDown.visible){
-                exitUp.visible=true
-                exitDown.visible=false
-                sceneContainer.views.gameWindow.close()
-            }
-
-            if(settingsDown.visible){
-                settingsUp.visible=false
-                settingsDown.visible=false
-                exitUp.visible=false
-                exitDown.visible=false
-                scoreUp.visible=false
-                scoreDown.visible=false
-                playUp.visible=false
-                playDown.visible=false
-                credits.visible=true
-
-                // settings event
-            }
-
-            if(scoreDown.visible){
-                scoreUp.visible=true
-                scoreDown.visible=false
-                // score event
-            }
-
-            if(playDown.visible){
-                playUp.visible=true
-                playDown.visible=false
-                SfxPlayer.playSfx("carDoorStartUp-16.mp3")
-                launchImmediately{sceneContainer.changeTo<WindowScene>()}
-            }
-
-
-        }
 
 
 
 
-
-
-
-        /**
-         * play
-        232, 557, 864, 971
-
-        top score
-        556, 876, 854, 961
-
-        settings
-        880, 1200, 844, 951
-
-        exit
-        1204, 1524, 834, 941
-         */
-
-        addUpdater {dt->
-            outsiders.update(dt.seconds*0.3*1920)
-            /*
-            outsiders.forEach {
-                it.x -= dt.seconds*0.3*1920
-                if(it.x + it.width< -20.0){
-                    it.x += it.width * 3
+        Button("play",resourcesVfs["UI/play-normal.png"].readBitmap(),resourcesVfs["UI/play-pushed.png"].readBitmap()).also {
+            it.clickFunction = {
+                launchImmediately {
+                    SfxPlayer.playSfx("carDoorStartUp-16.mp3")
+                    sceneContainer.changeTo<WindowScene>()
                 }
             }
+            scenePuntainer.addPuntainer(it,Rectangle(232.0 / 1920.0, 557.0 / 1920.0, 1 - 864.0 / 1080.0, 1 - 971.0 / 1080.0),relative = true)
+        }
 
-             */
+
+        Button("score",resourcesVfs["UI/score-normal.png"].readBitmap(),resourcesVfs["UI/score-pushed.png"].readBitmap()).also {
+            it.clickFunction = {
+                //TODO score event
+                scenePuntainer.puntainers.filterIsInstance<Button>().forEach {
+                    it.visible=false
+                }
+                scoreText.visible=true
+                if(thereAreScores.not()){
+                    glass.tint = Colour.byHex("F9D71C").korgeColor
+                    name.tint = Colour.byHex("F9D71C").korgeColor
+                }else{
+                    glass.tint = Colour.rgba(0.5,0.0,0.05).korgeColor
+                    name.tint = Colour.rgba(0.5,0.0,0.05).korgeColor
+                }
+
+            }
+            scenePuntainer.addPuntainer(it,Rectangle(556.0 / 1920.0, 876.0 / 1920.0, 1 - 854.0 / 1080.0, 1 - 961.0 / 1080.0),relative = true)
+        }
+
+        Button("credits",resourcesVfs["UI/credits-normal.png"].readBitmap(),resourcesVfs["UI/credits-pushed.png"].readBitmap()).also {
+            it.clickFunction = {
+                credits.visible=true
+                scenePuntainer.puntainers.filterIsInstance<Button>().forEach {
+                    it.visible=false
+                }
+
+
+                //TODO score event
+
+            }
+            scenePuntainer.addPuntainer(it,Rectangle(880.0 / 1920.0, 1200.0 / 1920.0, 1 - 844.0 / 1080.0, 1 - 951.0 / 1080.0),relative = true)
+        }
+
+        Button("score",resourcesVfs["UI/exit-normal.png"].readBitmap(),resourcesVfs["UI/exit-pushed.png"].readBitmap()).also {
+            it.clickFunction = {
+                sceneContainer.views.gameWindow.close()
+            }
+            scenePuntainer.addPuntainer(it,Rectangle(1204.0 / 1920.0, 1524.0 / 1920.0, 1 - 834.0 / 1080.0, 1 - 941.0 / 1080.0),relative = true)
 
         }
+
+        onClick {
+            if(credits.visible || scoreText.visible){
+                credits.visible=false
+                scoreText.visible=false
+                scenePuntainer.puntainers.filterIsInstance<Button>().forEach {
+                    it.visible=true
+                }
+                glass.tint = Colour.WHITE.korgeColor
+                name.tint = Colour.WHITE.korgeColor
+            }
+        }
+
+
+        addUpdater { dt ->
+            outsiders.update(dt.seconds * 0.3 * 1920)
+
+        }
+
+
+        if(GlobalAccess.entrySceneFirstCalled.not()){
+            openingCrawl()
+            GlobalAccess.entrySceneFirstCalled=true
+        }
+
+
+
+
 
 
 
         super.sceneAfterInit()
-        println("entry called")
     }
 
-    var window: Puntainer = Puntainer()
-    var credits: Puntainer= Puntainer()
-    //val outsiders = mutableListOf<Puntainer>()
-
+    var credits: Puntainer = Puntainer()
 
 
     // delete from all under here for a new scene
 
     suspend fun openingCrawl() {
-        val bg = solidRect("id", Rectangle(0.0, 1.0, 0.0, 1.0), RGBA.float(0.04f, 0.02f, 0.04f, 1f), relative = true)
 
-        /*
-        val img = punImage(
-            "id",
-            resourcesVfs["pungo_transparent.png"].readBitmap(),
-            Rectangle(390.0, 890.0, 110.0, 610.0)
-        ).also {
-            it.visible = false
-            it.onClick {
-                launchImmediately { sceneContainer.changeTo<GameScene>() }
-            }
-        }
-
-         */
+        val bg = scenePuntainer.solidRect("id", Rectangle(0.0, 1.0, 0.0, 1.0), Colour.rgba(0.04, 0.02, 0.04, 1.0))
 
 
         val resource = resourcesVfs["PunGine.png"].readBitmap()
-        punImage("id", resource, Rectangle(0.0, 1.0, 0.0, 1.0), true).also {
+        scenePuntainer.punImage("id", Rectangle(0.0, 1.0, 0.0, 1.0), resource).also {
             it.alpha = 0.0
             var counter = 0.0
             it.addUpdater { dt: TimeSpan ->
@@ -263,7 +215,6 @@ class EntryScene : PunScene() {
                 } else {
                     it.alpha = 0.0
                     bg.alpha = 0.0
-                    //img.visible = true
                 }
             }
         }

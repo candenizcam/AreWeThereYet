@@ -1,11 +1,7 @@
 package application
 
 import com.soywiz.klock.TimeSpan
-import com.soywiz.korau.sound.PlaybackParameters
-import com.soywiz.korau.sound.PlaybackTimes
-import com.soywiz.korau.sound.readMusic
 import com.soywiz.korev.Key
-import com.soywiz.korge.input.onClick
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
 import com.soywiz.korim.font.TtfFont
@@ -15,6 +11,7 @@ import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
 import kotlinx.coroutines.DelicateCoroutinesApi
 import modules.basic.Colour
+import pungine.Button
 import pungine.PunImage
 import pungine.PunScene
 import pungine.Puntainer
@@ -29,26 +26,18 @@ import pungine.geometry2D.oneRectangle
 @DelicateCoroutinesApi
 @KorgeInternal
 class GameScene : PunScene() {
-    override fun createSceneView(): Container = Puntainer()
+    //override fun createSceneView(): Container = Puntainer()
 
-    var scoreKeeper = ScoreKeeper()
+
 
 
     override suspend fun Container.sceneInit() {
-        println("game scene starts")
         GlobalAccess.fingers = 2
-        val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
-        /*
-        outsiders.add(punImage("o1",bmp,Rectangle(0.0, 960.0, 0.0, 1080.0)))
-        outsiders.add(punImage("o2",bmp,Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
-        outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
+        scenePuntainer.punImage("jackal", oneRectangle(), resourcesVfs["VFX/game-jackal.png"].readBitmap())
+        outside.deploy(addFunction = { p: Puntainer, r: Rectangle ->
+            scenePuntainer.addPuntainer(p, r)
+        },false)
 
-         */
-        outside.deploy(addFunction = { l: List<Puntainer> ->
-            l.forEach {
-                this.addChild(it)
-            }
-        })
 
 
     }
@@ -56,11 +45,10 @@ class GameScene : PunScene() {
 
     @OptIn(DelicateCoroutinesApi::class)
     override suspend fun Container.sceneMain() {
-        if(GlobalAccess.soundsAreOn){
-            MusicPlayer.play("musicbox.mp3")
+        if (GlobalAccess.soundsAreOn) {
+            GlobalAccess.musicPlayer.play("musicbox.mp3")
         }
-        //MusicPlayer.play("musicbox.mp3")
-        scoreKeeper.load()
+
         val h = GlobalAccess.virtualSize.height.toDouble()
         val w = GlobalAccess.virtualSize.width.toDouble()
 
@@ -70,27 +58,9 @@ class GameScene : PunScene() {
         /////////
 
 
-        val playMusic = true
-        var fadein = false
-
-        val l1 = resourcesVfs["music/musicbox.mp3"].readMusic()
-        val l2 = resourcesVfs["music/altlayer.mp3"].readMusic()
-        val l3 = resourcesVfs["music/ominous.mp3"].readMusic()
-        val engineLoop = resourcesVfs["SFX/engine_heavy_loop-20.mp3"].readMusic()
-
-        if (playMusic) {
-            l1.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.3))
-            l2.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
-            l3.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 0.0))
-            engineLoop.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
-        }
-
-
-
-
-
-        playfield.fitToFrame(Rectangle(0.0, w, FloorData.getHeight() * h, h))
+        //playfield.fitToFrame(Rectangle(0.0, w, FloorData.getHeight() * h, h))
         this.addChild(playfield)
+        playfield.reshape(Rectangle(0.0, w, FloorData.getHeight() * h, h))
 
         val rareScavengerList = listOf(
             "Red Bird",
@@ -148,65 +118,42 @@ class GameScene : PunScene() {
         }
 
         // obstacles
-        val rarityList = listOf("rare", "rarer", "rarest")
-        for (j in 0..0) {
-            for (i in 1..3) {
-                listOf("", "-gore").forEach { goreText ->
-                    val folder = rarityList[i - 1] + goreText
-                    PunImage("dont-jump-$i$goreText", resourcesVfs["obs/$folder/dont-jump-$i.png"].readBitmap()).also {
-                        obstacles.add(it)
-                        this.addChild(it)
-                        it.visible = false
-                    }
 
-                    PunImage("duck-$i$goreText", resourcesVfs["obs/$folder/duck-$i.png"].readBitmap()).also {
-                        obstacles.add(it)
-                        this.addChild(it)
-                        it.visible = false
-                    }
-
-                    PunImage("high-jump-$i$goreText", resourcesVfs["obs/$folder/high-jump-$i.png"].readBitmap()).also {
-                        obstacles.add(it)
-                        this.addChild(it)
-                        it.visible = false
-                    }
-
-                    PunImage("jump-duck-$i$goreText", resourcesVfs["obs/$folder/jump-duck-$i.png"].readBitmap()).also {
-                        obstacles.add(it)
-                        this.addChild(it)
-                        it.visible = false
-                    }
-
-                    PunImage("long-jump-$i$goreText", resourcesVfs["obs/$folder/long-jump-$i.png"].readBitmap()).also {
-                        obstacles.add(it)
-                        this.addChild(it)
-                        it.visible = false
-                    }
-
-                    PunImage("low-jump-$i$goreText", resourcesVfs["obs/$folder/low-jump-$i.png"].readBitmap()).also {
-                        obstacles.add(it)
-                        this.addChild(it)
-                        it.visible = false
-                    }
-
-                    PunImage("low-bird-$i$goreText", resourcesVfs["obs/$folder/bird-$i.png"].readBitmap()).also {
-                        obstacles.add(it)
-                        this.addChild(it)
-                        it.visible = false
-                    }
-
-                    PunImage("bird-$i$goreText", resourcesVfs["obs/$folder/bird-$i.png"].readBitmap()).also {
-                        obstacles.add(it)
-                        this.addChild(it)
-                        it.visible = false
-                    }
-                }
-
-            }
+        /*
+        listOf("", "-gore").forEach { goreText ->
+            obstacleLoader(goreText)
         }
-        punImage("window", resourcesVfs["environment/window.png"].readBitmap(), oneRectangle(), true)
 
-        punImage("hud", resourcesVfs["UI/hunt-score.png"].readBitmap())
+         */
+        obstacleLoader("")
+        obstacleLoader("-gore")
+
+        val initialInvisible = mutableListOf<Container>()
+
+        scenePuntainer.punImage("window", oneRectangle(), resourcesVfs["environment/window.png"].readBitmap()).also {
+            it.visible=false
+            initialInvisible.add(it)
+        }
+
+
+        scenePuntainer.punImage(
+            "hud1",
+            thisRectangle.toRated(Rectangle(0.0, 554.0, 1080.0, 648.0)),
+            resourcesVfs["UI/postit.png"].readBitmap()
+        ).also {
+            it.visible=false
+            initialInvisible.add(it)
+        }
+        scenePuntainer.punImage(
+            "hud2",
+            thisRectangle.toRated(Rectangle(1594.0, 1894.0, 1054.0, 974.0)),
+            resourcesVfs["UI/bandaid.png"].readBitmap()
+        ).also {
+            it.visible=false
+            initialInvisible.add(it)
+        }
+
+
         val font = TtfFont(resourcesVfs["MPLUSRounded1c-Medium.ttf"].readAll())
 
 
@@ -237,12 +184,14 @@ class GameScene : PunScene() {
         //1594, 1894, 26, 106
 
         ////////////////////////////////////////// HEEEEREEEE
-        println("enter")
-        hand = Hand("hand", oneRectangle())
-        println("middle")
-        hand.suspendInit()
+        hand = Hand("hand", oneRectangle()).also {
+            it.visible=false
+            initialInvisible.add(it)
+        }
+        hand.suspendInitAlternative("two")
+        hand.suspendInitAlternative("one")
         //adjustHand()
-        println("out")
+
         //////////////////////////////////////////
         this.addChild(hand)
 
@@ -253,21 +202,19 @@ class GameScene : PunScene() {
             //    this.addChild(it)
             //    it.visible=false
             //}
-            solidRect("obshit", Rectangle(0.0, 1.0, 0.0, 1.0), relative = true, colour = Colour.RED.korgeColor).also {
+            scenePuntainer.solidRect("obshit", Rectangle(0.0, 1.0, 0.0, 1.0), colour = Colour.RED).also {
                 it.visible = false
                 it.alpha = 0.2
             }
         }
 
-        floor = puntainer("floor", Rectangle(0.0, 1.0, 0.0, 1.0), relative = true) {
+        floor = scenePuntainer.relativePuntainer("floor", Rectangle(0.0, 1.0, 0.0, 1.0)) {
             it.singleColour(Colour.RED.korgeColor).also {
                 it.alpha = 0.0
             }
         }
 
-        puntainer("floor", Rectangle(0.0, 1.0, 0.0, 1.0), relative = true) {}.also {
-
-        }
+        scenePuntainer.relativePuntainer("floor", Rectangle(0.0, 1.0, 0.0, 1.0)) {}
 
 
         //108, 350, 117, 267
@@ -282,10 +229,16 @@ class GameScene : PunScene() {
             it.x = (1594.0 + 1894.0) * 0.5
             it.y = 26.0 + 12.0
 
+
+            it.visible=false
+            initialInvisible.add(it)
         }
         scoreText.text = "0"
+        var scoreSaved = false
 
 
+        var gameOverItems = mutableListOf<Container>() //to set all invisible with a single move
+        // game over stuff from here
         val gameOver = Puntainer("gameover", Rectangle(0.0, 1.0, 0.0, 1.0)).also { pt ->
             this.addChild(pt)
             for (i in 1..7) {
@@ -294,12 +247,15 @@ class GameScene : PunScene() {
                     pt.addChild(it)
                 }
             }
+            gameOverItems.add(pt)
 
         }
 
+
         val finalScoreBand =
-            punImage("finalBand", resourcesVfs["UI/bandaid.png"].readBitmap(), oneRectangle(), true).also {
+            scenePuntainer.punImage("finalBand", oneRectangle(), resourcesVfs["UI/bandaid.png"].readBitmap()).also {
                 it.visible = false
+                gameOverItems.add(it)
             }
 
 
@@ -313,7 +269,42 @@ class GameScene : PunScene() {
             it.x = (1594.0 + 1894.0) * 0.5
             it.y = 26.0 + 12.0
             it.visible = false
+            gameOverItems.add(it)
         }
+
+        val menuButton = Button(
+            "menu",
+            resourcesVfs["UI/main-normal.png"].readBitmap(),
+            resourcesVfs["UI/main-pushed.png"].readBitmap()
+        ).also {
+            it.clickFunction = {
+                launchImmediately { sceneContainer.changeTo<EntryScene>() }
+            }
+            it.visible = false
+            it.inactive = true
+            gameOverItems.add(it)
+        }
+        scenePuntainer.addPuntainer(menuButton)
+
+        val playAgainButton = Button(
+            "play again",
+            resourcesVfs["UI/play-again-normal.png"].readBitmap(),
+            resourcesVfs["UI/play-again-pushed.png"].readBitmap()
+        ).also {
+            it.clickFunction = {
+                //launchImmediately { sceneContainer.changeTo<GameScene>() }
+                resetGame()
+
+                gameOverItems.forEach {
+                    it.visible=false
+                }
+
+            }
+            it.visible = false
+            it.inactive = true
+            gameOverItems.add(it)
+        }
+        scenePuntainer.addPuntainer(playAgainButton)
 
 
         ////////////////////////////////////////////////////////////////
@@ -341,6 +332,16 @@ class GameScene : PunScene() {
                 t1.visible = true
                 t2.visible = true
                 t3.visible = true
+                initialInvisible.forEach {
+                    it.visible=true
+                }
+                scenePuntainer.puntainers.filter {
+                    it.id=="jackal"
+                }.first().visible=false
+                outside.setVisible(true)
+                launchImmediately {
+                    // this can be used as an afterloader
+                }
             }
 
             backgroundRoll(dt)
@@ -352,15 +353,15 @@ class GameScene : PunScene() {
 
 
                 if (GlobalAccess.fingers > 0) {
-                    if (views.input.keys.justPressed(Key.UP)) {
+                    if (views.input.keys.justPressed(Key.UP) || views.input.keys.justPressed(Key.W)) {
                         playfield.jump()
                     }
 
-                    if (views.input.keys.justPressed(Key.DOWN)) {
+                    if (views.input.keys.justPressed(Key.DOWN) || views.input.keys.justPressed(Key.S)) {
                         playfield.duck()
                     }
 
-                    if (views.input.keys.pressing(Key.DOWN).not()) {
+                    if (views.input.keys.pressing(Key.DOWN).not() || views.input.keys.justPressed(Key.S)) {
                         playfield.stopDuck()
                     }
 
@@ -389,10 +390,7 @@ class GameScene : PunScene() {
                                     )
                                 )
                                 val r = hit.decodeRated(thisType.ratedRect())
-                                o2[index].x = r.left
-                                o2[index].yConv = r.top
-                                o2[index].scaledHeight = r.height
-                                o2[index].scaledWidth = r.width
+                                o2[index].reshape(r)
                                 o2[index].visible = true
                             }
                         }
@@ -408,19 +406,20 @@ class GameScene : PunScene() {
                 }
 
                 if ((collided == sh1Type.ordinal) && (collidedObstacleRarity == 0)) {
+                    // if ((collided == sh1Type.ordinal) && (collidedObstacleRarity == 0)  || ((sh1Type == ObstacleTypes.LOWBIRD) && (collided == 6) && (collidedObstacleRarity == 0)) ) {
                     score += 100
                     launchImmediately { SfxPlayer.playSfx("diDing.mp3") }
                     playfield.sliced()
-                } else if ((collided == sh2Type.ordinal) && (collidedObstacleRarity == 1)) {
+                } else if ((collided == sh2Type.ordinal) && (collidedObstacleRarity == 1) || ((sh2Type == ObstacleTypes.LOWBIRD) && (collided == 6) && (collidedObstacleRarity == 1))) {
                     score += 250
                     launchImmediately { SfxPlayer.playSfx("diDing.mp3") }
                     playfield.sliced()
-                } else if ((collided == sh3Type.ordinal) && (collidedObstacleRarity == 2)) {
+                } else if ((collided == sh3Type.ordinal) && (collidedObstacleRarity == 2) || ((sh3Type == ObstacleTypes.LOWBIRD) && (collided == 6) && (collidedObstacleRarity == 2))) {
                     score += 500
                     launchImmediately { SfxPlayer.playSfx("diDing.mp3") }
                     playfield.sliced()
                 } else if (collided != -1) {
-                    fadein = true
+                    //   fadein = true
                     if (GlobalAccess.fingers == 1) {
                         death()
 
@@ -428,8 +427,6 @@ class GameScene : PunScene() {
                         GlobalAccess.fingers -= 1
                         playfield.sliced()
                         launchImmediately { hand.cutFinger() }
-                        scoreKeeper.addScore(score)
-                        scoreKeeper.save()
                     }
                 } else if (playfield.ducking > 0.0) {
                     hand.onDuck()
@@ -446,21 +443,22 @@ class GameScene : PunScene() {
 
                 floor.visible = hand.activeAnimationType == Hand.ActiveAnimationType.CUT
                 floor.alpha = -1 * hand.animIndex * hand.animIndex * 8.0 / 605.0 + hand.animIndex * 8.0 / 55.0
-
-                if (fadein) {
-                    if (l2.volume < 0.6) l2.volume += 0.1
-                    else fadein = false
-                }
             } else {
                 val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
                 hand.update(dt, r)
                 if (hand.isDead) {
-                    gameOverIndex += dt.seconds * 2
+                    gameOverIndex += dt.seconds * screenBleedSpeed
                     if (gameOverIndex >= gameOver.size) {
                         finalScoreText.x = GlobalAccess.virtualSize.width * 0.5
                         finalScoreText.y = GlobalAccess.virtualSize.height * 0.7
                         finalScoreText.visible = true
                         finalScoreText.text = "Score: ${score.toInt()}"
+                        if(!scoreSaved) {
+                            scoreSaved = true
+                            GlobalAccess.scoreKeeper.addScore(score.toInt())
+                            launchImmediately { GlobalAccess.scoreKeeper.save() }
+                        }
+
 
                         finalScoreBand.scaledWidth = 300.0
                         finalScoreBand.scaledHeight = 80.0
@@ -468,24 +466,62 @@ class GameScene : PunScene() {
                         finalScoreBand.y = GlobalAccess.virtualSize.height * 0.7 - 10.0
                         finalScoreBand.visible = true
 
+                        menuButton.reshape(
+                            Rectangle(
+                                Vector(
+                                    GlobalAccess.virtualSize.width * 0.6 - 160.0,
+                                    GlobalAccess.virtualSize.height * 0.2 - 10.0
+                                ), 320.0, 107.0, Rectangle.Corners.TOP_LEFT
+                            )
+                        )
+                        menuButton.inactive = false
+                        menuButton.visible = true
+
+                        playAgainButton.reshape(
+                            Rectangle(
+                                Vector(
+                                    GlobalAccess.virtualSize.width * 0.4 - 160.0,
+                                    GlobalAccess.virtualSize.height * 0.2 - 10.0
+                                ), 320.0, 107.0, Rectangle.Corners.TOP_LEFT
+                            )
+                        )
+                        playAgainButton.inactive = false
+                        playAgainButton.visible = true
+
                     } else {
-                        gameOver.children.fastForEach { it.visible = false }
+                        gameOver.visible=true
+                        gameOver.children.fastForEach { it.visible = false}
                         gameOver.children[gameOverIndex.toInt()].visible = true
+
                     }
-                    //launchImmediately { sceneContainer.changeTo<GameOverScene>() }
                 }
-
-
             }
-        }
 
-        onClick {
-            if (gameOverIndex >= gameOver.size) {
-                launchImmediately { sceneContainer.changeTo<EntryScene>() }
-            }
+
+
         }
-        println("game scene called")
     }
+
+
+    fun resetGame(){
+        GlobalAccess.fingers=2
+        hand.resetGame()
+        playfield.level.obstacles.clear()
+        score = 0.0
+        gameOverIndex = 0.0
+        screenBleedSpeed = 4.0
+        gameActive=true
+        //TODO game speed in reset
+        //TODO scavenge list reset
+
+    }
+
+
+    var screenBleedSpeed = 2.0 // this is the coefficient for game over bleeding, it is faster on the second death
+
+
+
+
 
     // WINDOW SCENE VARIABLES
 
@@ -507,55 +543,43 @@ class GameScene : PunScene() {
     var playfield = Playfield("playfield", oneRectangle())
     lateinit var floor: Puntainer
     var obstacles = mutableListOf<Puntainer>()
-    val outsiders = mutableListOf<Puntainer>()
+
+    //val outsiders = mutableListOf<Puntainer>()
     var firstRun = true
     var gameOverIndex = 0.0
     var outside: Outside = Outside()
 
+
+    private suspend fun obstacleLoader(goreText: String) {
+        val rarityList = listOf("rare", "rarer", "rarest")
+        val otherList =
+            listOf("dont-jump", "duck", "high-jump", "jump-duck", "long-jump", "low-jump", "bird", "low-bird")
+        for (i in 1..3) {
+            val folder = rarityList[i - 1] + goreText
+
+            otherList.forEach { otherString ->
+                val os = if (otherString == "low-bird") {
+                    "bird"
+                } else {
+                    otherString
+                }
+                PunImage("$otherString-$i$goreText", resourcesVfs["obs/$folder/$os-$i.png"].readBitmap()).also {
+                    obstacles.add(it)
+                    scenePuntainer.addChild(it)
+                    it.visible = false
+                }
+            }
+        }
+
+    }
+
+
     fun backgroundRoll(dt: TimeSpan) {
         if (GlobalAccess.fingers > 0) {
             outside.update(dt.seconds * playfield.level.speed * 1920)
-            /*
-            outsiders.forEach {
-                it.x -= dt.seconds *playfield.level.speed * 1920
-                if(it.x + it.width< -20.0){
-                    it.x += it.width * 3
-                }
-            }
-
-             */
         }
 
     }
-
-    /*
-    suspend fun adjustHand() {
-        println("hand adjusting")
-        Hand.ActiveAnimationType.values().forEach { animType ->
-            animType.puntainerOneFingers.children.clear()
-
-            animType.sourceList().forEach { s ->
-                Image(resourcesVfs[s].readBitmap()).also {
-                    it.visible = false
-                    animType.puntainerTwoFingers.addChild(it)
-                }
-
-
-            }
-            animType.puntainerOneFingers.children.clear()
-            animType.sourceListOne().forEach {
-
-
-                Image(resourcesVfs[it].readBitmap()).also {
-                    it.visible = false
-                    animType.puntainerOneFingers.addChild(it)
-                }
-            }
-        }
-
-    }
-
-     */
 
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -565,13 +589,6 @@ class GameScene : PunScene() {
 
         hand.activeAnimationType = Hand.ActiveAnimationType.CUT
         GlobalAccess.fingers = 0
-        /*
-        Hand.ActiveAnimationType.values().forEach {
-            it.puntainerTwoFingers.children.fastForEach { it.visible=false }
-            it.puntainerOneFingers.children.fastForEach { it.visible=false }
-        }
-
-         */
 
     }
 
@@ -587,6 +604,5 @@ class GameScene : PunScene() {
             }
         }
     }
-
 
 }

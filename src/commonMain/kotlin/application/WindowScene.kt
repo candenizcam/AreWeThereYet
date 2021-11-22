@@ -28,58 +28,45 @@ import pungine.geometry2D.Rectangle
 @KorgeInternal
 @DelicateCoroutinesApi
 class WindowScene  : PunScene() {
-    override fun createSceneView(): Container = Puntainer()
 
     var windowDown = false
     var windowUp = false
 
     @OptIn(KorgeInternal::class)
-
     override suspend fun Container.sceneMain(){
         //openingCrawl()
         //val engineLoop = resourcesVfs["SFX/engine_heavy_loop-20.mp3"].readMusic()
         //val t = resourcesVfs["music/musicbox.mp3"].readMusic()
         if(GlobalAccess.soundsAreOn){
-            MusicPlayer.play("musicbox.mp3")
+            GlobalAccess.musicPlayer.play("musicbox.mp3")
         }
 
-        val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
-        outsiders.add(punImage("o1",bmp.clone(),Rectangle(0.0, 960.0, 0.0, 1080.0)))
-        outsiders.add(punImage("o2",bmp.clone(),Rectangle(960.0, 2*960.0, 0.0, 1080.0)))
-        outsiders.add(punImage("o3",bmp,Rectangle(960.0*2, 3*960.0, 0.0, 1080.0)))
+        //val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
         val outside = Outside()
-        outside.deploy(addFunction = {l: List<Puntainer>->
-            l.forEach {
-                this.addChild(it)
-            }
+        outside.deploy(addFunction = {p: Puntainer, r: Rectangle->
+            scenePuntainer.addPuntainer(p,r)
         })
 
-        window = punImage(
+        window = scenePuntainer.punImage(
             "id",
-            resourcesVfs["UI/Glass-tutorial.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
+            Rectangle(0.0,1.0,0.0,1.0),
+            resourcesVfs["UI/Glass-tutorial.png"].readBitmap()
         ).also {
             it.alpha=1.0
         }
 
-        punImage(
+        scenePuntainer.punImage(
             "id",
-            resourcesVfs["UI/Wintop.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
+            Rectangle(0.0,1.0,0.0,1.0),
+            resourcesVfs["UI/Wintop.png"].readBitmap()
         )
 
-        punImage(
+        scenePuntainer.punImage(
             "id",
-            resourcesVfs["UI/Windown.png"].readBitmap(),
-            Rectangle(0.0,1.0,0.0,1.0),relative = true
+            Rectangle(0.0,1.0,0.0,1.0),
+            resourcesVfs["UI/Windown.png"].readBitmap()
         )
 
-        //launchImmediately { gameScene.load() }
-        //SceneContainer
-
-        //val gameScene = GameScene()
-      //  this.addChild(gameScene.sceneView)
-      //  sceneContainer.
         addUpdater {dt->
             if(freeze.not()){
 
@@ -97,10 +84,10 @@ class WindowScene  : PunScene() {
 
 
 
-                if (views.input.keys.justPressed(Key.DOWN)) {
+                if (views.input.keys.justPressed(Key.DOWN) || views.input.keys.justPressed(Key.S)) {
                     windowUp = false
                     windowDown = true
-                } else if (views.input.keys.justPressed(Key.UP)) {
+                } else if (views.input.keys.justPressed(Key.UP) || views.input.keys.justPressed(Key.W)) {
                     windowDown = false
                     windowUp = true
                 } else if (views.input.keys.justPressed(Key.SPACE)) {
@@ -123,13 +110,8 @@ class WindowScene  : PunScene() {
        // t.play(PlaybackParameters(PlaybackTimes.INFINITE, volume = 1.0))
        // launchImmediately { MusicPlayer.play("musicbox.mp3") }
         super.sceneAfterInit()
-        println("window called")
     }
 
     var freeze = false
-
-    val outsiders = mutableListOf<Puntainer>()
     var window: Puntainer = Puntainer()
-
-
 }

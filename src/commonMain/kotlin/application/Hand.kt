@@ -4,23 +4,23 @@ import com.soywiz.klock.TimeSpan
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.Image
 import com.soywiz.korge.view.View
-import com.soywiz.korge.view.position
-import com.soywiz.korge.view.solidRect
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
 import kotlinx.coroutines.DelicateCoroutinesApi
 import modules.basic.Colour
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
+import pungine.geometry2D.oneRectangle
+
 
 @DelicateCoroutinesApi
 @KorgeInternal
-class Hand: Puntainer {
-    constructor(id: String?=null, relativeRectangle: Rectangle) : super(id,relativeRectangle)
-    {
-        this.position(x,y)
-
-        greenBlock = solidRect(100.0,100.0, Colour.GREEN.korgeColor).also {
+class Hand(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, relativeRectangle) {
+    var fingerCut: Puntainer
+    private val greenBlock: View
+    init {
+        //this.position(x,y)
+        greenBlock = solidRect("sr", oneRectangle(), Colour.GREEN).also {
             it.visible = blockMode
             this.addChild(it)
         }
@@ -28,30 +28,30 @@ class Hand: Puntainer {
         this.addChild(fingerCut)
     }
 
-    var fingerCut: Puntainer
 
-    suspend fun suspendInit(){
+
+
+    suspend fun suspendInitAlternative(fingerNo: String){
+
         ActiveAnimationType.values().forEach { it ->
-            val punt= Puntainer("two_${it.animationID()}")
+            val punt= Puntainer("${fingerNo}_${it.animationID()}")
             this.addChild(punt)
-            it.sourceList().forEach {s->
+            if(fingerNo=="two"){
+                it.sourceList()
+            }else{
+                it.sourceListOne()
+            }.forEach {s->
                 Image(resourcesVfs[s].readBitmap()).also { it2->
                     it2.visible = false
                     punt.addChild(it2)
                 }
             }
 
-            val punt2= Puntainer("one_${it.animationID()}")
-            this.addChild(punt2)
-            it.sourceListOne().forEach {s->
-                Image(resourcesVfs[s].readBitmap()).also {
-                    it.visible = false
-                    punt2.addChild(it)
-                }
-            }
 
         }
     }
+
+
 
 
     private val animationSpeed = 15 //12 frames per second
@@ -102,7 +102,7 @@ class Hand: Puntainer {
                         if(index==animIndex.toInt()){
                             image.alpha=(animIndex%0.25)*4.0
                             image.visible=true
-                        }else if((index==animIndex.toInt()-1)||((0==animIndex.toInt()))&&(index==activeSize()-1)){
+                        }else if((index==animIndex.toInt()-1)||(     (0==animIndex.toInt())&&(index==activeSize()-1)       )){
                             image.alpha=1-(animIndex%0.25)*4.0
                             image.visible=true
                         }else{
@@ -135,9 +135,17 @@ class Hand: Puntainer {
     }
 
     var blockMode = false
-    private val greenBlock: View
+
     var isDead = false
     var isDying = false
+
+    fun resetGame(){
+        blockMode = false
+        isDead = false
+        isDying=false
+    }
+
+
 
     fun onAir(){
         if(activeAnimationType!=ActiveAnimationType.CUT){
@@ -167,28 +175,9 @@ class Hand: Puntainer {
 
     suspend fun cutFinger(){
         if(activeAnimationType!=ActiveAnimationType.CUT) {
-            //activeAnimation().forEachChild { it.visible=false }
             SfxPlayer.playSfx("cut.mp3")
             activeAnimationType = ActiveAnimationType.CUT
 
-            /*
-            ActiveAnimationType.values().forEach {
-
-
-                /*
-                listOf("one_","two_").forEach { pref->
-                    children.filterIsInstance<Puntainer>().filter { it.id==pref+activeAnimationType.animationID()  }.forEach {
-                        it.visible=false
-                    }
-                }
-
-                 */
-
-                //it.puntainerTwoFingers.children.fastForEach { it.visible = false }
-                //it.puntainerOneFingers.children.fastForEach { it.visible = false }
-            }
-
-             */
             when ((0..2).random()) {
                 0 -> SfxPlayer.playSfx("daddyScared.mp3")
                 1 -> SfxPlayer.playSfx("mommyScared.mp3")
@@ -326,4 +315,6 @@ class Hand: Puntainer {
         abstract fun animationType(): String
         abstract fun animationID(): String
     }
+
+
 }
