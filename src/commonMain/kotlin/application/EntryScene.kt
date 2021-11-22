@@ -85,7 +85,7 @@ class EntryScene : PunScene() {
         val scoreTextText = if(thereAreScores){
             "Top Score: "+GlobalAccess.scoreKeeper.scores.maxOrNull()!!.toInt().toString()
         }else{
-            "place"
+            "It's too sunny outside to care about scores."
         }
 
         val font = TtfFont(resourcesVfs["MPLUSRounded1c-Medium.ttf"].readAll())
@@ -122,9 +122,14 @@ class EntryScene : PunScene() {
                     it.visible=false
                 }
                 scoreText.visible=true
+                if(thereAreScores.not()){
+                    glass.tint = Colour.byHex("F9D71C").korgeColor
+                    name.tint = Colour.byHex("F9D71C").korgeColor
+                }else{
+                    glass.tint = Colour.rgba(0.5,0.0,0.05).korgeColor
+                    name.tint = Colour.rgba(0.5,0.0,0.05).korgeColor
+                }
 
-                glass.tint = Colour.rgba(0.5,0.0,0.05).korgeColor
-                name.tint = Colour.rgba(0.5,0.0,0.05).korgeColor
             }
             scenePuntainer.addPuntainer(it,Rectangle(556.0 / 1920.0, 876.0 / 1920.0, 1 - 854.0 / 1080.0, 1 - 961.0 / 1080.0),relative = true)
         }
@@ -148,7 +153,7 @@ class EntryScene : PunScene() {
                 sceneContainer.views.gameWindow.close()
             }
             scenePuntainer.addPuntainer(it,Rectangle(1204.0 / 1920.0, 1524.0 / 1920.0, 1 - 834.0 / 1080.0, 1 - 941.0 / 1080.0),relative = true)
-            it.inactive = thereAreScores.not()
+
         }
 
         onClick {

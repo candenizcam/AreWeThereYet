@@ -33,9 +33,13 @@ class GameScene : PunScene() {
 
     override suspend fun Container.sceneInit() {
         GlobalAccess.fingers = 2
+        scenePuntainer.punImage("jackal", oneRectangle(), resourcesVfs["VFX/game-jackal.png"].readBitmap())
         outside.deploy(addFunction = { p: Puntainer, r: Rectangle ->
             scenePuntainer.addPuntainer(p, r)
-        })
+        },false)
+
+
+
     }
 
 
@@ -124,19 +128,30 @@ class GameScene : PunScene() {
         obstacleLoader("")
         obstacleLoader("-gore")
 
-        scenePuntainer.punImage("window", oneRectangle(), resourcesVfs["environment/window.png"].readBitmap())
+        val initialInvisible = mutableListOf<Container>()
+
+        scenePuntainer.punImage("window", oneRectangle(), resourcesVfs["environment/window.png"].readBitmap()).also {
+            it.visible=false
+            initialInvisible.add(it)
+        }
 
 
         scenePuntainer.punImage(
             "hud1",
             thisRectangle.toRated(Rectangle(0.0, 554.0, 1080.0, 648.0)),
             resourcesVfs["UI/postit.png"].readBitmap()
-        )
+        ).also {
+            it.visible=false
+            initialInvisible.add(it)
+        }
         scenePuntainer.punImage(
             "hud2",
             thisRectangle.toRated(Rectangle(1594.0, 1894.0, 1054.0, 974.0)),
             resourcesVfs["UI/bandaid.png"].readBitmap()
-        )
+        ).also {
+            it.visible=false
+            initialInvisible.add(it)
+        }
 
 
         val font = TtfFont(resourcesVfs["MPLUSRounded1c-Medium.ttf"].readAll())
@@ -169,7 +184,10 @@ class GameScene : PunScene() {
         //1594, 1894, 26, 106
 
         ////////////////////////////////////////// HEEEEREEEE
-        hand = Hand("hand", oneRectangle())
+        hand = Hand("hand", oneRectangle()).also {
+            it.visible=false
+            initialInvisible.add(it)
+        }
         hand.suspendInitAlternative("two")
         hand.suspendInitAlternative("one")
         //adjustHand()
@@ -211,6 +229,9 @@ class GameScene : PunScene() {
             it.x = (1594.0 + 1894.0) * 0.5
             it.y = 26.0 + 12.0
 
+
+            it.visible=false
+            initialInvisible.add(it)
         }
         scoreText.text = "0"
         var scoreSaved = false
@@ -272,11 +293,12 @@ class GameScene : PunScene() {
         ).also {
             it.clickFunction = {
                 //launchImmediately { sceneContainer.changeTo<GameScene>() }
-                GlobalAccess.fingers=2
+                resetGame()
+
                 gameOverItems.forEach {
                     it.visible=false
                 }
-                gameActive=true
+
             }
             it.visible = false
             it.inactive = true
@@ -310,6 +332,13 @@ class GameScene : PunScene() {
                 t1.visible = true
                 t2.visible = true
                 t3.visible = true
+                initialInvisible.forEach {
+                    it.visible=true
+                }
+                scenePuntainer.puntainers.filter {
+                    it.id=="jackal"
+                }.first().visible=false
+                outside.setVisible(true)
                 launchImmediately {
                     // this can be used as an afterloader
                 }
@@ -418,7 +447,7 @@ class GameScene : PunScene() {
                 val r = playfield.virtualRectangle.fromRated(playfield.hitboxRect)
                 hand.update(dt, r)
                 if (hand.isDead) {
-                    gameOverIndex += dt.seconds * 2
+                    gameOverIndex += dt.seconds * screenBleedSpeed
                     if (gameOverIndex >= gameOver.size) {
                         finalScoreText.x = GlobalAccess.virtualSize.width * 0.5
                         finalScoreText.y = GlobalAccess.virtualSize.height * 0.7
@@ -460,8 +489,10 @@ class GameScene : PunScene() {
                         playAgainButton.visible = true
 
                     } else {
-                        gameOver.children.fastForEach { it.visible = false }
+                        gameOver.visible=true
+                        gameOver.children.fastForEach { it.visible = false}
                         gameOver.children[gameOverIndex.toInt()].visible = true
+
                     }
                 }
             }
@@ -472,9 +503,21 @@ class GameScene : PunScene() {
     }
 
 
-    fun updateFunction(){
+    fun resetGame(){
+        GlobalAccess.fingers=2
+        hand.resetGame()
+        playfield.level.obstacles.clear()
+        score = 0.0
+        gameOverIndex = 0.0
+        screenBleedSpeed = 4.0
+        gameActive=true
+        //TODO game speed in reset
+        //TODO scavenge list reset
 
     }
+
+
+    var screenBleedSpeed = 2.0 // this is the coefficient for game over bleeding, it is faster on the second death
 
 
 

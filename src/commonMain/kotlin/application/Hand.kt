@@ -139,6 +139,14 @@ class Hand(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, rel
     var isDead = false
     var isDying = false
 
+    fun resetGame(){
+        blockMode = false
+        isDead = false
+        isDying=false
+    }
+
+
+
     fun onAir(){
         if(activeAnimationType!=ActiveAnimationType.CUT){
             if(activeAnimationType.animationType()!="jump"){
@@ -167,28 +175,9 @@ class Hand(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, rel
 
     suspend fun cutFinger(){
         if(activeAnimationType!=ActiveAnimationType.CUT) {
-            //activeAnimation().forEachChild { it.visible=false }
             SfxPlayer.playSfx("cut.mp3")
             activeAnimationType = ActiveAnimationType.CUT
 
-            /*
-            ActiveAnimationType.values().forEach {
-
-
-                /*
-                listOf("one_","two_").forEach { pref->
-                    children.filterIsInstance<Puntainer>().filter { it.id==pref+activeAnimationType.animationID()  }.forEach {
-                        it.visible=false
-                    }
-                }
-
-                 */
-
-                //it.puntainerTwoFingers.children.fastForEach { it.visible = false }
-                //it.puntainerOneFingers.children.fastForEach { it.visible = false }
-            }
-
-             */
             when ((0..2).random()) {
                 0 -> SfxPlayer.playSfx("daddyScared.mp3")
                 1 -> SfxPlayer.playSfx("mommyScared.mp3")

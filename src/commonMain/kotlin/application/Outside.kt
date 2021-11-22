@@ -10,7 +10,7 @@ import pungine.geometry2D.Rectangle
 
 class Outside {
     //suspend fun deploy(addFunction: (List<Puntainer>)->Unit){
-    suspend fun deploy(addFunction: (Puntainer,Rectangle)->Unit){
+    suspend fun deploy(addFunction: (Puntainer,Rectangle)->Unit, initialVisible: Boolean=true){
         val bmp1 = resourcesVfs["environment/Bg_Small-3.png"].readBitmap()
         val bmp2 = resourcesVfs["environment/Bg_Small-2.png"].readBitmap()
         val bmp3 = resourcesVfs["environment/Bg_Small-1.png"].readBitmap()
@@ -21,11 +21,13 @@ class Outside {
         farList = List(3){i->
             PunImage(bitmap=bmp3.clone()).also {
                 addFunction(it,Rectangle(960.0*(i), 960.0*(i+1), 0.0, 1080.0))
+                it.visible=initialVisible
             }
         }
         mediumList = List(3){i->
             PunImage(bitmap=bmp2.clone()).also {
                 addFunction(it,Rectangle(960.0*(i), 960.0*(i+1), 0.0, 1080.0))
+                it.visible=initialVisible
             }
         }
 
@@ -33,6 +35,7 @@ class Outside {
 
             PunImage(bitmap=bmp1.clone()).also {
                 addFunction(it,Rectangle(960.0*(i), 960.0*(i+1), 0.0, 1080.0))
+                it.visible=initialVisible
             }
         }
 
@@ -70,4 +73,17 @@ class Outside {
     var closeList: List<Puntainer> = listOf()
     var mediumList: List<Puntainer> = listOf()
     var farList: List<Puntainer> = listOf()
+
+    fun setVisible(b: Boolean){
+        closeList.forEach {
+            it.visible=b
+        }
+        mediumList.forEach {
+            it.visible=b
+        }
+        farList.forEach {
+            it.visible=b
+        }
+    }
+
 }
