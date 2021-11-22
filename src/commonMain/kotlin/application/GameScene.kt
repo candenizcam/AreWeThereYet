@@ -469,8 +469,8 @@ class GameScene : PunScene() {
                         menuButton.reshape(
                             Rectangle(
                                 Vector(
-                                    GlobalAccess.virtualSize.width * 0.6 - 160.0,
-                                    GlobalAccess.virtualSize.height * 0.2 - 10.0
+                                    638.0,
+                                    781.0
                                 ), 320.0, 107.0, Rectangle.Corners.TOP_LEFT
                             )
                         )
@@ -480,8 +480,8 @@ class GameScene : PunScene() {
                         playAgainButton.reshape(
                             Rectangle(
                                 Vector(
-                                    GlobalAccess.virtualSize.width * 0.4 - 160.0,
-                                    GlobalAccess.virtualSize.height * 0.2 - 10.0
+                                    962.0,
+                                    771.0
                                 ), 320.0, 107.0, Rectangle.Corners.TOP_LEFT
                             )
                         )
