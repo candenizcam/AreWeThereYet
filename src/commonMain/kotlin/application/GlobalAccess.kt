@@ -18,9 +18,9 @@ object GlobalAccess {
 
     var fingers = 2
     var firstEntry = true
-    val soundsAreOn = false // change this before publishing
+    val soundsAreOn = true // change this before publishing
     val scoreKeeper = ScoreKeeper()
-
+    val musicPlayer = MusicPlayer()
 
     suspend fun init() {
          scoreKeeper.load()

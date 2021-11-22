@@ -46,7 +46,7 @@ class GameScene : PunScene() {
     @OptIn(DelicateCoroutinesApi::class)
     override suspend fun Container.sceneMain() {
         if (GlobalAccess.soundsAreOn) {
-            MusicPlayer.play("musicbox.mp3")
+            GlobalAccess.musicPlayer.play("musicbox.mp3")
         }
 
         val h = GlobalAccess.virtualSize.height.toDouble()

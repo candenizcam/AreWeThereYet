@@ -9,7 +9,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collect
 
 @DelicateCoroutinesApi
-object MusicPlayer {
+class MusicPlayer {
+    lateinit var track : SoundChannel
     /*
     val tracks = mutableListOf<Pair<String, Sound>>()
     val playing = mutableListOf<Pair<String, SoundChannel?>>()
@@ -51,7 +52,11 @@ object MusicPlayer {
 
 */
     suspend fun play(name: String) {
-        val test = resourcesVfs["music/$name"].readMusic()
-        test.play(PlaybackTimes.INFINITE)
+        try {
+            track.stop()
+        } catch (e: Exception) {
+
+        }
+        track = resourcesVfs["music/$name"].readMusic().play(PlaybackTimes.INFINITE)
     }
 }
