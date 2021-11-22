@@ -470,7 +470,7 @@ class GameScene : PunScene() {
                             Rectangle(
                                 Vector(
                                     638.0,
-                                    781.0
+                                    GlobalAccess.virtualSize.height-781.0-60.0
                                 ), 320.0, 107.0, Rectangle.Corners.TOP_LEFT
                             )
                         )
@@ -481,7 +481,7 @@ class GameScene : PunScene() {
                             Rectangle(
                                 Vector(
                                     962.0,
-                                    771.0
+                                    GlobalAccess.virtualSize.height-771.0-60.0
                                 ), 320.0, 107.0, Rectangle.Corners.TOP_LEFT
                             )
                         )
