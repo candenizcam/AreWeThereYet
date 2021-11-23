@@ -67,24 +67,24 @@ class GameScene : PunScene() {
             "Red Numbered Sign",
             "Yellow Tractor",
             "Green Overhead Sign",
-            "Ginormous Blue Sign",
-            "Small Blue Sign"
+            "Cloudy Blue Sign",
+            "Snowy Blue Sign"
         )
         val rarerScavengerList = listOf(
             "Green Bird",
             "Green Numbered  Sign",
             "Red Tractor",
             "Yellow Overhead Sign",
-            "Ginormous Green Sign",
-            "Small Green Sign"
+            "Green Coffee Sign",
+            "Green Tea Sign"
         )
         val rarestScavengerList = listOf(
             "Blue Bird",
             "Yellow Numbered Sign",
             "Blue Tractor",
             "Blue Overhead Sign",
-            "Ginormous Yellow Sign",
-            "Small Yellow Sign"
+            "Yellow Hamburger Sign",
+            "Yellow Hot-Dog Sign"
         )
 
         var hunt1 = rareScavengerList.random()
