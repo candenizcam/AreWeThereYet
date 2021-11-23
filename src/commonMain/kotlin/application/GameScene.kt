@@ -4,6 +4,8 @@ import com.soywiz.klock.TimeSpan
 import com.soywiz.korev.Key
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
+import com.soywiz.korge.view.text
+import com.soywiz.korim.font.Font
 import com.soywiz.korim.font.TtfFont
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korim.text.TextAlignment
@@ -29,15 +31,12 @@ class GameScene : PunScene() {
     //override fun createSceneView(): Container = Puntainer()
 
 
-
-
     override suspend fun Container.sceneInit() {
         GlobalAccess.fingers = 2
         scenePuntainer.punImage("jackal", oneRectangle(), resourcesVfs["VFX/game-jackal.png"].readBitmap())
         outside.deploy(addFunction = { p: Puntainer, r: Rectangle ->
             scenePuntainer.addPuntainer(p, r)
-        },false)
-
+        }, false)
 
 
     }
@@ -61,61 +60,8 @@ class GameScene : PunScene() {
         //playfield.fitToFrame(Rectangle(0.0, w, FloorData.getHeight() * h, h))
         this.addChild(playfield)
         playfield.reshape(Rectangle(0.0, w, FloorData.getHeight() * h, h))
-
-        val rareScavengerList = listOf(
-            "Red Bird",
-            "Red Numbered Sign",
-            "Yellow Tractor",
-            "Green Overhead Sign",
-            "Cloudy Blue Sign",
-            "Snowy Blue Sign"
-        )
-        val rarerScavengerList = listOf(
-            "Green Bird",
-            "Green Numbered  Sign",
-            "Red Tractor",
-            "Yellow Overhead Sign",
-            "Green Coffee Sign",
-            "Green Tea Sign"
-        )
-        val rarestScavengerList = listOf(
-            "Blue Bird",
-            "Yellow Numbered Sign",
-            "Blue Tractor",
-            "Blue Overhead Sign",
-            "Yellow Hamburger Sign",
-            "Yellow Hot-Dog Sign"
-        )
-
-        var hunt1 = rareScavengerList.random()
-        var hunt2 = rarerScavengerList.random()
-        var hunt3 = rarestScavengerList.random()
-        var scavengerHuntList = listOf(hunt1, hunt2, hunt3)
-
-        when (rareScavengerList.indexOf(hunt1)) {
-            0 -> sh1Type = ObstacleTypes.LOWBIRD
-            1 -> sh1Type = ObstacleTypes.LOWJUMP
-            2 -> sh1Type = ObstacleTypes.LONGJUMP
-            3 -> sh1Type = ObstacleTypes.DONTJUMP
-            4 -> sh1Type = ObstacleTypes.DUCK
-            5 -> sh1Type = ObstacleTypes.JUMPDUCK
-        }
-        when (rarerScavengerList.indexOf(hunt2)) {
-            0 -> sh2Type = ObstacleTypes.LOWBIRD
-            1 -> sh2Type = ObstacleTypes.LOWJUMP
-            2 -> sh2Type = ObstacleTypes.LONGJUMP
-            3 -> sh2Type = ObstacleTypes.DONTJUMP
-            4 -> sh2Type = ObstacleTypes.DUCK
-            5 -> sh2Type = ObstacleTypes.JUMPDUCK
-        }
-        when (rarestScavengerList.indexOf(hunt3)) {
-            0 -> sh3Type = ObstacleTypes.LOWBIRD
-            1 -> sh3Type = ObstacleTypes.LOWJUMP
-            2 -> sh3Type = ObstacleTypes.LONGJUMP
-            3 -> sh3Type = ObstacleTypes.DONTJUMP
-            4 -> sh3Type = ObstacleTypes.DUCK
-            5 -> sh3Type = ObstacleTypes.JUMPDUCK
-        }
+        font = TtfFont(resourcesVfs["MPLUSRounded1c-Medium.ttf"].readAll())
+        generateScavengerHunt()
 
         // obstacles
 
@@ -131,7 +77,7 @@ class GameScene : PunScene() {
         val initialInvisible = mutableListOf<Container>()
 
         scenePuntainer.punImage("window", oneRectangle(), resourcesVfs["environment/window.png"].readBitmap()).also {
-            it.visible=false
+            it.visible = false
             initialInvisible.add(it)
         }
 
@@ -141,7 +87,7 @@ class GameScene : PunScene() {
             thisRectangle.toRated(Rectangle(0.0, 554.0, 1080.0, 648.0)),
             resourcesVfs["UI/postit.png"].readBitmap()
         ).also {
-            it.visible=false
+            it.visible = false
             initialInvisible.add(it)
         }
         scenePuntainer.punImage(
@@ -149,15 +95,12 @@ class GameScene : PunScene() {
             thisRectangle.toRated(Rectangle(1594.0, 1894.0, 1054.0, 974.0)),
             resourcesVfs["UI/bandaid.png"].readBitmap()
         ).also {
-            it.visible=false
+            it.visible = false
             initialInvisible.add(it)
         }
 
 
-        val font = TtfFont(resourcesVfs["MPLUSRounded1c-Medium.ttf"].readAll())
-
-
-        val t1 =
+        t1 =
             text(scavengerHuntList[0], font = font, textSize = 28.0, color = Colour.byHex("131A14").korgeColor).also {
                 it.x = 108.0
                 it.y = 117.0
@@ -165,7 +108,7 @@ class GameScene : PunScene() {
 
             }
 
-        val t2 =
+        t2 =
             text(scavengerHuntList[1], font = font, textSize = 28.0, color = Colour.byHex("131A14").korgeColor).also {
                 it.x = 108.0
                 it.y = 167.0
@@ -173,7 +116,7 @@ class GameScene : PunScene() {
 
             }
 
-        val t3 =
+        t3 =
             text(scavengerHuntList[2], font = font, textSize = 28.0, color = Colour.byHex("131A14").korgeColor).also {
                 it.x = 108.0
                 it.y = 217.0
@@ -185,7 +128,7 @@ class GameScene : PunScene() {
 
         ////////////////////////////////////////// HEEEEREEEE
         hand = Hand("hand", oneRectangle()).also {
-            it.visible=false
+            it.visible = false
             initialInvisible.add(it)
         }
         hand.suspendInitAlternative("two")
@@ -230,7 +173,7 @@ class GameScene : PunScene() {
             it.y = 26.0 + 12.0
 
 
-            it.visible=false
+            it.visible = false
             initialInvisible.add(it)
         }
         scoreText.text = "0"
@@ -296,7 +239,7 @@ class GameScene : PunScene() {
                 resetGame()
 
                 gameOverItems.forEach {
-                    it.visible=false
+                    it.visible = false
                 }
 
             }
@@ -333,11 +276,11 @@ class GameScene : PunScene() {
                 t2.visible = true
                 t3.visible = true
                 initialInvisible.forEach {
-                    it.visible=true
+                    it.visible = true
                 }
                 scenePuntainer.puntainers.filter {
-                    it.id=="jackal"
-                }.first().visible=false
+                    it.id == "jackal"
+                }.first().visible = false
                 outside.setVisible(true)
                 launchImmediately {
                     // this can be used as an afterloader
@@ -453,7 +396,7 @@ class GameScene : PunScene() {
                         finalScoreText.y = GlobalAccess.virtualSize.height * 0.7
                         finalScoreText.visible = true
                         finalScoreText.text = "Score: ${score.toInt()}"
-                        if(!scoreSaved) {
+                        if (!scoreSaved) {
                             scoreSaved = true
                             GlobalAccess.scoreKeeper.addScore(score.toInt())
                             launchImmediately { GlobalAccess.scoreKeeper.save() }
@@ -470,7 +413,7 @@ class GameScene : PunScene() {
                             Rectangle(
                                 Vector(
                                     638.0,
-                                    GlobalAccess.virtualSize.height-781.0-60.0
+                                    GlobalAccess.virtualSize.height - 781.0 - 60.0
                                 ), 320.0, 107.0, Rectangle.Corners.TOP_LEFT
                             )
                         )
@@ -481,7 +424,7 @@ class GameScene : PunScene() {
                             Rectangle(
                                 Vector(
                                     962.0,
-                                    GlobalAccess.virtualSize.height-771.0-60.0
+                                    GlobalAccess.virtualSize.height - 771.0 - 60.0
                                 ), 320.0, 107.0, Rectangle.Corners.TOP_LEFT
                             )
                         )
@@ -489,38 +432,119 @@ class GameScene : PunScene() {
                         playAgainButton.visible = true
 
                     } else {
-                        gameOver.visible=true
-                        gameOver.children.fastForEach { it.visible = false}
+                        gameOver.visible = true
+                        gameOver.children.fastForEach { it.visible = false }
                         gameOver.children[gameOverIndex.toInt()].visible = true
 
                     }
                 }
             }
-
-
-
         }
     }
 
+    fun generateScavengerHunt() {
+        val rareScavengerList = listOf(
+            "Red Bird",
+            "Red Numbered Sign",
+            "Yellow Tractor",
+            "Green Overhead Sign",
+            "Cloudy Blue Sign",
+            "Snowy Blue Sign"
+        )
+        val rarerScavengerList = listOf(
+            "Green Bird",
+            "Green Numbered  Sign",
+            "Red Tractor",
+            "Yellow Overhead Sign",
+            "Green Coffee Sign",
+            "Green Tea Sign"
+        )
+        val rarestScavengerList = listOf(
+            "Blue Bird",
+            "Yellow Numbered Sign",
+            "Blue Tractor",
+            "Blue Overhead Sign",
+            "Yellow Hamburger Sign",
+            "Yellow Hot-Dog Sign"
+        )
 
-    fun resetGame(){
-        GlobalAccess.fingers=2
+        val hunt1 = rareScavengerList.random()
+        val hunt2 = rarerScavengerList.random()
+        val hunt3 = rarestScavengerList.random()
+        scavengerHuntList = listOf(hunt1, hunt2, hunt3)
+
+        when (rareScavengerList.indexOf(hunt1)) {
+            0 -> sh1Type = ObstacleTypes.LOWBIRD
+            1 -> sh1Type = ObstacleTypes.LOWJUMP
+            2 -> sh1Type = ObstacleTypes.LONGJUMP
+            3 -> sh1Type = ObstacleTypes.DONTJUMP
+            4 -> sh1Type = ObstacleTypes.DUCK
+            5 -> sh1Type = ObstacleTypes.JUMPDUCK
+        }
+        when (rarerScavengerList.indexOf(hunt2)) {
+            0 -> sh2Type = ObstacleTypes.LOWBIRD
+            1 -> sh2Type = ObstacleTypes.LOWJUMP
+            2 -> sh2Type = ObstacleTypes.LONGJUMP
+            3 -> sh2Type = ObstacleTypes.DONTJUMP
+            4 -> sh2Type = ObstacleTypes.DUCK
+            5 -> sh2Type = ObstacleTypes.JUMPDUCK
+        }
+        when (rarestScavengerList.indexOf(hunt3)) {
+            0 -> sh3Type = ObstacleTypes.LOWBIRD
+            1 -> sh3Type = ObstacleTypes.LOWJUMP
+            2 -> sh3Type = ObstacleTypes.LONGJUMP
+            3 -> sh3Type = ObstacleTypes.DONTJUMP
+            4 -> sh3Type = ObstacleTypes.DUCK
+            5 -> sh3Type = ObstacleTypes.JUMPDUCK
+        }
+
+
+
+
+        t1 =
+            sceneContainer.text(
+                scavengerHuntList[0],
+                font = font,
+                textSize = 28.0,
+                color = Colour.byHex("131A14").korgeColor
+            ).also {
+                it.x = 108.0
+                it.y = 117.0
+                it.visible = false
+
+            }
+
+        t2 =
+            sceneContainer.text(scavengerHuntList[1], font = font, textSize = 28.0, color = Colour.byHex("131A14").korgeColor).also {
+                it.x = 108.0
+                it.y = 167.0
+                it.visible = false
+
+            }
+
+        t3 =
+            sceneContainer.text(scavengerHuntList[2], font = font, textSize = 28.0, color = Colour.byHex("131A14").korgeColor).also {
+                it.x = 108.0
+                it.y = 217.0
+                it.visible = false
+            }
+    }
+
+    fun resetGame() {
+        GlobalAccess.fingers = 2
         hand.resetGame()
         playfield.level.obstacles.clear()
         score = 0.0
         gameOverIndex = 0.0
         screenBleedSpeed = 4.0
-        gameActive=true
-        //TODO game speed in reset
-        //TODO scavenge list reset
+        gameActive = true
+        playfield.level.speed = 0.3
+        generateScavengerHunt()
 
     }
 
 
     var screenBleedSpeed = 2.0 // this is the coefficient for game over bleeding, it is faster on the second death
-
-
-
 
 
     // WINDOW SCENE VARIABLES
@@ -537,6 +561,13 @@ class GameScene : PunScene() {
     lateinit var sh2Type: ObstacleTypes
     lateinit var sh3Type: ObstacleTypes
 
+    lateinit var font: Font
+
+    lateinit var t1: Text
+    lateinit var t2: Text
+    lateinit var t3: Text
+
+    lateinit var scavengerHuntList: List<String>
     var score = 0.0
     var gameActive = true
     lateinit var hand: Hand //= Hand("hand", oneRectangle())

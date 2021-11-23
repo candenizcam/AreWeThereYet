@@ -38,7 +38,7 @@ class WindowScene  : PunScene() {
         //val engineLoop = resourcesVfs["SFX/engine_heavy_loop-20.mp3"].readMusic()
         //val t = resourcesVfs["music/musicbox.mp3"].readMusic()
         if(GlobalAccess.soundsAreOn){
-            GlobalAccess.musicPlayer.play("musicbox.mp3")
+           GlobalAccess.musicPlayer.play("musicbox.mp3")
         }
 
         //val bmp = resourcesVfs["environment/Bg_Small.png"].readBitmap()
