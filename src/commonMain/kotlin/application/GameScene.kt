@@ -4,7 +4,6 @@ import com.soywiz.klock.TimeSpan
 import com.soywiz.korev.Key
 import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.*
-import com.soywiz.korge.view.text
 import com.soywiz.korim.font.Font
 import com.soywiz.korim.font.TtfFont
 import com.soywiz.korim.format.readBitmap
@@ -348,8 +347,8 @@ class GameScene : PunScene() {
                     5
                 }
 
-                if ((collided == sh1Type.ordinal) && (collidedObstacleRarity == 0)) {
-                    // if ((collided == sh1Type.ordinal) && (collidedObstacleRarity == 0)  || ((sh1Type == ObstacleTypes.LOWBIRD) && (collided == 6) && (collidedObstacleRarity == 0)) ) {
+                // if ((collided == sh1Type.ordinal) && (collidedObstacleRarity == 0)) {
+                if ((collided == sh1Type.ordinal) && (collidedObstacleRarity == 0) || ((sh1Type == ObstacleTypes.LOWBIRD) && (collided == 6) && (collidedObstacleRarity == 0))) {
                     score += 100
                     launchImmediately { SfxPlayer.playSfx("diDing.mp3") }
                     playfield.sliced()
@@ -501,33 +500,49 @@ class GameScene : PunScene() {
 
 
 
-        t1 =
-            sceneContainer.text(
-                scavengerHuntList[0],
-                font = font,
-                textSize = 28.0,
-                color = Colour.byHex("131A14").korgeColor
-            ).also {
-                it.x = 108.0
-                it.y = 117.0
-                it.visible = false
+        if(firstRun) {
+            t1 =
+                sceneContainer.text(
+                    scavengerHuntList[0],
+                    font = font,
+                    textSize = 28.0,
+                    color = Colour.byHex("131A14").korgeColor
+                ).also {
+                    it.x = 108.0
+                    it.y = 117.0
+                    it.visible = false
 
-            }
+                }
 
-        t2 =
-            sceneContainer.text(scavengerHuntList[1], font = font, textSize = 28.0, color = Colour.byHex("131A14").korgeColor).also {
-                it.x = 108.0
-                it.y = 167.0
-                it.visible = false
+            t2 =
+                sceneContainer.text(
+                    scavengerHuntList[1],
+                    font = font,
+                    textSize = 28.0,
+                    color = Colour.byHex("131A14").korgeColor
+                ).also {
+                    it.x = 108.0
+                    it.y = 167.0
+                    it.visible = false
 
-            }
+                }
 
-        t3 =
-            sceneContainer.text(scavengerHuntList[2], font = font, textSize = 28.0, color = Colour.byHex("131A14").korgeColor).also {
-                it.x = 108.0
-                it.y = 217.0
-                it.visible = false
-            }
+            t3 =
+                sceneContainer.text(
+                    scavengerHuntList[2],
+                    font = font,
+                    textSize = 28.0,
+                    color = Colour.byHex("131A14").korgeColor
+                ).also {
+                    it.x = 108.0
+                    it.y = 217.0
+                    it.visible = false
+                }
+        } else {
+            t1.text = scavengerHuntList[0]
+            t2.text = scavengerHuntList[1]
+            t3.text = scavengerHuntList[2]
+        }
     }
 
     fun resetGame() {
