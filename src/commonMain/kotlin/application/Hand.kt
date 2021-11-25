@@ -117,7 +117,7 @@ class Hand(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, rel
                     image.y = GlobalAccess.virtualSize.height - (hitboxRect.top)
                 }
                 if(activeAnimationType==ActiveAnimationType.DUCK){
-                    val vss = a.children.map { it.visible }
+                     a.children.map { it.visible }
                 }
                 //greenBlock.scaledWidth = hitboxRectOnScreen.width
                 //greenBlock.scaledHeight = hitboxRectOnScreen.height

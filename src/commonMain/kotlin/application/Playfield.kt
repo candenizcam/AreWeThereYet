@@ -1,11 +1,15 @@
 package application
 
 import com.soywiz.klock.TimeSpan
+import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korge.view.position
+import kotlinx.coroutines.DelicateCoroutinesApi
 import pungine.Puntainer
 import pungine.geometry2D.Rectangle
 import kotlin.coroutines.CoroutineContext
 
+@DelicateCoroutinesApi
+@KorgeInternal
 class Playfield(id: String? = null, relativeRectangle: Rectangle) : Puntainer(id, relativeRectangle) {
 
     suspend fun update(dt: TimeSpan) {

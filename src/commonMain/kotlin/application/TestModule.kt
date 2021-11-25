@@ -13,6 +13,7 @@ object TestModule: Module() {
     override val mainScene = EntryScene::class
     override val size = InternalGlobalAccess.virtualSize // Virtual Size
     override val windowSize = InternalGlobalAccess.windowSize// Window Size
+    override val title = "AreWeThereYet"
 
     override suspend fun AsyncInjector.configure() {
         mapPrototype { GameScene() }

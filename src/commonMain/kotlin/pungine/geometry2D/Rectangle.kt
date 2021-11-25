@@ -136,7 +136,6 @@ class Rectangle {
         return if (fromCorner==null){
             Rectangle(this.centre,width*w,height*h)
         }else{
-            val t = getCorner(fromCorner)
             Rectangle(getCorner(fromCorner),width*w,height*h,fromCorner)
         }
     }

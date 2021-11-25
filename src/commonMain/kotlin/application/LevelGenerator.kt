@@ -2,6 +2,7 @@ package application
 
 import com.soywiz.klock.TimeSpan
 import com.soywiz.korau.sound.readSound
+import com.soywiz.korge.internal.KorgeInternal
 import com.soywiz.korio.async.launch
 import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korma.math.roundDecimalPlaces
@@ -11,6 +12,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 import kotlin.random.Random
 
+@KorgeInternal
 @DelicateCoroutinesApi
 class LevelGenerator() {
 

@@ -18,6 +18,10 @@ apply<KorgeGradlePlugin>()
 
 korge {
 	id = "com.pungame.pungame"
+	name = "AreWeThereYet"
+	title = "AreWeThereYet"
+	exeBaseName = "AreWeThereYet"
+	icon = file("src/commonMain/resources/icon.png")
 	supportSwf()
 // To enable all targets at once
 

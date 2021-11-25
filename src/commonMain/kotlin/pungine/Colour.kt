@@ -25,41 +25,41 @@ class Colour private constructor(r: Double, g: Double, b: Double, a: Double) {
         }
 
         fun hsva(h: Double, s: Double, v: Double, a: Double=1.0): Colour{
-            val h = h.coerceIn(0.0,1.0)
-            val s = s.coerceIn(0.0,1.0)
-            val v = v.coerceIn(0.0,1.0)
-            val a = a.coerceIn(0.0,1.0)
-            val hCirc = (h*360).toInt()
-            val c = v*s
-            val m: Double = v-c
+            val realh = h.coerceIn(0.0,1.0)
+            val reals = s.coerceIn(0.0,1.0)
+            val realv = v.coerceIn(0.0,1.0)
+            val reala = a.coerceIn(0.0,1.0)
+            val hCirc = (realh*360).toInt()
+            val c = realv*reals
+            val m: Double = realv-c
             val x: Double = c*(1f - abs((hCirc/60.0)%2-1.0))
             return when(hCirc){
                 in 0..60 ->{
-                    Colour(c+m,x+m,m,a)
+                    Colour(c+m,x+m,m,reala)
                 }
                 in 60..120->{
-                    Colour(x+m,c+m,m,a)
+                    Colour(x+m,c+m,m,reala)
                 }
                 in 120..180->{
-                    Colour(m,c+m,x+m,a)
+                    Colour(m,c+m,x+m,reala)
                 }
                 in 180..240->{
-                    Colour(m,x+m,c+m,a)
+                    Colour(m,x+m,c+m,reala)
                 }
                 in 240..300->{
-                    Colour(x+m,m,c+m,a)
+                    Colour(x+m,m,c+m,reala)
                 }
                 in 300..360->{
-                    Colour(c+m,m,x+m,a)
+                    Colour(c+m,m,x+m,reala)
                 }
                 else ->{
-                    Colour(m,m,m,a)
+                    Colour(m,m,m,reala)
                 }
             }.also {
                 it.setHex()
-                it.hue = h
-                it.saturation = s
-                it.value = v
+                it.hue = realh
+                it.saturation = reals
+                it.value = realv
             }
         }
 

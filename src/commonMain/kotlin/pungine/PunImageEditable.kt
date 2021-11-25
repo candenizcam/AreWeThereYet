@@ -23,6 +23,7 @@ import pungine.geometry2D.Rectangle
  * It does not inherit Image directly, but it generates an Image into the puntainer, which it Inherits
  *
  */
+@KorgeInternal
 class PunImageEditable: PunImage{
     constructor(id: String?=null,bitmap: Bitmap): super(id,bitmap){
         bitmapDisplayed = bitmap
